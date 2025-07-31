@@ -1099,6 +1099,30 @@
   },
 
   "admin": {
+    "export": {
+      "title": "Export Data",
+      "description": "Export your data in various formats for analysis and reporting",
+      "format": "Export Format",
+      "options": "Export Options",
+      "summary": "Export Summary",
+      "records": "Records",
+      "columns": "Columns",
+      "exporting": "Exporting...",
+      "export": "Export",
+      "cancel": "Cancel",
+      "success": "Export completed successfully!",
+      "error": "Export failed. Please try again.",
+      "includeTimestamp": "Include Timestamp",
+      "includeTimestampDesc": "Add generation timestamp to the export",
+      "includeFilters": "Include Filters",
+      "includeFiltersDesc": "Include applied filters in the export",
+      "pdf": "PDF Document",
+      "pdfDescription": "Professional document format with formatting",
+      "excel": "Excel Spreadsheet",
+      "excelDescription": "Spreadsheet format for data analysis",
+      "csv": "CSV File",
+      "csvDescription": "Simple text format for data import"
+    },
     "login": {
       "title": "Admin Login",
       "subtitle": "Access the admin dashboard to manage your platform",
@@ -1179,6 +1203,9 @@
         "userActivitySubtitle": "Activity details for",
         "managePermissions": "Manage Permissions",
         "managePermissionsSubtitle": "Manage permissions for",
+        "editRole": "Edit Role",
+        "editRoleSubtitle": "Edit role details and permissions for",
+        "saveRoleChanges": "Save Role Changes",
         "savePermissions": "Save Permissions"
       },
       "form": {
@@ -1195,6 +1222,10 @@
         "phonePlaceholder": "Enter phone number",
         "passwordPlaceholder": "Enter password",
         "selectRole": "Select role",
+        "roleName": "Role Name",
+        "roleDescription": "Role Description",
+        "roleNamePlaceholder": "Enter role name",
+        "roleDescriptionPlaceholder": "Enter role description",
         "required": "Required"
       },
       "details": {
@@ -1232,6 +1263,10 @@
         "currentRole": "Current Role",
         "customPermissions": "Custom Permissions",
         "customPermissionsDesc": "Override role-based permissions with custom settings",
+        "rolePermissions": "Role Permissions",
+        "rolePermissionsDesc": "Select permissions for this role",
+        "roleSummary": "Role Permission Summary",
+        "selectedPermissions": "Selected Permissions",
         "summary": "Permission Summary",
         "selected": "Selected",
         "total": "Total"
@@ -1263,6 +1298,8 @@
         "userUpdatedDesc": "User information has been successfully updated",
         "rolesEdited": "Roles Edited",
         "rolesEditedDesc": "User roles have been successfully updated",
+        "roleUpdated": "Role Updated",
+        "roleUpdatedDesc": "Role has been successfully updated",
         "userAdded": "User Added",
         "userAddedDesc": "New user has been successfully created"
       }
@@ -1335,6 +1372,8 @@
         "viewNfcCardFor": "View NFC Card for",
         "viewActivity": "View Activity",
         "viewActivityFor": "View Activity for",
+        "editBooking": "Edit Booking",
+        "editBookingFor": "Edit Booking for",
         "close": "Close",
         "cancel": "Cancel",
         "saveChanges": "Save Changes",
@@ -1350,7 +1389,14 @@
         "emailPlaceholder": "Enter email address",
         "phonePlaceholder": "Enter phone number",
         "locationPlaceholder": "Enter location",
-        "required": "Required"
+        "required": "Required",
+        "passwordSection": "Password Management",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter new password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Confirm new password",
+        "passwordNote": "Leave blank to keep current password unchanged",
+        "passwordRequired": "Password is required for new customers"
       },
       "details": {
         "profileImage": "Profile Image",
@@ -1396,11 +1442,18 @@
         "date": "Date",
         "tickets": "Tickets",
         "amount": "Amount",
-        "status": "Status",
+        "statusLabel": "Status",
         "status": {
           "confirmed": "Confirmed",
           "cancelled": "Cancelled",
           "refunded": "Refunded"
+        },
+        "actions": {
+          "title": "Actions",
+          "edit": "Edit Booking",
+          "cancel": "Cancel Booking",
+          "refund": "Refund Booking",
+          "reactivate": "Reactivate Booking"
         }
       },
       "nfcCard": {
@@ -1447,7 +1500,13 @@
         "customerAdded": "Customer Added",
         "customerAddedDesc": "New customer has been successfully created",
         "customerUpdated": "Customer Updated",
-        "customerUpdatedDesc": "Customer information has been successfully updated"
+        "customerUpdatedDesc": "Customer information has been successfully updated",
+        "bookingUpdated": "Booking Updated",
+        "bookingUpdatedDesc": "Booking information has been successfully updated",
+        "bookingCancelled": "Booking Cancelled",
+        "bookingCancelledDesc": "Booking has been successfully cancelled",
+        "bookingRefunded": "Booking Refunded",
+        "bookingRefundedDesc": "Booking has been successfully refunded"
       }
     },
     "dashboard": {
@@ -1456,10 +1515,12 @@
       "tabs": {
         "dashboard": "Dashboard",
         "events": "Events",
+        "venues": "Venues",
         "tickets": "Tickets",
         "nfc": "NFC Cards",
         "customers": "Customers",
         "admins": "Admin Users",
+        "logs": "System Logs",
         "analytics": "Analytics"
       },
       "stats": {
@@ -1512,8 +1573,199 @@
         "logoutSuccess": "Logged out successfully"
       },
       "analytics": {
+        "subtitle": "Detailed analytics and reporting for all platform activities",
+        "exportPDF": "Export PDF",
+        "exporting": "Exporting Analytics",
+        "exportingDesc": "Generating PDF report...",
+        "exportSuccess": "Analytics exported",
+        "exportSuccessDesc": "Analytics report has been exported as PDF successfully",
+        "exportError": "Export failed",
+        "exportErrorDesc": "Failed to generate PDF report. Please try again.",
         "description": "Detailed analytics and reporting for all platform activities",
         "comingSoon": "Advanced analytics module will be implemented here with detailed reports, custom date ranges, and export functionality."
+      },
+      "logs": {
+        "title": "System Logs",
+        "subtitle": "Monitor and track all system activities, user actions, and security events",
+        "export": "Export Logs",
+        "clearFilters": "Clear Filters",
+        "stats": {
+          "totalLogs": "Total Logs",
+          "todayLogs": "Today's Logs",
+          "criticalLogs": "Critical Logs",
+          "activeUsers": "Active Users",
+          "allTime": "All time",
+          "today": "Today",
+          "requiresAttention": "Requires attention",
+          "uniqueUsers": "Unique users"
+        },
+        "filters": {
+          "title": "Filters",
+          "search": "Search",
+          "searchPlaceholder": "Search logs...",
+          "category": "Category",
+          "severity": "Severity",
+          "user": "User",
+          "status": "Status",
+          "dateRange": "Date Range",
+          "allCategories": "All Categories",
+          "allSeverities": "All Severities",
+          "allUsers": "All Users",
+          "allStatuses": "All Statuses",
+          "allTime": "All Time",
+          "today": "Today",
+          "thisWeek": "This Week",
+          "thisMonth": "This Month"
+        },
+        "categories": {
+          "authentication": "Authentication",
+          "userManagement": "User Management",
+          "eventManagement": "Event Management",
+          "ticketManagement": "Ticket Management",
+          "nfcManagement": "NFC Management",
+          "venueManagement": "Venue Management",
+          "system": "System",
+          "security": "Security",
+          "financial": "Financial",
+          "dataExport": "Data Export",
+          "settings": "Settings"
+        },
+        "severities": {
+          "critical": "Critical",
+          "high": "High",
+          "medium": "Medium",
+          "low": "Low"
+        },
+        "statuses": {
+          "success": "Success",
+          "failed": "Failed",
+          "pending": "Pending",
+          "cancelled": "Cancelled"
+        },
+        "table": {
+          "title": "System Activity Logs",
+          "timestamp": "Timestamp",
+          "user": "User",
+          "action": "Action",
+          "category": "Category",
+          "severity": "Severity",
+          "description": "Description",
+          "status": "Status",
+          "ipAddress": "IP Address",
+          "location": "Location",
+          "actions": "Actions",
+          "sortBy": "Sort By"
+        },
+        "actions": {
+          "export": "Export Logs",
+          "clearFilters": "Clear Filters",
+          "viewDetails": "View Details",
+          "refresh": "Refresh",
+          "sortBy": "Sort By",
+          "loadMore": "Load More Logs"
+        },
+        "details": {
+          "title": "Log Details",
+          "subtitle": "Detailed information about this system activity",
+          "basicInfo": "Basic Information",
+          "technicalDetails": "Technical Details",
+          "changes": "Changes Made",
+          "metadata": "Additional Metadata",
+          "close": "Close",
+          "deviceInfo": "Device Info",
+          "sessionId": "Session ID"
+        },
+        "pagination": {
+          "showing": "Showing",
+          "of": "of",
+          "results": "results",
+          "first": "First",
+          "last": "Last",
+          "perPage": "Per page"
+        },
+        "toast": {
+          "exportSuccess": "Logs exported",
+          "exportSuccessDesc": "System logs have been exported successfully",
+          "exportError": "Export failed",
+          "exportErrorDesc": "Failed to export system logs. Please try again."
+        },
+        "loading": {
+          "loadingMore": "Loading more logs...",
+          "ready": "Ready",
+          "loading": "Loading..."
+        },
+        "performance": {
+          "title": "Performance Indicator",
+          "status": "Status"
+        },
+        "actions": {
+          "user_login": "User logged in",
+          "user_logout": "User logged out",
+          "user_created": "User created",
+          "user_updated": "User updated",
+          "user_deleted": "User deleted",
+          "event_created": "Event created",
+          "event_updated": "Event updated",
+          "event_deleted": "Event deleted",
+          "ticket_purchased": "Ticket purchased",
+          "ticket_refunded": "Ticket refunded",
+          "ticket_transferred": "Ticket transferred",
+          "nfc_card_assigned": "NFC card assigned",
+          "nfc_card_deactivated": "NFC card deactivated",
+          "venue_created": "Venue created",
+          "venue_updated": "Venue updated",
+          "venue_deleted": "Venue deleted",
+          "admin_login": "Admin logged in",
+          "admin_logout": "Admin logged out",
+          "admin_created": "Admin user created",
+          "admin_updated": "Admin user updated",
+          "admin_deleted": "Admin user deleted",
+          "system_backup": "System backup created",
+          "data_export": "Data exported",
+          "settings_updated": "Settings updated",
+          "security_alert": "Security alert triggered",
+          "payment_processed": "Payment processed",
+          "payment_failed": "Payment failed",
+          "checkin_success": "Check-in successful",
+          "checkin_failed": "Check-in failed",
+          "password_reset": "Password reset",
+          "account_locked": "Account locked",
+          "account_unlocked": "Account unlocked"
+        },
+        "descriptions": {
+          "user_login": "User successfully logged into the system",
+          "user_logout": "User logged out of the system",
+          "user_created": "New user account was created",
+          "user_updated": "User profile information was updated",
+          "user_deleted": "User account was deleted from the system",
+          "event_created": "New event was created in the system",
+          "event_updated": "Event details were modified",
+          "event_deleted": "Event was removed from the system",
+          "ticket_purchased": "New ticket purchase was completed",
+          "ticket_refunded": "Ticket refund was processed",
+          "ticket_transferred": "Ticket was transferred to another user",
+          "nfc_card_assigned": "NFC card was assigned to a customer",
+          "nfc_card_deactivated": "NFC card was deactivated",
+          "venue_created": "New venue was added to the system",
+          "venue_updated": "Venue information was updated",
+          "venue_deleted": "Venue was removed from the system",
+          "admin_login": "Administrator logged into the admin panel",
+          "admin_logout": "Administrator logged out of the admin panel",
+          "admin_created": "New administrator account was created",
+          "admin_updated": "Administrator account was modified",
+          "admin_deleted": "Administrator account was removed",
+          "system_backup": "System backup was created successfully",
+          "data_export": "System data was exported to external file",
+          "settings_updated": "System settings were modified",
+          "security_alert": "Security system detected suspicious activity",
+          "payment_processed": "Payment transaction was completed successfully",
+          "payment_failed": "Payment transaction failed to process",
+          "checkin_success": "Customer successfully checked into event",
+          "checkin_failed": "Customer check-in attempt failed",
+          "password_reset": "User password was reset",
+          "account_locked": "User account was locked due to security concerns",
+          "account_unlocked": "User account was unlocked by administrator"
+        }
       }
     },
     "events": {
@@ -1660,7 +1912,35 @@
         "remove": "Remove",
         "saveChanges": "Save Changes",
         "saveSuccess": "Ushers updated",
-        "saveSuccessDesc": "Usher assignments have been updated successfully"
+        "saveSuccessDesc": "Usher assignments have been updated successfully",
+        "editUsher": "Edit Usher",
+        "editUsherSubtitle": "Update usher information and assignments",
+        "usherActivity": "Usher Activity",
+        "usherActivitySubtitle": "View detailed activity and performance for this usher",
+        "usherInfo": "Usher Information",
+        "status": "Status",
+        "assignedAreas": "Assigned Areas",
+        "recentActivity": "Recent Activity",
+        "performanceStats": "Performance Statistics",
+        "ticketsScanned": "Tickets Scanned",
+        "guestsAssisted": "Guests Assisted",
+        "activeTime": "Active Time",
+        "exportActivity": "Export Activity",
+        "exportSuccess": "Activity exported",
+        "exportSuccessDesc": "Usher activity has been exported successfully",
+        "validationError": "Validation Error",
+        "validationErrorDesc": "Please fill in all required fields",
+        "addSuccess": "Usher Added",
+        "addSuccessDesc": "New usher has been successfully added",
+        "editSuccess": "Usher Updated",
+        "editSuccessDesc": "Usher information has been successfully updated",
+        "removeSuccess": "Usher Removed",
+        "removeSuccessDesc": "Usher has been successfully removed from the event",
+        "activity": {
+          "ticketScanned": "Ticket scanned",
+          "guestAssisted": "Guest assisted",
+          "areaPatrolled": "Area patrolled"
+        }
       },
       "tickets": {
         "title": "Ticket Management",
@@ -1803,13 +2083,15 @@
         "ticketNumber": "Ticket Number",
         "category": "Category",
         "price": "Price",
-        "dependents": "Dependents",
+        "phoneNumber": "Phone Number",
         "status": "Status",
         "customer": "Customer",
         "event": "Event",
         "selectCustomer": "Select customer",
         "selectEvent": "Select event",
-        "selectCategory": "Select category"
+        "selectCategory": "Select category",
+        "searchEvent": "Search events...",
+        "noEventsFound": "No events found."
       },
       "checkInLogs": {
         "title": "Real-time Check-in Logs",
@@ -1834,14 +2116,12 @@
         "ticketRefundedDesc": "Ticket has been successfully refunded",
         "exportSuccess": "Export successful",
         "exportSuccessDesc": "Tickets data has been exported to Excel",
-        "viewQrCode": "View QR code",
-        "viewQrCodeDesc": "QR code details opened successfully",
-        "unbanTicket": "Ticket unbanned",
-        "unbanTicketDesc": "Ticket has been successfully unbanned",
-        "assignTicketAction": "Assign ticket",
-        "assignTicketActionDesc": "Ticket assignment dialog opened successfully",
-        "saveTicketChanges": "Ticket updated",
-        "saveTicketChangesDesc": "Ticket information has been successfully updated"
+        "ticketUnbanned": "Ticket unbanned",
+        "ticketUnbannedDesc": "Ticket has been successfully unbanned",
+        "ticketAssigned": "Ticket assigned",
+        "ticketAssignedDesc": "Ticket has been successfully assigned",
+        "ticketUpdated": "Ticket updated",
+        "ticketUpdatedDesc": "Ticket information has been successfully updated"
       },
       "categories": {
         "vip": "VIP",
@@ -1927,13 +2207,15 @@
         "ticketNumber": "Ticket Number",
         "category": "Category",
         "price": "Price",
-        "dependents": "Dependents",
+        "phoneNumber": "Phone Number",
         "status": "Status",
         "customer": "Customer",
         "event": "Event",
         "selectCustomer": "Select customer",
         "selectEvent": "Select event",
-        "selectCategory": "Select category"
+        "selectCategory": "Select category",
+        "searchEvent": "Search events...",
+        "noEventsFound": "No events found."
       },
       "checkInLogs": {
         "title": "Real-time Check-in Logs",
@@ -1958,14 +2240,12 @@
         "ticketRefundedDesc": "Ticket has been successfully refunded",
         "exportSuccess": "Export successful",
         "exportSuccessDesc": "Tickets data has been exported to Excel",
-        "viewQrCode": "View QR code",
-        "viewQrCodeDesc": "QR code details opened successfully",
-        "unbanTicket": "Ticket unbanned",
-        "unbanTicketDesc": "Ticket has been successfully unbanned",
-        "assignTicketAction": "Assign ticket",
-        "assignTicketActionDesc": "Ticket assignment dialog opened successfully",
-        "saveTicketChanges": "Ticket updated",
-        "saveTicketChangesDesc": "Ticket information has been successfully updated"
+        "ticketUnbanned": "Ticket unbanned",
+        "ticketUnbannedDesc": "Ticket has been successfully unbanned",
+        "ticketAssigned": "Ticket assigned",
+        "ticketAssignedDesc": "Ticket has been successfully assigned",
+        "ticketUpdated": "Ticket updated",
+        "ticketUpdatedDesc": "Ticket information has been successfully updated"
       },
       "categories": {
         "vip": "VIP",

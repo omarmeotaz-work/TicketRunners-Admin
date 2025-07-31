@@ -90,6 +90,10 @@ import { useTheme } from "@/hooks/useTheme";
 import i18n from "@/lib/i18n";
 import { formatNumberForLocale, formatCurrencyForLocale } from "@/lib/utils";
 import { Footer } from "@/components/Footer";
+import SystemLogs from "@/components/admin/SystemLogs";
+import { ExportDialog } from "@/components/ui/export-dialog";
+import { commonColumns, formatCurrency } from "@/lib/exportUtils";
+
 import {
   LineChart,
   Line,
@@ -114,6 +118,7 @@ import TicketsManagement from "@/components/admin/TicketsManagement";
 import NFCCardManagement from "@/components/admin/NFCCardManagement";
 import CustomerManagement from "@/components/admin/CustomerManagement";
 import AdminUserManagement from "@/components/admin/AdminUserManagement";
+import VenueManagement from "@/components/admin/VenueManagement";
 
 // Types
 interface AdminUser {
@@ -651,6 +656,9 @@ const AdminDashboard: React.FC = () => {
             <TabsTrigger value="events" className="flex-1 rtl:text-right">
               {t("admin.dashboard.tabs.events")}
             </TabsTrigger>
+            <TabsTrigger value="venues" className="flex-1 rtl:text-right">
+              {t("admin.dashboard.tabs.venues")}
+            </TabsTrigger>
             <TabsTrigger value="tickets" className="flex-1 rtl:text-right">
               {t("admin.dashboard.tabs.tickets")}
             </TabsTrigger>
@@ -663,6 +671,9 @@ const AdminDashboard: React.FC = () => {
             <TabsTrigger value="admins" className="flex-1 rtl:text-right">
               {t("admin.dashboard.tabs.admins")}
             </TabsTrigger>
+            <TabsTrigger value="logs" className="flex-1 rtl:text-right">
+              {t("admin.dashboard.logs.title")}
+            </TabsTrigger>
             <TabsTrigger value="analytics" className="flex-1 rtl:text-right">
               {t("admin.dashboard.tabs.analytics")}
             </TabsTrigger>
@@ -670,6 +681,125 @@ const AdminDashboard: React.FC = () => {
 
           {/* Dashboard Tab */}
           <TabsContent value="dashboard" className="space-y-6">
+            {/* Dashboard Header with Export */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+                  {t("admin.dashboard.tabs.dashboard")}
+                </h2>
+                <p className="text-muted-foreground rtl:text-right ltr:text-left">
+                  {t("admin.dashboard.subtitle")}
+                </p>
+              </div>
+              <ExportDialog
+                data={[
+                  // Event Analytics
+                  {
+                    metric: t("admin.dashboard.stats.totalEvents"),
+                    value: dashboardStats.totalEvents,
+                    category: "Event Analytics",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.ticketsSold"),
+                    value: dashboardStats.totalTicketsSold,
+                    category: "Event Analytics",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.totalAttendees"),
+                    value: dashboardStats.totalAttendees,
+                    category: "Event Analytics",
+                  },
+                  // Financial Summary
+                  {
+                    metric: t("admin.dashboard.stats.totalRevenue"),
+                    value: dashboardStats.totalRevenues,
+                    category: "Financial Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.commission"),
+                    value: dashboardStats.cutCommissions,
+                    category: "Financial Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.pendingPayouts"),
+                    value: dashboardStats.pendingPayouts,
+                    category: "Financial Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.completedPayouts"),
+                    value: dashboardStats.completedPayouts,
+                    category: "Financial Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.cardSales"),
+                    value: dashboardStats.cardSales,
+                    category: "Financial Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.grossProfit"),
+                    value: dashboardStats.grossProfit,
+                    category: "Financial Summary",
+                  },
+                  // User Summary
+                  {
+                    metric: t("admin.dashboard.stats.totalVisitors"),
+                    value: dashboardStats.totalVisitors,
+                    category: "User Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.registeredUsers"),
+                    value: dashboardStats.registeredUsers,
+                    category: "User Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.activeUsers"),
+                    value: dashboardStats.activeUsers,
+                    category: "User Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.inactiveUsers"),
+                    value: dashboardStats.inactiveUsers,
+                    category: "User Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.recurrentUsers"),
+                    value: dashboardStats.recurrentUsers,
+                    category: "User Summary",
+                  },
+                  // Card Summary
+                  {
+                    metric: t("admin.dashboard.stats.totalCards"),
+                    value: dashboardStats.totalCards,
+                    category: "Card Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.activeCards"),
+                    value: dashboardStats.activeCards,
+                    category: "Card Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.inactiveCards"),
+                    value: dashboardStats.inactiveCards,
+                    category: "Card Summary",
+                  },
+                  {
+                    metric: t("admin.dashboard.stats.expiredCards"),
+                    value: dashboardStats.expiredCards,
+                    category: "Card Summary",
+                  },
+                ]}
+                columns={commonColumns.dashboardStats}
+                title={t("admin.dashboard.tabs.dashboard")}
+                subtitle={t("admin.dashboard.subtitle")}
+                filename="dashboard-stats"
+              >
+                <Button className="flex items-center gap-2 rtl:flex-row-reverse">
+                  <Download className="h-4 w-4" />
+                  {t("admin.export.title")}
+                </Button>
+              </ExportDialog>
+            </div>
+
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 rtl:space-x-reverse">
               {/* Event Analytics */}
@@ -887,6 +1017,11 @@ const AdminDashboard: React.FC = () => {
             <EventsManagement />
           </TabsContent>
 
+          {/* Venues Management Tab */}
+          <TabsContent value="venues" className="space-y-6">
+            <VenueManagement />
+          </TabsContent>
+
           {/* Tickets Management Tab */}
           <TabsContent value="tickets" className="space-y-6">
             <TicketsManagement />
@@ -907,8 +1042,189 @@ const AdminDashboard: React.FC = () => {
             <AdminUserManagement />
           </TabsContent>
 
+          {/* System Logs Tab */}
+          <TabsContent value="logs" className="space-y-6">
+            <SystemLogs />
+          </TabsContent>
+
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
+            {/* Analytics Header with Export */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+                  {t("admin.dashboard.tabs.analytics")}
+                </h2>
+                <p className="text-muted-foreground rtl:text-right ltr:text-left">
+                  {t("admin.dashboard.analytics.subtitle")}
+                </p>
+              </div>
+              <div className="flex gap-2 rtl:flex-row-reverse">
+                {/* Revenue Data Export */}
+                <ExportDialog
+                  data={chartData.revenueData}
+                  columns={commonColumns.analyticsRevenue}
+                  title={t("admin.dashboard.stats.revenueOverview")}
+                  subtitle={t("admin.dashboard.analytics.subtitle")}
+                  filename="revenue-analytics"
+                  pdfOnly={true}
+                >
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 rtl:flex-row-reverse"
+                  >
+                    <TrendingUp className="h-4 w-4" />
+                    {t("admin.dashboard.stats.revenueOverview")}
+                  </Button>
+                </ExportDialog>
+
+                {/* User Growth Data Export */}
+                <ExportDialog
+                  data={chartData.userGrowthData}
+                  columns={commonColumns.analyticsUserGrowth}
+                  title={t("admin.dashboard.stats.userGrowth")}
+                  subtitle={t("admin.dashboard.analytics.subtitle")}
+                  filename="user-growth-analytics"
+                  pdfOnly={true}
+                >
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 rtl:flex-row-reverse"
+                  >
+                    <Users className="h-4 w-4" />
+                    {t("admin.dashboard.stats.userGrowth")}
+                  </Button>
+                </ExportDialog>
+
+                {/* Card Status Data Export */}
+                <ExportDialog
+                  data={chartData.cardStatusData.map((item) => ({
+                    ...item,
+                    percentage: `${(
+                      (item.value /
+                        chartData.cardStatusData.reduce(
+                          (sum, card) => sum + card.value,
+                          0
+                        )) *
+                      100
+                    ).toFixed(1)}%`,
+                  }))}
+                  columns={commonColumns.analyticsCardStatus}
+                  title={t("admin.dashboard.stats.nfcCardStatus")}
+                  subtitle={t("admin.dashboard.analytics.subtitle")}
+                  filename="card-status-analytics"
+                  pdfOnly={true}
+                >
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 rtl:flex-row-reverse"
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    {t("admin.dashboard.stats.nfcCardStatus")}
+                  </Button>
+                </ExportDialog>
+
+                {/* Event Categories Data Export */}
+                <ExportDialog
+                  data={chartData.eventCategoryData.map((item) => ({
+                    ...item,
+                    percentage: `${(
+                      (item.value /
+                        chartData.eventCategoryData.reduce(
+                          (sum, cat) => sum + cat.value,
+                          0
+                        )) *
+                      100
+                    ).toFixed(1)}%`,
+                  }))}
+                  columns={commonColumns.analyticsEventCategories}
+                  title={t("admin.dashboard.stats.eventCategories")}
+                  subtitle={t("admin.dashboard.analytics.subtitle")}
+                  filename="event-categories-analytics"
+                  pdfOnly={true}
+                >
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 rtl:flex-row-reverse"
+                  >
+                    <BarChart3 className="h-4 w-4" />
+                    {t("admin.dashboard.stats.eventCategories")}
+                  </Button>
+                </ExportDialog>
+
+                {/* Combined Analytics Export */}
+                <ExportDialog
+                  data={[
+                    // Revenue data
+                    ...chartData.revenueData.map((item) => ({
+                      ...item,
+                      category: "Revenue Data",
+                    })),
+                    // User growth data
+                    ...chartData.userGrowthData.map((item) => ({
+                      ...item,
+                      category: "User Growth Data",
+                    })),
+                    // Card status data
+                    ...chartData.cardStatusData.map((item) => ({
+                      ...item,
+                      percentage: `${(
+                        (item.value /
+                          chartData.cardStatusData.reduce(
+                            (sum, card) => sum + card.value,
+                            0
+                          )) *
+                        100
+                      ).toFixed(1)}%`,
+                      category: "Card Status Data",
+                    })),
+                    // Event categories data
+                    ...chartData.eventCategoryData.map((item) => ({
+                      ...item,
+                      percentage: `${(
+                        (item.value /
+                          chartData.eventCategoryData.reduce(
+                            (sum, cat) => sum + cat.value,
+                            0
+                          )) *
+                        100
+                      ).toFixed(1)}%`,
+                      category: "Event Categories Data",
+                    })),
+                  ]}
+                  columns={[
+                    { header: "Category", key: "category", width: 30 },
+                    { header: "Name/Month", key: "name", width: 30 },
+                    { header: "Value", key: "value", width: 25 },
+                    {
+                      header: "Revenue",
+                      key: "revenue",
+                      width: 25,
+                      formatter: formatCurrency,
+                    },
+                    {
+                      header: "Commission",
+                      key: "commission",
+                      width: 25,
+                      formatter: formatCurrency,
+                    },
+                    { header: "Visitors", key: "visitors", width: 20 },
+                    { header: "Registered", key: "registered", width: 20 },
+                    { header: "Active", key: "active", width: 20 },
+                    { header: "Percentage", key: "percentage", width: 20 },
+                  ]}
+                  title={t("admin.dashboard.tabs.analytics")}
+                  subtitle={t("admin.dashboard.analytics.subtitle")}
+                  filename="complete-analytics"
+                >
+                  <Button className="flex items-center gap-2 rtl:flex-row-reverse">
+                    <Download className="h-4 w-4" />
+                    {t("admin.export.title")}
+                  </Button>
+                </ExportDialog>
+              </div>
+            </div>
+
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 rtl:space-x-reverse">
               {/* Revenue Chart */}

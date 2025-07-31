@@ -92,6 +92,8 @@ import {
   formatCurrencyForLocale,
   formatPhoneNumberForLocale,
 } from "@/lib/utils";
+import { ExportDialog } from "@/components/ui/export-dialog";
+import { commonColumns } from "@/lib/exportUtils";
 
 type Customer = {
   id: string;
@@ -114,7 +116,6 @@ type CustomerBooking = {
   id: string;
   eventTitle: string;
   date: string;
-  tickets: number;
   amount: number;
   status: "confirmed" | "cancelled" | "refunded";
 };
@@ -143,6 +144,9 @@ const CustomerManagement: React.FC = () => {
   const [showBookingsDialog, setShowBookingsDialog] = useState(false);
   const [showNfcCardDialog, setShowNfcCardDialog] = useState(false);
   const [showActivityDialog, setShowActivityDialog] = useState(false);
+  const [showEditBookingDialog, setShowEditBookingDialog] = useState(false);
+  const [selectedBooking, setSelectedBooking] =
+    useState<CustomerBooking | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -208,7 +212,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 6,
       recurrentUser: true,
       location: "Cairo, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C002",
@@ -224,7 +229,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 4,
       recurrentUser: true,
       location: "Alexandria, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C003",
@@ -239,7 +245,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 2,
       recurrentUser: false,
       location: "Giza, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C004",
@@ -254,7 +261,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 1,
       recurrentUser: false,
       location: "Cairo, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C005",
@@ -270,7 +278,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 10,
       recurrentUser: true,
       location: "Cairo, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C006",
@@ -286,7 +295,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 5,
       recurrentUser: true,
       location: "Alexandria, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C007",
@@ -301,7 +311,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 3,
       recurrentUser: false,
       location: "Giza, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C008",
@@ -316,7 +327,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 1,
       recurrentUser: false,
       location: "Cairo, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C009",
@@ -332,7 +344,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 7,
       recurrentUser: true,
       location: "Cairo, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C010",
@@ -348,7 +361,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 6,
       recurrentUser: true,
       location: "Alexandria, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C011",
@@ -363,7 +377,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 2,
       recurrentUser: false,
       location: "Giza, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C012",
@@ -379,7 +394,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 9,
       recurrentUser: true,
       location: "Cairo, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C013",
@@ -395,7 +411,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 4,
       recurrentUser: true,
       location: "Alexandria, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C014",
@@ -410,7 +427,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 0,
       recurrentUser: false,
       location: "Giza, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     },
     {
       id: "C015",
@@ -426,7 +444,8 @@ const CustomerManagement: React.FC = () => {
       attendedEvents: 6,
       recurrentUser: true,
       location: "Cairo, Egypt",
-      profileImage: "/public/Portrait_Placeholder.png",
+      profileImage:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
     },
   ];
 
@@ -436,7 +455,6 @@ const CustomerManagement: React.FC = () => {
       id: "B001",
       eventTitle: "Summer Music Festival",
       date: "2025-08-15",
-      tickets: 2,
       amount: 500,
       status: "confirmed",
     },
@@ -444,7 +462,6 @@ const CustomerManagement: React.FC = () => {
       id: "B002",
       eventTitle: "Tech Innovators Meetup",
       date: "2025-09-01",
-      tickets: 1,
       amount: 200,
       status: "confirmed",
     },
@@ -452,7 +469,6 @@ const CustomerManagement: React.FC = () => {
       id: "B003",
       eventTitle: "Stand-up Comedy Night",
       date: "2025-08-22",
-      tickets: 3,
       amount: 450,
       status: "cancelled",
     },
@@ -666,6 +682,34 @@ const CustomerManagement: React.FC = () => {
     setIsEditDialogOpen(false);
   };
 
+  const handleEditBooking = (booking: CustomerBooking) => {
+    setSelectedBooking(booking);
+    setShowEditBookingDialog(true);
+  };
+
+  const handleSaveBookingChanges = () => {
+    toast({
+      title: t("admin.customers.toast.bookingUpdated"),
+      description: t("admin.customers.toast.bookingUpdatedDesc"),
+    });
+    setShowEditBookingDialog(false);
+    setSelectedBooking(null);
+  };
+
+  const handleCancelBooking = (bookingId: string) => {
+    toast({
+      title: t("admin.customers.toast.bookingCancelled"),
+      description: t("admin.customers.toast.bookingCancelledDesc"),
+    });
+  };
+
+  const handleRefundBooking = (bookingId: string) => {
+    toast({
+      title: t("admin.customers.toast.bookingRefunded"),
+      description: t("admin.customers.toast.bookingRefundedDesc"),
+    });
+  };
+
   return (
     <div className="space-y-6" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
       {/* Header */}
@@ -679,10 +723,29 @@ const CustomerManagement: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleExportCustomers}>
-            <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.customers.actions.export")}
-          </Button>
+          <ExportDialog
+            data={filteredCustomers}
+            columns={commonColumns.customers}
+            title={t("admin.customers.title")}
+            subtitle={t("admin.customers.subtitle")}
+            filename="customers"
+            filters={{
+              search: searchTerm,
+              status: statusFilter,
+              location: locationFilter,
+            }}
+            onExport={(format) => {
+              toast({
+                title: t("admin.customers.toast.exportSuccess"),
+                description: t("admin.customers.toast.exportSuccessDesc"),
+              });
+            }}
+          >
+            <Button variant="outline">
+              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+              {t("admin.customers.actions.export")}
+            </Button>
+          </ExportDialog>
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
             {t("admin.customers.actions.addCustomer")}
@@ -821,7 +884,7 @@ const CustomerManagement: React.FC = () => {
                         <img
                           src={
                             customer.profileImage ||
-                            "/public/Portrait_Placeholder.png"
+                            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
                           }
                           alt={customer.name}
                           className="w-10 h-10 rounded-full object-cover"
@@ -1155,7 +1218,7 @@ const CustomerManagement: React.FC = () => {
                     <img
                       src={
                         selectedCustomer.profileImage ||
-                        "/public/Portrait_Placeholder.png"
+                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
                       }
                       alt={selectedCustomer.name}
                       className="w-32 h-32 rounded-full object-cover mx-auto mb-4"
@@ -1362,6 +1425,40 @@ const CustomerManagement: React.FC = () => {
                   </Select>
                 </div>
               </div>
+
+              {/* Password Section */}
+              <div className="border-t pt-4">
+                <h4 className="text-sm font-medium mb-3 rtl:text-right ltr:text-left">
+                  {t("admin.customers.form.passwordSection")}
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                      {t("admin.customers.form.newPassword")}
+                    </label>
+                    <Input
+                      type="password"
+                      placeholder={t(
+                        "admin.customers.form.newPasswordPlaceholder"
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                      {t("admin.customers.form.confirmPassword")}
+                    </label>
+                    <Input
+                      type="password"
+                      placeholder={t(
+                        "admin.customers.form.confirmPasswordPlaceholder"
+                      )}
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2 rtl:text-right ltr:text-left">
+                  {t("admin.customers.form.passwordNote")}
+                </p>
+              </div>
             </div>
           )}
           <DialogFooter>
@@ -1425,6 +1522,40 @@ const CustomerManagement: React.FC = () => {
                   placeholder={t("admin.customers.form.locationPlaceholder")}
                 />
               </div>
+            </div>
+
+            {/* Password Section */}
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium mb-3 rtl:text-right ltr:text-left">
+                {t("admin.customers.form.passwordSection")}
+              </h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                    {t("admin.customers.form.newPassword")}
+                  </label>
+                  <Input
+                    type="password"
+                    placeholder={t(
+                      "admin.customers.form.newPasswordPlaceholder"
+                    )}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                    {t("admin.customers.form.confirmPassword")}
+                  </label>
+                  <Input
+                    type="password"
+                    placeholder={t(
+                      "admin.customers.form.confirmPasswordPlaceholder"
+                    )}
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2 rtl:text-right ltr:text-left">
+                {t("admin.customers.form.passwordRequired")}
+              </p>
             </div>
           </div>
           <DialogFooter>
@@ -1492,13 +1623,13 @@ const CustomerManagement: React.FC = () => {
                         {t("admin.customers.bookings.date")}
                       </TableHead>
                       <TableHead className="rtl:text-right ltr:text-left">
-                        {t("admin.customers.bookings.tickets")}
-                      </TableHead>
-                      <TableHead className="rtl:text-right ltr:text-left">
                         {t("admin.customers.bookings.amount")}
                       </TableHead>
                       <TableHead className="rtl:text-right ltr:text-left">
-                        {t("admin.customers.bookings.status")}
+                        {t("admin.customers.bookings.statusLabel")}
+                      </TableHead>
+                      <TableHead className="rtl:text-right ltr:text-left">
+                        {t("admin.customers.table.actions")}
                       </TableHead>
                     </TableRow>
                   </TableHeader>
@@ -1517,9 +1648,6 @@ const CustomerManagement: React.FC = () => {
                           {formatDateForLocale(booking.date)}
                         </TableCell>
                         <TableCell className="rtl:text-right ltr:text-left">
-                          {formatNumber(booking.tickets)}
-                        </TableCell>
-                        <TableCell className="rtl:text-right ltr:text-left">
                           {formatCurrency(booking.amount)}
                         </TableCell>
                         <TableCell>
@@ -1536,6 +1664,66 @@ const CustomerManagement: React.FC = () => {
                               `admin.customers.bookings.status.${booking.status}`
                             )}
                           </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="rtl:text-right ltr:text-left"
+                            >
+                              <DropdownMenuLabel>
+                                {t("admin.customers.bookings.actions.title")}
+                              </DropdownMenuLabel>
+                              <DropdownMenuItem
+                                onClick={() => handleEditBooking(booking)}
+                              >
+                                <Edit className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                                {t("admin.customers.bookings.actions.edit")}
+                              </DropdownMenuItem>
+                              {booking.status === "confirmed" && (
+                                <>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handleCancelBooking(booking.id)
+                                    }
+                                    className="text-yellow-600"
+                                  >
+                                    <XCircle className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                                    {t(
+                                      "admin.customers.bookings.actions.cancel"
+                                    )}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handleRefundBooking(booking.id)
+                                    }
+                                    className="text-red-600"
+                                  >
+                                    <RefreshCw className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                                    {t(
+                                      "admin.customers.bookings.actions.refund"
+                                    )}
+                                  </DropdownMenuItem>
+                                </>
+                              )}
+                              {booking.status === "cancelled" && (
+                                <DropdownMenuItem
+                                  onClick={() => handleEditBooking(booking)}
+                                  className="text-green-600"
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                                  {t(
+                                    "admin.customers.bookings.actions.reactivate"
+                                  )}
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -1735,7 +1923,7 @@ const CustomerManagement: React.FC = () => {
                   <img
                     src={
                       selectedCustomer.profileImage ||
-                      "/public/Portrait_Placeholder.png"
+                      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
                     }
                     alt={selectedCustomer.name}
                     className="w-10 h-10 rounded-full object-cover"
@@ -1926,6 +2114,86 @@ const CustomerManagement: React.FC = () => {
             <Button>
               <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
               {t("admin.customers.activity.exportActivity")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Booking Dialog */}
+      <Dialog
+        open={showEditBookingDialog}
+        onOpenChange={setShowEditBookingDialog}
+      >
+        <DialogContent className="max-w-2xl rtl:text-right ltr:text-left">
+          <DialogHeader>
+            <DialogTitle className="rtl:text-right ltr:text-left">
+              {t("admin.customers.dialogs.editBooking")}
+            </DialogTitle>
+            <DialogDescription className="rtl:text-right ltr:text-left">
+              {selectedBooking &&
+                `${t("admin.customers.dialogs.editBookingFor")} ${
+                  selectedBooking.eventTitle
+                }`}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedBooking && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                    {t("admin.customers.bookings.event")}
+                  </label>
+                  <Input defaultValue={selectedBooking.eventTitle} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                    {t("admin.customers.bookings.date")}
+                  </label>
+                  <Input type="date" defaultValue={selectedBooking.date} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                    {t("admin.customers.bookings.amount")}
+                  </label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    defaultValue={selectedBooking.amount.toString()}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                    {t("admin.customers.bookings.statusLabel")}
+                  </label>
+                  <Select defaultValue={selectedBooking.status}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="confirmed">
+                        {t("admin.customers.bookings.status.confirmed")}
+                      </SelectItem>
+                      <SelectItem value="cancelled">
+                        {t("admin.customers.bookings.status.cancelled")}
+                      </SelectItem>
+                      <SelectItem value="refunded">
+                        {t("admin.customers.bookings.status.refunded")}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowEditBookingDialog(false)}
+            >
+              {t("admin.customers.dialogs.cancel")}
+            </Button>
+            <Button onClick={handleSaveBookingChanges}>
+              {t("admin.customers.dialogs.saveChanges")}
             </Button>
           </DialogFooter>
         </DialogContent>

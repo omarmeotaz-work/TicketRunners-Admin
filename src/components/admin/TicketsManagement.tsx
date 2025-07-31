@@ -51,6 +51,19 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Filter,
   Search,
   Plus,
@@ -68,16 +81,19 @@ import {
   Calendar,
   DollarSign,
   MoreHorizontal,
-  QrCode,
   AlertCircle,
   UserCheck,
   UserX,
+  ChevronsUpDown,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, parseISO } from "date-fns";
 import { ar } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrencyForLocale } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { ExportDialog } from "@/components/ui/export-dialog";
+import { commonColumns } from "@/lib/exportUtils";
 
 type Ticket = {
   id: string;
@@ -90,7 +106,7 @@ type Ticket = {
   purchaseDate: string;
   status: "valid" | "used" | "refunded" | "banned";
   checkInTime?: string;
-  dependents: number;
+  phoneNumber: string;
   ticketNumber: string;
   qrCode: string;
 };
@@ -119,9 +135,21 @@ const TicketsManagement: React.FC = () => {
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [showCheckInLogs, setShowCheckInLogs] = useState(false);
 
+  // Assign ticket dialog state
+  const [selectedEventId, setSelectedEventId] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [assignPhoneNumber, setAssignPhoneNumber] = useState<string>("");
+  const [eventSearchValue, setEventSearchValue] = useState<string>("");
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Mock events data for assign ticket dialog
+  const mockEvents = Array.from({ length: 100 }, (_, i) => ({
+    id: `${i + 1}`,
+    title: `Event ${i + 1} - ${t("admin.tickets.mock.summerMusicFestival")}`,
+  }));
 
   // Mock tickets data
   const tickets: Ticket[] = [
@@ -135,7 +163,7 @@ const TicketsManagement: React.FC = () => {
       price: 500,
       purchaseDate: "2025-07-15",
       status: "valid",
-      dependents: 2,
+      phoneNumber: "+966501234567",
       ticketNumber: "TKT-001-2025",
       qrCode: "QR-001-2025",
     },
@@ -150,7 +178,7 @@ const TicketsManagement: React.FC = () => {
       purchaseDate: "2025-07-16",
       status: "used",
       checkInTime: "2025-08-15T18:30:00",
-      dependents: 0,
+      phoneNumber: "+966502345678",
       ticketNumber: "TKT-002-2025",
       qrCode: "QR-002-2025",
     },
@@ -164,7 +192,7 @@ const TicketsManagement: React.FC = () => {
       price: 200,
       purchaseDate: "2025-07-20",
       status: "valid",
-      dependents: 1,
+      phoneNumber: "+966503456789",
       ticketNumber: "TKT-003-2025",
       qrCode: "QR-003-2025",
     },
@@ -178,7 +206,7 @@ const TicketsManagement: React.FC = () => {
       price: 150,
       purchaseDate: "2025-07-25",
       status: "refunded",
-      dependents: 0,
+      phoneNumber: "+966504567890",
       ticketNumber: "TKT-004-2025",
       qrCode: "QR-004-2025",
     },
@@ -192,7 +220,7 @@ const TicketsManagement: React.FC = () => {
       price: 150,
       purchaseDate: "2025-07-28",
       status: "banned",
-      dependents: 0,
+      phoneNumber: "+966505678901",
       ticketNumber: "TKT-005-2025",
       qrCode: "QR-005-2025",
     },
@@ -206,7 +234,7 @@ const TicketsManagement: React.FC = () => {
       price: 500,
       purchaseDate: "2025-07-30",
       status: "valid",
-      dependents: 3,
+      phoneNumber: "+966506789012",
       ticketNumber: "TKT-006-2025",
       qrCode: "QR-006-2025",
     },
@@ -221,7 +249,7 @@ const TicketsManagement: React.FC = () => {
       purchaseDate: "2025-08-01",
       status: "used",
       checkInTime: "2025-09-01T09:15:00",
-      dependents: 0,
+      phoneNumber: "+966507890123",
       ticketNumber: "TKT-007-2025",
       qrCode: "QR-007-2025",
     },
@@ -235,7 +263,7 @@ const TicketsManagement: React.FC = () => {
       price: 100,
       purchaseDate: "2025-08-05",
       status: "valid",
-      dependents: 1,
+      phoneNumber: "+966508901234",
       ticketNumber: "TKT-008-2025",
       qrCode: "QR-008-2025",
     },
@@ -249,7 +277,7 @@ const TicketsManagement: React.FC = () => {
       price: 400,
       purchaseDate: "2025-08-10",
       status: "refunded",
-      dependents: 0,
+      phoneNumber: "+966509012345",
       ticketNumber: "TKT-009-2025",
       qrCode: "QR-009-2025",
     },
@@ -263,7 +291,7 @@ const TicketsManagement: React.FC = () => {
       price: 250,
       purchaseDate: "2025-08-12",
       status: "valid",
-      dependents: 2,
+      phoneNumber: "+966500123456",
       ticketNumber: "TKT-010-2025",
       qrCode: "QR-010-2025",
     },
@@ -277,7 +305,7 @@ const TicketsManagement: React.FC = () => {
       price: 300,
       purchaseDate: "2025-08-15",
       status: "banned",
-      dependents: 0,
+      phoneNumber: "+966511234567",
       ticketNumber: "TKT-011-2025",
       qrCode: "QR-011-2025",
     },
@@ -292,7 +320,7 @@ const TicketsManagement: React.FC = () => {
       purchaseDate: "2025-08-18",
       status: "used",
       checkInTime: "2025-08-15T20:15:00",
-      dependents: 1,
+      phoneNumber: "+966522345678",
       ticketNumber: "TKT-012-2025",
       qrCode: "QR-012-2025",
     },
@@ -306,7 +334,7 @@ const TicketsManagement: React.FC = () => {
       price: 150,
       purchaseDate: "2025-08-20",
       status: "valid",
-      dependents: 0,
+      phoneNumber: "+966533456789",
       ticketNumber: "TKT-013-2025",
       qrCode: "QR-013-2025",
     },
@@ -320,7 +348,7 @@ const TicketsManagement: React.FC = () => {
       price: 120,
       purchaseDate: "2025-08-22",
       status: "valid",
-      dependents: 2,
+      phoneNumber: "+966544567890",
       ticketNumber: "TKT-014-2025",
       qrCode: "QR-014-2025",
     },
@@ -334,7 +362,7 @@ const TicketsManagement: React.FC = () => {
       price: 200,
       purchaseDate: "2025-08-25",
       status: "refunded",
-      dependents: 0,
+      phoneNumber: "+966555678901",
       ticketNumber: "TKT-015-2025",
       qrCode: "QR-015-2025",
     },
@@ -348,7 +376,7 @@ const TicketsManagement: React.FC = () => {
       price: 400,
       purchaseDate: "2025-08-28",
       status: "valid",
-      dependents: 1,
+      phoneNumber: "+966566789012",
       ticketNumber: "TKT-016-2025",
       qrCode: "QR-016-2025",
     },
@@ -363,7 +391,7 @@ const TicketsManagement: React.FC = () => {
       purchaseDate: "2025-08-30",
       status: "used",
       checkInTime: "2025-09-10T19:30:00",
-      dependents: 0,
+      phoneNumber: "+966577890123",
       ticketNumber: "TKT-017-2025",
       qrCode: "QR-017-2025",
     },
@@ -377,7 +405,7 @@ const TicketsManagement: React.FC = () => {
       price: 150,
       purchaseDate: "2025-09-01",
       status: "valid",
-      dependents: 1,
+      phoneNumber: "+966588901234",
       ticketNumber: "TKT-018-2025",
       qrCode: "QR-018-2025",
     },
@@ -391,7 +419,7 @@ const TicketsManagement: React.FC = () => {
       price: 200,
       purchaseDate: "2025-09-03",
       status: "banned",
-      dependents: 0,
+      phoneNumber: "+966599012345",
       ticketNumber: "TKT-019-2025",
       qrCode: "QR-019-2025",
     },
@@ -405,7 +433,7 @@ const TicketsManagement: React.FC = () => {
       price: 150,
       purchaseDate: "2025-09-05",
       status: "valid",
-      dependents: 2,
+      phoneNumber: "+966500987654",
       ticketNumber: "TKT-020-2025",
       qrCode: "QR-020-2025",
     },
@@ -419,7 +447,7 @@ const TicketsManagement: React.FC = () => {
       price: 500,
       purchaseDate: "2025-09-08",
       status: "valid",
-      dependents: 3,
+      phoneNumber: "+966511876543",
       ticketNumber: "TKT-021-2025",
       qrCode: "QR-021-2025",
     },
@@ -434,7 +462,7 @@ const TicketsManagement: React.FC = () => {
       purchaseDate: "2025-09-10",
       status: "used",
       checkInTime: "2025-09-01T10:45:00",
-      dependents: 0,
+      phoneNumber: "+966522765432",
       ticketNumber: "TKT-022-2025",
       qrCode: "QR-022-2025",
     },
@@ -448,7 +476,7 @@ const TicketsManagement: React.FC = () => {
       price: 100,
       purchaseDate: "2025-09-12",
       status: "valid",
-      dependents: 1,
+      phoneNumber: "+966533654321",
       ticketNumber: "TKT-023-2025",
       qrCode: "QR-023-2025",
     },
@@ -462,7 +490,7 @@ const TicketsManagement: React.FC = () => {
       price: 400,
       purchaseDate: "2025-09-15",
       status: "refunded",
-      dependents: 0,
+      phoneNumber: "+966544543210",
       ticketNumber: "TKT-024-2025",
       qrCode: "QR-024-2025",
     },
@@ -476,7 +504,7 @@ const TicketsManagement: React.FC = () => {
       price: 250,
       purchaseDate: "2025-09-18",
       status: "valid",
-      dependents: 2,
+      phoneNumber: "+966555432109",
       ticketNumber: "TKT-025-2025",
       qrCode: "QR-025-2025",
     },
@@ -670,13 +698,11 @@ const TicketsManagement: React.FC = () => {
 
   const handleAssignTicket = () => {
     setIsAssignDialogOpen(true);
-  };
-
-  const handleViewQrCode = (ticketId: string) => {
-    toast({
-      title: t("admin.tickets.toast.qrCodeOpened"),
-      description: t("admin.tickets.toast.qrCodeOpenedDesc"),
-    });
+    // Reset form
+    setSelectedEventId("");
+    setSelectedCategory("");
+    setAssignPhoneNumber("");
+    setEventSearchValue("");
   };
 
   const handleUnbanTicket = (ticketId: string) => {
@@ -692,6 +718,11 @@ const TicketsManagement: React.FC = () => {
       description: t("admin.tickets.toast.ticketAssignedDesc"),
     });
     setIsAssignDialogOpen(false);
+    // Reset form
+    setSelectedEventId("");
+    setSelectedCategory("");
+    setAssignPhoneNumber("");
+    setEventSearchValue("");
   };
 
   const handleSaveTicketChanges = () => {
@@ -715,10 +746,31 @@ const TicketsManagement: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleExportTickets}>
-            <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.tickets.actions.export")}
-          </Button>
+          <ExportDialog
+            data={filteredTickets}
+            columns={commonColumns.tickets}
+            title={t("admin.tickets.title")}
+            subtitle={t("admin.tickets.subtitle")}
+            filename="tickets"
+            filters={{
+              search: searchTerm,
+              event: eventFilter,
+              category: categoryFilter,
+              status: statusFilter,
+              date: dateFilter,
+            }}
+            onExport={(format) => {
+              toast({
+                title: t("admin.tickets.toast.exportSuccess"),
+                description: t("admin.tickets.toast.exportSuccessDesc"),
+              });
+            }}
+          >
+            <Button variant="outline">
+              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+              {t("admin.tickets.actions.export")}
+            </Button>
+          </ExportDialog>
           <Button onClick={handleAssignTicket}>
             <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
             {t("admin.tickets.actions.assignTicket")}
@@ -747,21 +799,71 @@ const TicketsManagement: React.FC = () => {
               />
             </div>
 
-            <Select value={eventFilter} onValueChange={setEventFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder={t("admin.tickets.filters.event")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">
-                  {t("admin.tickets.filters.allEvents")}
-                </SelectItem>
-                {uniqueEvents.map((event) => (
-                  <SelectItem key={event.id} value={event.id}>
-                    {event.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className="w-full justify-between rtl:text-right ltr:text-left"
+                >
+                  {eventFilter === "all" ? (
+                    <span>{t("admin.tickets.filters.event")}</span>
+                  ) : (
+                    <span className="truncate">
+                      {
+                        uniqueEvents.find((event) => event.id === eventFilter)
+                          ?.title
+                      }
+                    </span>
+                  )}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0 rtl:text-right ltr:text-left">
+                <Command
+                  value={eventSearchValue}
+                  onValueChange={setEventSearchValue}
+                >
+                  <CommandInput
+                    placeholder={t("admin.tickets.filters.searchEvent")}
+                  />
+                  <CommandList>
+                    <CommandEmpty>
+                      {t("admin.tickets.filters.noEventsFound")}
+                    </CommandEmpty>
+                    <CommandGroup>
+                      <CommandItem
+                        value="all"
+                        onSelect={() => setEventFilter("all")}
+                      >
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        {t("admin.tickets.filters.allEvents")}
+                      </CommandItem>
+                      {uniqueEvents.map((event) => (
+                        <CommandItem
+                          key={event.id}
+                          value={event.id}
+                          onSelect={() => {
+                            setEventFilter(event.id);
+                            setCurrentPage(1); // Reset pagination when event changes
+                          }}
+                        >
+                          <CheckCircle
+                            className={cn(
+                              "mr-2 h-4 w-4 shrink-0",
+                              eventFilter === event.id
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          <span className="truncate">{event.title}</span>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
 
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger>
@@ -893,8 +995,8 @@ const TicketsManagement: React.FC = () => {
                       <div className="rtl:text-right">
                         <p className="font-medium">{ticket.ticketNumber}</p>
                         <p className="text-sm text-muted-foreground">
-                          {t("admin.tickets.table.dependents")}:{" "}
-                          {ticket.dependents}
+                          {t("admin.tickets.table.phoneNumber")}:{" "}
+                          {ticket.phoneNumber}
                         </p>
                       </div>
                     </TableCell>
@@ -950,12 +1052,7 @@ const TicketsManagement: React.FC = () => {
                             <Edit className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
                             {t("admin.tickets.actions.editTicket")}
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleViewQrCode(ticket.id)}
-                          >
-                            <QrCode className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
-                            {t("admin.tickets.actions.viewQrCode")}
-                          </DropdownMenuItem>
+
                           <DropdownMenuSeparator />
                           {ticket.status === "valid" && (
                             <>
@@ -1263,11 +1360,12 @@ const TicketsManagement: React.FC = () => {
                 </div>
                 <div>
                   <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.tickets.form.dependents")}
+                    {t("admin.tickets.form.phoneNumber")}
                   </label>
                   <Input
-                    type="number"
-                    defaultValue={selectedTicket.dependents}
+                    type="tel"
+                    defaultValue={selectedTicket.phoneNumber}
+                    placeholder="+966501234567"
                   />
                 </div>
                 <div>
@@ -1326,61 +1424,76 @@ const TicketsManagement: React.FC = () => {
             <div className="grid grid-cols-2 gap-4 rtl:space-x-reverse">
               <div>
                 <label className="text-sm font-medium rtl:text-right">
-                  {t("admin.tickets.form.customer")}
-                </label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={t("admin.tickets.form.selectCustomer")}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="C001">
-                      {t("admin.tickets.mock.customer.ahmedHassan")}
-                    </SelectItem>
-                    <SelectItem value="C002">
-                      {t("admin.tickets.mock.customer.sarahMohamed")}
-                    </SelectItem>
-                    <SelectItem value="C003">
-                      {t("admin.tickets.mock.customer.omarAli")}
-                    </SelectItem>
-                    <SelectItem value="C004">
-                      {t("admin.tickets.mock.customer.fatimaAhmed")}
-                    </SelectItem>
-                    <SelectItem value="C005">
-                      {t("admin.tickets.mock.customer.youssefIbrahim")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-sm font-medium rtl:text-right">
                   {t("admin.tickets.form.event")}
                 </label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={t("admin.tickets.form.selectEvent")}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">
-                      {t("admin.tickets.mock.summerMusicFestival")}
-                    </SelectItem>
-                    <SelectItem value="2">
-                      {t("admin.tickets.mock.techInnovatorsMeetup")}
-                    </SelectItem>
-                    <SelectItem value="3">
-                      {t("admin.tickets.mock.standupComedyNight")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className="w-full justify-between rtl:text-right ltr:text-left"
+                    >
+                      {selectedEventId ? (
+                        <span className="truncate">
+                          {
+                            mockEvents.find(
+                              (event) => event.id === selectedEventId
+                            )?.title
+                          }
+                        </span>
+                      ) : (
+                        <span>{t("admin.tickets.form.selectEvent")}</span>
+                      )}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0 rtl:text-right ltr:text-left">
+                    <Command
+                      value={eventSearchValue}
+                      onValueChange={setEventSearchValue}
+                    >
+                      <CommandInput
+                        placeholder={t("admin.tickets.form.searchEvent")}
+                      />
+                      <CommandList>
+                        <CommandEmpty>
+                          {t("admin.tickets.form.noEventsFound")}
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {mockEvents.map((event) => (
+                            <CommandItem
+                              key={event.id}
+                              value={`${event.id} ${event.title}`}
+                              onSelect={() => {
+                                setSelectedEventId(event.id);
+                                setEventSearchValue("");
+                              }}
+                            >
+                              <CheckCircle
+                                className={cn(
+                                  "mr-2 h-4 w-4 shrink-0",
+                                  selectedEventId === event.id
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              <span className="truncate">{event.title}</span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
               <div>
                 <label className="text-sm font-medium rtl:text-right">
                   {t("admin.tickets.form.category")}
                 </label>
-                <Select>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
                   <SelectTrigger>
                     <SelectValue
                       placeholder={t("admin.tickets.form.selectCategory")}
@@ -1401,9 +1514,14 @@ const TicketsManagement: React.FC = () => {
               </div>
               <div>
                 <label className="text-sm font-medium rtl:text-right">
-                  {t("admin.tickets.form.dependents")}
+                  {t("admin.tickets.form.phoneNumber")}
                 </label>
-                <Input type="number" placeholder="0" />
+                <Input
+                  type="tel"
+                  placeholder="+966501234567"
+                  value={assignPhoneNumber}
+                  onChange={(e) => setAssignPhoneNumber(e.target.value)}
+                />
               </div>
             </div>
           </div>

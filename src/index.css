@@ -390,3 +390,258 @@ All colors MUST be HSL.
   direction: ltr;
   unicode-bidi: bidi-override;
 }
+
+/* RTL Support */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .rtl\:text-right {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl\:text-left {
+  text-align: left;
+}
+
+[dir="rtl"] .rtl\:flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .rtl\:space-x-reverse> :not([hidden])~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+/* Number formatting for Arabic */
+[dir="rtl"] .number-container {
+  direction: ltr;
+  text-align: right;
+}
+
+/* Table RTL support */
+[dir="rtl"] .rtl\:table-header {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl\:table-cell {
+  text-align: right;
+}
+
+/* Dialog RTL support */
+[dir="rtl"] .rtl\:dialog-content {
+  text-align: right;
+}
+
+/* Form RTL support */
+[dir="rtl"] .rtl\:form-input {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl\:form-label {
+  text-align: right;
+}
+
+/* Button RTL support */
+[dir="rtl"] .rtl\:button-icon {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Card RTL support */
+[dir="rtl"] .rtl\:card-header {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl\:card-content {
+  text-align: right;
+}
+
+/* Badge RTL support */
+[dir="rtl"] .rtl\:badge {
+  text-align: right;
+}
+
+/* Dropdown RTL support */
+[dir="rtl"] .rtl\:dropdown-content {
+  text-align: right;
+}
+
+/* Pagination RTL support */
+[dir="rtl"] .rtl\:pagination {
+  flex-direction: row-reverse;
+}
+
+/* Statistics cards RTL support */
+[dir="rtl"] .rtl\:stats-card {
+  text-align: right;
+}
+
+/* Filter section RTL support */
+[dir="rtl"] .rtl\:filter-section {
+  text-align: right;
+}
+
+/* Loading states RTL support */
+[dir="rtl"] .rtl\:loading-text {
+  text-align: right;
+}
+
+/* Action buttons RTL support */
+[dir="rtl"] .rtl\:action-button {
+  flex-direction: row-reverse;
+}
+
+/* Table actions RTL support */
+[dir="rtl"] .rtl\:table-actions {
+  text-align: right;
+}
+
+/* Dialog footer RTL support */
+[dir="rtl"] .rtl\:dialog-footer {
+  flex-direction: row-reverse;
+}
+
+/* Form field RTL support */
+[dir="rtl"] .rtl\:form-field {
+  text-align: right;
+}
+
+/* Select dropdown RTL support */
+[dir="rtl"] .rtl\:select-content {
+  text-align: right;
+}
+
+/* Toast RTL support */
+[dir="rtl"] .rtl\:toast {
+  text-align: right;
+}
+
+/* Progress bar RTL support */
+[dir="rtl"] .rtl\:progress-bar {
+  direction: rtl;
+}
+
+/* Icon alignment for RTL */
+[dir="rtl"] .rtl\:icon-left {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .rtl\:icon-right {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+/* Text alignment utilities for RTL */
+[dir="rtl"] .rtl\:text-start {
+  text-align: start;
+}
+
+[dir="rtl"] .rtl\:text-end {
+  text-align: end;
+}
+
+/* Flex utilities for RTL */
+[dir="rtl"] .rtl\:flex-start {
+  justify-content: flex-start;
+}
+
+[dir="rtl"] .rtl\:flex-end {
+  justify-content: flex-end;
+}
+
+/* Grid utilities for RTL */
+[dir="rtl"] .rtl\:grid-flow-row {
+  grid-auto-flow: row;
+}
+
+[dir="rtl"] .rtl\:grid-flow-col {
+  grid-auto-flow: column;
+}
+
+/* Spacing utilities for RTL */
+[dir="rtl"] .rtl\:space-y-reverse> :not([hidden])~ :not([hidden]) {
+  --tw-space-y-reverse: 1;
+}
+
+[dir="rtl"] .rtl\:space-x-reverse> :not([hidden])~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+/* Border utilities for RTL */
+[dir="rtl"] .rtl\:border-r {
+  border-right-width: 0px;
+  border-left-width: 1px;
+}
+
+[dir="rtl"] .rtl\:border-l {
+  border-left-width: 0px;
+  border-right-width: 1px;
+}
+
+/* Margin utilities for RTL */
+[dir="rtl"] .rtl\:mr-auto {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+[dir="rtl"] .rtl\:ml-auto {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Padding utilities for RTL */
+[dir="rtl"] .rtl\:pr-0 {
+  padding-right: 0;
+}
+
+[dir="rtl"] .rtl\:pl-0 {
+  padding-left: 0;
+}
+
+/* Position utilities for RTL */
+[dir="rtl"] .rtl\:right-0 {
+  right: 0;
+  left: auto;
+}
+
+[dir="rtl"] .rtl\:left-0 {
+  left: 0;
+  right: auto;
+}
+
+/* Transform utilities for RTL */
+[dir="rtl"] .rtl\:scale-x-[-1] {
+  transform: scaleX(-1);
+}
+
+/* Animation utilities for RTL */
+[dir="rtl"] .rtl\:animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+[dir="rtl"] .rtl\:animate-slide-in-left {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+/* Custom animations for RTL */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}

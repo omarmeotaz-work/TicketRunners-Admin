@@ -54,7 +54,6 @@ import {
   CreditCard,
   MoreHorizontal,
   Key,
-  QrCode,
   CheckCircle,
   XCircle,
   UserCheck,
@@ -66,6 +65,8 @@ import { format, parseISO, isAfter } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrencyForLocale } from "@/lib/utils";
+import { ExportDialog } from "@/components/ui/export-dialog";
+import { commonColumns } from "@/lib/exportUtils";
 
 type NFCCard = {
   id: string;
@@ -493,13 +494,6 @@ const NFCCardManagement: React.FC = () => {
     });
   };
 
-  const handleViewQrCode = (cardId: string) => {
-    toast({
-      title: t("admin.tickets.nfc.toast.qrCodeOpened"),
-      description: t("admin.tickets.nfc.toast.qrCodeOpenedDesc"),
-    });
-  };
-
   const handleAssignCard = () => {
     toast({
       title: t("admin.tickets.nfc.toast.cardAssigned"),
@@ -537,10 +531,29 @@ const NFCCardManagement: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleExportCards}>
-            <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.tickets.nfc.actions.export")}
-          </Button>
+          <ExportDialog
+            data={filteredCards}
+            columns={commonColumns.nfcCards}
+            title={t("admin.tickets.nfc.title")}
+            subtitle={t("admin.tickets.nfc.subtitle")}
+            filename="nfc-cards"
+            filters={{
+              search: searchTerm,
+              status: statusFilter,
+              customer: customerFilter,
+            }}
+            onExport={(format) => {
+              toast({
+                title: t("admin.tickets.nfc.toast.exportSuccess"),
+                description: t("admin.tickets.nfc.toast.exportSuccessDesc"),
+              });
+            }}
+          >
+            <Button variant="outline">
+              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+              {t("admin.tickets.nfc.actions.export")}
+            </Button>
+          </ExportDialog>
           <Button onClick={() => setIsAssignDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
             {t("admin.tickets.nfc.actions.assignCard")}
@@ -760,14 +773,6 @@ const NFCCardManagement: React.FC = () => {
                             <Key className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
                             {t("admin.tickets.nfc.actions.generateKey")}
                           </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => handleViewQrCode(card.id)}
-                          >
-                            <QrCode className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
-                            {t("admin.tickets.nfc.actions.viewQrCode")}
-                          </DropdownMenuItem>
-
                           <DropdownMenuSeparator />
                           {card.status === "active" && (
                             <DropdownMenuItem

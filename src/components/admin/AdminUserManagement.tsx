@@ -87,6 +87,8 @@ import { format, parseISO } from "date-fns";
 import { ar } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 import { formatNumberForLocale, formatPhoneNumberForLocale } from "@/lib/utils";
+import { ExportDialog } from "@/components/ui/export-dialog";
+import { commonColumns } from "@/lib/exportUtils";
 
 type AdminUser = {
   id: string;
@@ -143,6 +145,13 @@ const AdminUserManagement: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
+  const [isEditRoleDialogOpen, setIsEditRoleDialogOpen] = useState(false);
+  const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [editingRolePermissions, setEditingRolePermissions] = useState<
+    string[]
+  >([]);
+  const [editingRoleName, setEditingRoleName] = useState("");
+  const [editingRoleDescription, setEditingRoleDescription] = useState("");
 
   // Mock user activity data
   const userActivities: UserActivity[] = [
@@ -651,11 +660,64 @@ const AdminUserManagement: React.FC = () => {
   };
 
   const handleEditRoles = () => {
-    toast({
-      title: t("admin.users.toast.rolesEdited"),
-      description: t("admin.users.toast.rolesEditedDesc"),
-    });
+    // This will now open the role editing interface
     setIsRoleDialogOpen(false);
+    // For now, we'll edit the first role as an example
+    const firstRole = roles[0];
+    setEditingRole(firstRole);
+    setEditingRoleName(firstRole.name);
+    setEditingRoleDescription(firstRole.description);
+    setEditingRolePermissions([...firstRole.permissions]);
+    setIsEditRoleDialogOpen(true);
+  };
+
+  const handleEditSpecificRole = (role: Role) => {
+    setEditingRole(role);
+    setEditingRoleName(role.name);
+    setEditingRoleDescription(role.description);
+    setEditingRolePermissions([...role.permissions]);
+    setIsEditRoleDialogOpen(true);
+  };
+
+  const handleSaveRoleChanges = () => {
+    if (editingRole) {
+      // In a real app, this would update the role in the database
+      // For now, we'll update our local roles array
+      const updatedRoles = roles.map((role) =>
+        role.id === editingRole.id
+          ? {
+              ...role,
+              name: editingRoleName,
+              description: editingRoleDescription,
+              permissions: editingRolePermissions,
+            }
+          : role
+      );
+
+      // Update the roles array (in a real app, this would be done through state management)
+      console.log("Updated roles:", updatedRoles);
+
+      toast({
+        title: t("admin.users.toast.roleUpdated"),
+        description: t("admin.users.toast.roleUpdatedDesc"),
+      });
+
+      setIsEditRoleDialogOpen(false);
+      setEditingRole(null);
+      setEditingRoleName("");
+      setEditingRoleDescription("");
+      setEditingRolePermissions([]);
+    }
+  };
+
+  const handleRolePermissionToggle = (permissionId: string) => {
+    setEditingRolePermissions((prev) => {
+      if (prev.includes(permissionId)) {
+        return prev.filter((p) => p !== permissionId);
+      } else {
+        return [...prev, permissionId];
+      }
+    });
   };
 
   const handleSaveUserChanges = () => {
@@ -765,10 +827,29 @@ const AdminUserManagement: React.FC = () => {
             <Shield className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
             {t("admin.users.actions.manageRoles")}
           </Button>
-          <Button variant="outline" onClick={handleExportUsers}>
-            <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.users.actions.export")}
-          </Button>
+          <ExportDialog
+            data={filteredUsers}
+            columns={commonColumns.users}
+            title={t("admin.users.title")}
+            subtitle={t("admin.users.subtitle")}
+            filename="admin-users"
+            filters={{
+              search: searchTerm,
+              role: roleFilter,
+              status: statusFilter,
+            }}
+            onExport={(format) => {
+              toast({
+                title: t("admin.users.toast.exportSuccess"),
+                description: t("admin.users.toast.exportSuccessDesc"),
+              });
+            }}
+          >
+            <Button variant="outline">
+              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+              {t("admin.users.actions.export")}
+            </Button>
+          </ExportDialog>
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
             {t("admin.users.actions.addUser")}
@@ -1494,10 +1575,19 @@ const AdminUserManagement: React.FC = () => {
                           {role.description}
                         </CardDescription>
                       </div>
-                      <Badge className={getRoleColor(role.id)}>
-                        {formatNumberForLocale(role.userCount, i18n.language)}{" "}
-                        {t("admin.users.table.user")}
-                      </Badge>
+                      <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                        <Badge className={getRoleColor(role.id)}>
+                          {formatNumberForLocale(role.userCount, i18n.language)}{" "}
+                          {t("admin.users.table.user")}
+                        </Badge>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEditSpecificRole(role)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -1533,6 +1623,146 @@ const AdminUserManagement: React.FC = () => {
             </Button>
             <Button onClick={handleEditRoles}>
               {t("admin.users.dialogs.editRoles")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Role Dialog */}
+      <Dialog
+        open={isEditRoleDialogOpen}
+        onOpenChange={setIsEditRoleDialogOpen}
+      >
+        <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col rtl:text-right ltr:text-left">
+          <DialogHeader>
+            <DialogTitle className="rtl:text-right ltr:text-left">
+              {t("admin.users.dialogs.editRole")}
+            </DialogTitle>
+            <DialogDescription className="rtl:text-right ltr:text-left">
+              {editingRole &&
+                `${t("admin.users.dialogs.editRoleSubtitle")} ${
+                  editingRole.name
+                }`}
+            </DialogDescription>
+          </DialogHeader>
+          {editingRole && (
+            <div className="flex-1 overflow-y-auto space-y-6 pr-2">
+              {/* Role Basic Information */}
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                    {t("admin.users.form.roleName")}
+                  </label>
+                  <Input
+                    value={editingRoleName}
+                    onChange={(e) => setEditingRoleName(e.target.value)}
+                    placeholder={t("admin.users.form.roleNamePlaceholder")}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                    {t("admin.users.form.roleDescription")}
+                  </label>
+                  <Input
+                    value={editingRoleDescription}
+                    onChange={(e) => setEditingRoleDescription(e.target.value)}
+                    placeholder={t(
+                      "admin.users.form.roleDescriptionPlaceholder"
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Role Permissions */}
+              <div>
+                <h4 className="text-lg font-semibold mb-4 rtl:text-right ltr:text-left">
+                  {t("admin.users.permissions.rolePermissions")}
+                </h4>
+                <p className="text-sm text-muted-foreground mb-4 rtl:text-right ltr:text-left">
+                  {t("admin.users.permissions.rolePermissionsDesc")}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {permissions.map((permission) => (
+                    <div
+                      key={permission.id}
+                      className="flex items-center space-x-3 p-3 border rounded-lg rtl:space-x-reverse"
+                    >
+                      <button
+                        onClick={() =>
+                          handleRolePermissionToggle(permission.id)
+                        }
+                        className="flex items-center space-x-3 flex-1 rtl:space-x-reverse"
+                      >
+                        {editingRolePermissions.includes(permission.id) ? (
+                          <CheckSquare className="h-5 w-5 text-blue-600" />
+                        ) : (
+                          <Square className="h-5 w-5 text-gray-400" />
+                        )}
+                        <div className="rtl:text-right ltr:text-left">
+                          <p className="font-medium">{permission.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {permission.description}
+                          </p>
+                          <Badge variant="outline" className="text-xs mt-1">
+                            {permission.category}
+                          </Badge>
+                        </div>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Permission Summary */}
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h5 className="font-medium mb-2 rtl:text-right ltr:text-left">
+                  {t("admin.users.permissions.roleSummary")}
+                </h5>
+                <div className="flex items-center space-x-4 rtl:space-x-reverse">
+                  <span className="text-sm text-muted-foreground">
+                    {t("admin.users.permissions.selected")}:{" "}
+                    {editingRolePermissions.length}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {t("admin.users.permissions.total")}: {permissions.length}
+                  </span>
+                </div>
+                {editingRolePermissions.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-sm font-medium rtl:text-right ltr:text-left">
+                      {t("admin.users.permissions.selectedPermissions")}:
+                    </p>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {editingRolePermissions.map((permissionId) => (
+                        <Badge
+                          key={permissionId}
+                          variant="secondary"
+                          className="text-xs"
+                        >
+                          {getPermissionName(permissionId)}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsEditRoleDialogOpen(false);
+                setEditingRole(null);
+                setEditingRoleName("");
+                setEditingRoleDescription("");
+                setEditingRolePermissions([]);
+              }}
+            >
+              {t("admin.users.dialogs.cancel")}
+            </Button>
+            <Button onClick={handleSaveRoleChanges}>
+              {t("admin.users.dialogs.saveRoleChanges")}
             </Button>
           </DialogFooter>
         </DialogContent>

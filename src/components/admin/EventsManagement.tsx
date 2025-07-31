@@ -51,6 +51,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Filter,
   Search,
@@ -81,11 +83,14 @@ import {
   LineChart,
   Target,
   Zap,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, parseISO } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { formatNumberForLocale, formatCurrencyForLocale } from "@/lib/utils";
+import { ExportDialog } from "@/components/ui/export-dialog";
+import { commonColumns } from "@/lib/exportUtils";
 import {
   LineChart as RechartsLineChart,
   Line,
@@ -118,11 +123,40 @@ interface Event {
   revenue: number;
   commission: number;
   payout: number;
+  commissionRate: {
+    type: "percentage" | "flat";
+    value: number;
+  };
+  transferFee: {
+    type: "percentage" | "flat";
+    value: number;
+  };
   ticketTransferEnabled: boolean;
   ticketLimit: number;
   usheringAccounts: number;
   imageUrl: string;
   description: string;
+}
+
+interface VenueSection {
+  id: string;
+  name: string;
+  capacity: number;
+  price: number;
+  color: string;
+  description: string;
+  isActive: boolean;
+}
+
+interface VenueLayout {
+  id: string;
+  name: string;
+  description: string;
+  sections: VenueSection[];
+  totalCapacity: number;
+  imageUrl?: string;
+  gateOpeningTime?: string;
+  gateClosingTime?: string;
 }
 
 const EventsManagement: React.FC = () => {
@@ -159,7 +193,172 @@ const EventsManagement: React.FC = () => {
     ticketLimit: 1,
     description: "",
     ticketTransferEnabled: false,
+    commissionRate: {
+      type: "percentage" as "percentage" | "flat",
+      value: 10,
+    },
+    transferFee: {
+      type: "percentage" as "percentage" | "flat",
+      value: 5,
+    },
   });
+
+  // Edit event state for new features
+  const [editEventData, setEditEventData] = useState({
+    title: "",
+    organizer: "",
+    date: "",
+    time: "",
+    location: "",
+    category: "",
+    totalTickets: 0,
+    ticketLimit: 1,
+    description: "",
+    ticketTransferEnabled: false,
+    commissionRate: {
+      type: "percentage" as "percentage" | "flat",
+      value: 10,
+    },
+    transferFee: {
+      type: "percentage" as "percentage" | "flat",
+      value: 5,
+    },
+    termsAndConditions: "",
+    gallery: [] as string[],
+    venueLayouts: [
+      {
+        id: "1",
+        name: "Main Hall Layout",
+        description: "Standard layout for the main event hall",
+        totalCapacity: 500,
+        imageUrl:
+          "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
+        gateOpeningTime: "17:00",
+        gateClosingTime: "23:00",
+        sections: [
+          {
+            id: "1",
+            name: "VIP Section",
+            capacity: 100,
+            price: 500,
+            color: "#8B5CF6",
+            description: "Premium seating with exclusive benefits",
+            isActive: true,
+          },
+          {
+            id: "2",
+            name: "Regular Section",
+            capacity: 300,
+            price: 250,
+            color: "#3B82F6",
+            description: "Standard seating arrangement",
+            isActive: true,
+          },
+          {
+            id: "3",
+            name: "Early Bird Section",
+            capacity: 100,
+            price: 200,
+            color: "#10B981",
+            description: "Limited time discounted seating",
+            isActive: true,
+          },
+        ],
+      },
+    ] as VenueLayout[],
+    ticketCategories: [
+      {
+        id: "1",
+        name: "VIP",
+        price: 500,
+        totalTickets: 100,
+        soldTickets: 0,
+        description: "Premium seating with exclusive benefits",
+      },
+      {
+        id: "2",
+        name: "Regular",
+        price: 250,
+        totalTickets: 300,
+        soldTickets: 0,
+        description: "Standard seating",
+      },
+      {
+        id: "3",
+        name: "Early Bird",
+        price: 200,
+        totalTickets: 200,
+        soldTickets: 0,
+        description: "Limited time discounted tickets",
+      },
+    ],
+    discounts: [
+      {
+        id: "1",
+        name: "Student Discount",
+        type: "percentage",
+        value: 20,
+        code: "STUDENT20",
+        validFrom: "",
+        validTo: "",
+        maxUses: 100,
+        usedCount: 0,
+        applicableCategories: ["Regular", "Early Bird"],
+      },
+      {
+        id: "2",
+        name: "Group Discount",
+        type: "percentage",
+        value: 15,
+        code: "GROUP15",
+        validFrom: "",
+        validTo: "",
+        maxUses: 50,
+        usedCount: 0,
+        applicableCategories: ["VIP", "Regular"],
+        minQuantity: 5,
+      },
+    ],
+  });
+
+  // Usher management state
+  const [ushers, setUshers] = useState([
+    {
+      id: "U001",
+      name: "Ahmed Usher",
+      email: "ahmed@ticketrunners.com",
+      status: "active",
+      assignedAreas: ["Gate A", "VIP Section"],
+      lastActive: "2 hours ago",
+    },
+    {
+      id: "U002",
+      name: "Omar Usher",
+      email: "omar@ticketrunners.com",
+      status: "active",
+      assignedAreas: ["Gate B", "General Section"],
+      lastActive: "1 hour ago",
+    },
+    {
+      id: "U003",
+      name: "Fatima Usher",
+      email: "fatima@ticketrunners.com",
+      status: "inactive",
+      assignedAreas: ["Gate C"],
+      lastActive: "3 days ago",
+    },
+  ]);
+
+  const [newUsher, setNewUsher] = useState({
+    name: "",
+    email: "",
+    assignedArea: "",
+  });
+
+  const [selectedUsher, setSelectedUsher] = useState<any>(null);
+  const [isEditUsherDialogOpen, setIsEditUsherDialogOpen] = useState(false);
+  const [isViewUsherActivityDialogOpen, setIsViewUsherActivityDialogOpen] =
+    useState(false);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -181,10 +380,19 @@ const EventsManagement: React.FC = () => {
       revenue: 117500,
       commission: 11750,
       payout: 105750,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 5,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 5,
       usheringAccounts: 3,
-      imageUrl: "/public/event1.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
       description: t("admin.events.mock.summerMusicFestival.description"),
     },
     {
@@ -201,10 +409,19 @@ const EventsManagement: React.FC = () => {
       revenue: 45000,
       commission: 4500,
       payout: 40500,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "flat",
+        value: 25,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 2,
       usheringAccounts: 2,
-      imageUrl: "/public/event2.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=300&fit=crop",
       description: t("admin.events.mock.techInnovatorsMeetup.description"),
     },
     {
@@ -221,10 +438,19 @@ const EventsManagement: React.FC = () => {
       revenue: 18000,
       commission: 1800,
       payout: 16200,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 3,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 4,
       usheringAccounts: 1,
-      imageUrl: "/public/event3.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1501281669025-7ec9d6aec993?w=400&h=300&fit=crop",
       description: t("admin.events.mock.standupComedyNight.description"),
     },
     {
@@ -241,10 +467,19 @@ const EventsManagement: React.FC = () => {
       revenue: 56000,
       commission: 5600,
       payout: 50400,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "flat",
+        value: 15,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 3,
       usheringAccounts: 2,
-      imageUrl: "/public/event4.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
       description: t("admin.events.mock.modernArtExhibition.description"),
     },
     {
@@ -261,10 +496,19 @@ const EventsManagement: React.FC = () => {
       revenue: 1500000,
       commission: 150000,
       payout: 1350000,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 8,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 6,
       usheringAccounts: 15,
-      imageUrl: "/public/event5.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
       description:
         "The biggest football event of the year featuring top teams competing for the championship title.",
     },
@@ -282,10 +526,19 @@ const EventsManagement: React.FC = () => {
       revenue: 285000,
       commission: 28500,
       payout: 256500,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "flat",
+        value: 20,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 3,
       usheringAccounts: 8,
-      imageUrl: "/public/event6.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=300&fit=crop",
       description:
         "A week-long celebration of international cinema with screenings, workshops, and celebrity appearances.",
     },
@@ -303,10 +556,19 @@ const EventsManagement: React.FC = () => {
       revenue: 84000,
       commission: 8400,
       payout: 75600,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 4,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 4,
       usheringAccounts: 5,
-      imageUrl: "/public/event7.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=300&fit=crop",
       description:
         "Connecting entrepreneurs, investors, and tech enthusiasts in Egypt's premier startup ecosystem.",
     },
@@ -324,10 +586,19 @@ const EventsManagement: React.FC = () => {
       revenue: 130000,
       commission: 13000,
       payout: 117000,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "flat",
+        value: 30,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 2,
       usheringAccounts: 4,
-      imageUrl: "/public/event8.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
       description:
         "An evening of classical masterpieces performed by Egypt's finest musicians.",
     },
@@ -345,10 +616,19 @@ const EventsManagement: React.FC = () => {
       revenue: 144000,
       commission: 14400,
       payout: 129600,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 6,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 3,
       usheringAccounts: 6,
-      imageUrl: "/public/event9.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop",
       description:
         "Showcasing the latest trends and designs from Egypt's top fashion designers.",
     },
@@ -366,10 +646,15 @@ const EventsManagement: React.FC = () => {
       revenue: 180000,
       commission: 18000,
       payout: 162000,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 5,
       usheringAccounts: 10,
-      imageUrl: "/public/event10.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=300&fit=crop",
       description:
         "Exploring the latest scientific discoveries and technological innovations from around the world.",
     },
@@ -387,10 +672,19 @@ const EventsManagement: React.FC = () => {
       revenue: 84000,
       commission: 8400,
       payout: 75600,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 5,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 4,
       usheringAccounts: 3,
-      imageUrl: "/public/event11.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
       description:
         "An intimate evening of jazz music under the beautiful Cairo sky.",
     },
@@ -408,10 +702,19 @@ const EventsManagement: React.FC = () => {
       revenue: 22500,
       commission: 2250,
       payout: 20250,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 3,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 1,
       usheringAccounts: 2,
-      imageUrl: "/public/event12.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
       description:
         "Learn photography techniques while exploring the ancient wonders of Luxor.",
     },
@@ -429,10 +732,19 @@ const EventsManagement: React.FC = () => {
       revenue: 85000,
       commission: 8500,
       payout: 76500,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 5,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 6,
       usheringAccounts: 8,
-      imageUrl: "/public/event13.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
       description:
         "A culinary journey through Egypt's most delicious street food and traditional dishes.",
     },
@@ -450,10 +762,15 @@ const EventsManagement: React.FC = () => {
       revenue: 15000,
       commission: 1500,
       payout: 13500,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 2,
       usheringAccounts: 2,
-      imageUrl: "/public/event14.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
       description:
         "An evening of poetry readings featuring both established and emerging Egyptian poets.",
     },
@@ -471,10 +788,15 @@ const EventsManagement: React.FC = () => {
       revenue: 26000,
       commission: 2600,
       payout: 23400,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 2,
       usheringAccounts: 3,
-      imageUrl: "/public/event15.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop",
       description:
         "A peaceful retreat combining yoga, meditation, and the beautiful Red Sea environment.",
     },
@@ -492,10 +814,15 @@ const EventsManagement: React.FC = () => {
       revenue: 36000,
       commission: 3600,
       payout: 32400,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 3,
       usheringAccounts: 2,
-      imageUrl: "/public/event16.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
       description:
         "Exploring the intersection of technology and art through digital installations and interactive exhibits.",
     },
@@ -513,10 +840,15 @@ const EventsManagement: React.FC = () => {
       revenue: 30000,
       commission: 3000,
       payout: 27000,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 2,
       usheringAccounts: 4,
-      imageUrl: "/public/event17.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop",
       description:
         "Connect with business leaders and entrepreneurs in an elegant networking environment.",
     },
@@ -534,10 +866,15 @@ const EventsManagement: React.FC = () => {
       revenue: 32000,
       commission: 3200,
       payout: 28800,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 4,
       usheringAccounts: 5,
-      imageUrl: "/public/event18.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
       description:
         "A week-long festival of children's theater performances and interactive workshops.",
     },
@@ -555,10 +892,15 @@ const EventsManagement: React.FC = () => {
       revenue: 840000,
       commission: 84000,
       payout: 756000,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 8,
       usheringAccounts: 20,
-      imageUrl: "/public/event19.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
       description:
         "The biggest rock concert of the year featuring local and international rock bands.",
     },
@@ -576,10 +918,15 @@ const EventsManagement: React.FC = () => {
       revenue: 16500,
       commission: 1650,
       payout: 14850,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 2,
       usheringAccounts: 2,
-      imageUrl: "/public/event20.jpg",
+      imageUrl:
+        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
       description:
         "Learn to cook traditional Egyptian dishes from master chefs in an intimate setting.",
     },
@@ -682,6 +1029,151 @@ const EventsManagement: React.FC = () => {
 
   const handleEditEvent = (event: Event) => {
     setSelectedEvent(event);
+    setEditEventData({
+      title: event.title,
+      organizer: event.organizer,
+      date: event.date,
+      time: event.time,
+      location: event.location,
+      category: event.category,
+      totalTickets: event.totalTickets,
+      ticketLimit: event.ticketLimit,
+      description: event.description,
+      ticketTransferEnabled: event.ticketTransferEnabled,
+      commissionRate: event.commissionRate,
+      transferFee: event.transferFee,
+      termsAndConditions: "",
+      gallery: [],
+      venueLayouts: [
+        {
+          id: "1",
+          name: "Main Hall Layout",
+          description:
+            "Standard layout for the main event hall with multiple sections",
+          totalCapacity: 500,
+          imageUrl:
+            "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
+          gateOpeningTime: "17:00",
+          gateClosingTime: "23:00",
+          sections: [
+            {
+              id: "1",
+              name: "VIP Section",
+              capacity: 100,
+              price: 500,
+              color: "#8B5CF6",
+              description:
+                "Premium seating with exclusive benefits and dedicated service",
+              isActive: true,
+            },
+            {
+              id: "2",
+              name: "Regular Section",
+              capacity: 300,
+              price: 250,
+              color: "#3B82F6",
+              description: "Standard seating arrangement with good view",
+              isActive: true,
+            },
+            {
+              id: "3",
+              name: "Early Bird Section",
+              capacity: 100,
+              price: 200,
+              color: "#10B981",
+              description:
+                "Limited time discounted seating with basic amenities",
+              isActive: true,
+            },
+          ],
+        },
+        {
+          id: "2",
+          name: "Outdoor Arena Layout",
+          description: "Open-air venue layout for outdoor events",
+          totalCapacity: 800,
+          imageUrl:
+            "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=300&fit=crop",
+          gateOpeningTime: "18:00",
+          gateClosingTime: "22:30",
+          sections: [
+            {
+              id: "4",
+              name: "Premium Boxes",
+              capacity: 50,
+              price: 800,
+              color: "#DC2626",
+              description:
+                "Private boxes with premium amenities and exclusive access",
+              isActive: true,
+            },
+            {
+              id: "5",
+              name: "General Admission",
+              capacity: 750,
+              price: 150,
+              color: "#F59E0B",
+              description:
+                "General admission with standing room and basic seating",
+              isActive: true,
+            },
+          ],
+        },
+      ] as VenueLayout[],
+      ticketCategories: [
+        {
+          id: "1",
+          name: "VIP",
+          price: 500,
+          totalTickets: 100,
+          soldTickets: 0,
+          description: "Premium seating with exclusive benefits",
+        },
+        {
+          id: "2",
+          name: "Regular",
+          price: 250,
+          totalTickets: 300,
+          soldTickets: 0,
+          description: "Standard seating",
+        },
+        {
+          id: "3",
+          name: "Early Bird",
+          price: 200,
+          totalTickets: 200,
+          soldTickets: 0,
+          description: "Limited time discounted tickets",
+        },
+      ],
+      discounts: [
+        {
+          id: "1",
+          name: "Student Discount",
+          type: "percentage",
+          value: 20,
+          code: "STUDENT20",
+          validFrom: "",
+          validTo: "",
+          maxUses: 100,
+          usedCount: 0,
+          applicableCategories: ["Regular", "Early Bird"],
+        },
+        {
+          id: "2",
+          name: "Group Discount",
+          type: "percentage",
+          value: 15,
+          code: "GROUP15",
+          validFrom: "",
+          validTo: "",
+          maxUses: 50,
+          usedCount: 0,
+          applicableCategories: ["VIP", "Regular"],
+          minQuantity: 5,
+        },
+      ],
+    });
     setIsEditDialogOpen(true);
   };
 
@@ -738,11 +1230,280 @@ const EventsManagement: React.FC = () => {
   };
 
   const handleSaveEventChanges = () => {
+    // Validate required fields
+    if (
+      !editEventData.title ||
+      !editEventData.organizer ||
+      !editEventData.date ||
+      !editEventData.location ||
+      !editEventData.category
+    ) {
+      toast({
+        title: "Validation Error",
+        description:
+          "Please fill in all required fields (Title, Organizer, Date, Location, Category)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate ticket categories
+    const hasValidCategories = editEventData.ticketCategories.some(
+      (cat) => cat.name && cat.price > 0 && cat.totalTickets > 0
+    );
+    if (!hasValidCategories) {
+      toast({
+        title: "Validation Error",
+        description:
+          "Please add at least one valid ticket category with name, price, and total tickets",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate discounts
+    const hasInvalidDiscounts = editEventData.discounts.some(
+      (discount) =>
+        discount.name &&
+        (!discount.code || discount.value <= 0 || discount.maxUses <= 0)
+    );
+    if (hasInvalidDiscounts) {
+      toast({
+        title: "Validation Error",
+        description:
+          "Please ensure all discounts have valid codes, values, and usage limits",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toast({
       title: t("admin.events.toast.saveEventChanges"),
       description: t("admin.events.toast.saveEventChangesDesc"),
     });
     setIsEditDialogOpen(false);
+  };
+
+  // New handlers for enhanced edit features
+  const handleEditEventDataChange = (field: string, value: any) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleAddGalleryImage = (imageUrl: string) => {
+    // Basic URL validation
+    if (!imageUrl.trim()) {
+      toast({
+        title: "Invalid URL",
+        description: "Please enter a valid image URL",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if URL is already in gallery
+    if (editEventData.gallery.includes(imageUrl)) {
+      toast({
+        title: "Duplicate Image",
+        description: "This image is already in the gallery",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setEditEventData((prev) => ({
+      ...prev,
+      gallery: [...prev.gallery, imageUrl],
+    }));
+
+    toast({
+      title: "Image Added",
+      description: "Image has been added to the gallery",
+    });
+  };
+
+  const handleRemoveGalleryImage = (index: number) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      gallery: prev.gallery.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleAddTicketCategory = () => {
+    const newCategory = {
+      id: Date.now().toString(),
+      name: "",
+      price: 0,
+      totalTickets: 0,
+      soldTickets: 0,
+      description: "",
+    };
+    setEditEventData((prev) => ({
+      ...prev,
+      ticketCategories: [...prev.ticketCategories, newCategory],
+    }));
+  };
+
+  const handleUpdateTicketCategory = (
+    index: number,
+    field: string,
+    value: any
+  ) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      ticketCategories: prev.ticketCategories.map((category, i) =>
+        i === index ? { ...category, [field]: value } : category
+      ),
+    }));
+  };
+
+  const handleRemoveTicketCategory = (index: number) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      ticketCategories: prev.ticketCategories.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleAddDiscount = () => {
+    const generateDiscountCode = () => {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let result = "";
+      for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    };
+
+    const newDiscount = {
+      id: Date.now().toString(),
+      name: "",
+      type: "percentage",
+      value: 0,
+      code: generateDiscountCode(),
+      validFrom: "",
+      validTo: "",
+      maxUses: 100,
+      usedCount: 0,
+      applicableCategories: [],
+    };
+    setEditEventData((prev) => ({
+      ...prev,
+      discounts: [...prev.discounts, newDiscount],
+    }));
+  };
+
+  const handleUpdateDiscount = (index: number, field: string, value: any) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      discounts: prev.discounts.map((discount, i) =>
+        i === index ? { ...discount, [field]: value } : discount
+      ),
+    }));
+  };
+
+  const handleRemoveDiscount = (index: number) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      discounts: prev.discounts.filter((_, i) => i !== index),
+    }));
+  };
+
+  // Venue layout handlers
+  const handleAddVenueLayout = () => {
+    const newLayout: VenueLayout = {
+      id: Date.now().toString(),
+      name: "",
+      description: "",
+      sections: [],
+      totalCapacity: 0,
+      imageUrl: "",
+      gateOpeningTime: "",
+      gateClosingTime: "",
+    };
+    setEditEventData((prev) => ({
+      ...prev,
+      venueLayouts: [...prev.venueLayouts, newLayout],
+    }));
+  };
+
+  const handleUpdateVenueLayout = (
+    index: number,
+    field: string,
+    value: any
+  ) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      venueLayouts: prev.venueLayouts.map((layout, i) =>
+        i === index ? { ...layout, [field]: value } : layout
+      ),
+    }));
+  };
+
+  const handleRemoveVenueLayout = (index: number) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      venueLayouts: prev.venueLayouts.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleAddVenueSection = (layoutIndex: number) => {
+    const newSection: VenueSection = {
+      id: Date.now().toString(),
+      name: "",
+      capacity: 0,
+      price: 0,
+      color: "#3B82F6",
+      description: "",
+      isActive: true,
+    };
+    setEditEventData((prev) => ({
+      ...prev,
+      venueLayouts: prev.venueLayouts.map((layout, i) =>
+        i === layoutIndex
+          ? { ...layout, sections: [...layout.sections, newSection] }
+          : layout
+      ),
+    }));
+  };
+
+  const handleUpdateVenueSection = (
+    layoutIndex: number,
+    sectionIndex: number,
+    field: string,
+    value: any
+  ) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      venueLayouts: prev.venueLayouts.map((layout, i) =>
+        i === layoutIndex
+          ? {
+              ...layout,
+              sections: layout.sections.map((section, j) =>
+                j === sectionIndex ? { ...section, [field]: value } : section
+              ),
+            }
+          : layout
+      ),
+    }));
+  };
+
+  const handleRemoveVenueSection = (
+    layoutIndex: number,
+    sectionIndex: number
+  ) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      venueLayouts: prev.venueLayouts.map((layout, i) =>
+        i === layoutIndex
+          ? {
+              ...layout,
+              sections: layout.sections.filter((_, j) => j !== sectionIndex),
+            }
+          : layout
+      ),
+    }));
   };
 
   const handleAddEvent = () => {
@@ -781,6 +1542,10 @@ const EventsManagement: React.FC = () => {
       revenue: 0,
       commission: 0,
       payout: 0,
+      commissionRate: {
+        type: "percentage",
+        value: 10,
+      },
       ticketTransferEnabled: newEvent.ticketTransferEnabled,
       ticketLimit: newEvent.ticketLimit,
       usheringAccounts: 0,
@@ -806,18 +1571,104 @@ const EventsManagement: React.FC = () => {
       ticketLimit: 1,
       description: "",
       ticketTransferEnabled: false,
+      commissionRate: {
+        type: "percentage" as "percentage" | "flat",
+        value: 10,
+      },
     });
     setIsAddDialogOpen(false);
   };
 
   const handleNewEventChange = (
     field: string,
-    value: string | number | boolean
+    value:
+      | string
+      | number
+      | boolean
+      | { type: "percentage" | "flat"; value: number }
   ) => {
     setNewEvent((prev) => ({
       ...prev,
       [field]: value,
     }));
+  };
+
+  // Usher management handlers
+  const handleNewUsherChange = (field: string, value: string) => {
+    setNewUsher((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleAddUsher = () => {
+    if (!newUsher.name || !newUsher.email || !newUsher.assignedArea) {
+      toast({
+        title: t("admin.events.ushers.validationError"),
+        description: t("admin.events.ushers.validationErrorDesc"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newUsherObj = {
+      id: `U${Date.now()}`,
+      name: newUsher.name,
+      email: newUsher.email,
+      status: "active",
+      assignedAreas: [newUsher.assignedArea],
+      lastActive: "Just now",
+    };
+
+    setUshers((prev) => [...prev, newUsherObj]);
+    setNewUsher({ name: "", email: "", assignedArea: "" });
+
+    toast({
+      title: t("admin.events.ushers.addSuccess"),
+      description: t("admin.events.ushers.addSuccessDesc"),
+    });
+  };
+
+  const handleEditUsher = (usher: any) => {
+    setSelectedUsher(usher);
+    setIsEditUsherDialogOpen(true);
+  };
+
+  const handleViewUsherActivity = (usher: any) => {
+    setSelectedUsher(usher);
+    setIsViewUsherActivityDialogOpen(true);
+  };
+
+  const handleRemoveUsher = (usherId: string) => {
+    setUshers((prev) => prev.filter((usher) => usher.id !== usherId));
+    toast({
+      title: t("admin.events.ushers.removeSuccess"),
+      description: t("admin.events.ushers.removeSuccessDesc"),
+    });
+  };
+
+  const handleSaveUsherChanges = () => {
+    if (selectedUsher) {
+      setUshers((prev) =>
+        prev.map((usher) =>
+          usher.id === selectedUsher.id ? selectedUsher : usher
+        )
+      );
+      setIsEditUsherDialogOpen(false);
+      setSelectedUsher(null);
+      toast({
+        title: t("admin.events.ushers.editSuccess"),
+        description: t("admin.events.ushers.editSuccessDesc"),
+      });
+    }
+  };
+
+  const handleSaveUsherManagementChanges = () => {
+    toast({
+      title: t("admin.events.ushers.saveSuccess"),
+      description: t("admin.events.ushers.saveSuccessDesc"),
+    });
+    setIsUsherManagementDialogOpen(false);
   };
 
   const calculatePercentage = (sold: number, total: number) => {
@@ -840,10 +1691,31 @@ const EventsManagement: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleExportEvents}>
-            <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.dashboard.actions.export")}
-          </Button>
+          <ExportDialog
+            data={filteredEvents}
+            columns={commonColumns.events}
+            title={t("admin.events.title")}
+            subtitle={t("admin.events.subtitle")}
+            filename="events"
+            filters={{
+              search: searchTerm,
+              status: statusFilter,
+              category: categoryFilter,
+              location: locationFilter,
+              organizer: organizerFilter,
+            }}
+            onExport={(format) => {
+              toast({
+                title: t("admin.events.toast.exportSuccess"),
+                description: t("admin.events.toast.exportSuccessDesc"),
+              });
+            }}
+          >
+            <Button variant="outline">
+              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+              {t("admin.dashboard.actions.export")}
+            </Button>
+          </ExportDialog>
           <Button onClick={handleAddEvent}>
             <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
             {t("admin.dashboard.actions.addEvent")}
@@ -1089,6 +1961,12 @@ const EventsManagement: React.FC = () => {
                             event.commission,
                             i18nInstance.language
                           )}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Rate:{" "}
+                          {event.commissionRate.type === "percentage"
+                            ? `${event.commissionRate.value}%`
+                            : `E£${event.commissionRate.value}`}
                         </p>
                       </div>
                     </TableCell>
@@ -1425,6 +2303,12 @@ const EventsManagement: React.FC = () => {
                       {t("admin.events.metrics.commission")}: E£{" "}
                       {selectedEvent.commission.toLocaleString()}
                     </p>
+                    <p className="text-xs text-muted-foreground">
+                      Rate:{" "}
+                      {selectedEvent.commissionRate.type === "percentage"
+                        ? `${selectedEvent.commissionRate.value}%`
+                        : `E£${selectedEvent.commissionRate.value} per ticket`}
+                    </p>
                   </CardContent>
                 </Card>
 
@@ -1462,7 +2346,7 @@ const EventsManagement: React.FC = () => {
 
       {/* Edit Event Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="rtl:text-right">
             <DialogTitle>{t("admin.events.dialogs.editEvent")}</DialogTitle>
             <DialogDescription>
@@ -1470,76 +2354,1416 @@ const EventsManagement: React.FC = () => {
             </DialogDescription>
           </DialogHeader>
           {selectedEvent && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 rtl:space-x-reverse">
-                <div>
-                  <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.events.form.eventTitle")}
-                  </label>
-                  <Input defaultValue={selectedEvent.title} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.events.form.category")}
-                  </label>
-                  <Select defaultValue={selectedEvent.category}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Music">Music</SelectItem>
-                      <SelectItem value="Technology">Technology</SelectItem>
-                      <SelectItem value="Art">Art</SelectItem>
-                      <SelectItem value="Entertainment">
-                        Entertainment
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.events.form.date")}
-                  </label>
-                  <Input type="date" defaultValue={selectedEvent.date} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.events.form.time")}
-                  </label>
-                  <Input type="time" defaultValue={selectedEvent.time} />
-                </div>
-                <div className="col-span-2">
-                  <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.events.form.location")}
-                  </label>
-                  <Input defaultValue={selectedEvent.location} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.events.form.totalTickets")}
-                  </label>
-                  <Input
-                    type="number"
-                    defaultValue={selectedEvent.totalTickets}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.events.form.ticketLimit")}
-                  </label>
-                  <Input
-                    type="number"
-                    defaultValue={selectedEvent.ticketLimit}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center space-x-2 rtl:flex-row-reverse rtl:space-x-reverse">
-                <Switch defaultChecked={selectedEvent.ticketTransferEnabled} />
-                <span className="text-sm">
-                  {t("admin.events.form.enableTicketTransfers")}
-                </span>
-              </div>
-            </div>
+            <>
+              {/* Summary Card */}
+              <Card className="mb-4">
+                <CardHeader>
+                  <CardTitle className="text-sm">Event Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                    <div className="text-center">
+                      <div className="font-bold text-blue-600">
+                        {editEventData.gallery.length}
+                      </div>
+                      <div className="text-muted-foreground">
+                        Gallery Images
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-green-600">
+                        {editEventData.venueLayouts.length}
+                      </div>
+                      <div className="text-muted-foreground">Venue Layouts</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-purple-600">
+                        {editEventData.ticketCategories.length}
+                      </div>
+                      <div className="text-muted-foreground">
+                        Ticket Categories
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-orange-600">
+                        {editEventData.discounts.length}
+                      </div>
+                      <div className="text-muted-foreground">
+                        Active Discounts
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-red-600">
+                        {editEventData.termsAndConditions ? "✓" : "✗"}
+                      </div>
+                      <div className="text-muted-foreground">
+                        Terms & Conditions
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Tabs defaultValue="basic" className="w-full">
+                <TabsList className="grid w-full grid-cols-6">
+                  <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                  <TabsTrigger value="gallery">
+                    Gallery ({editEventData.gallery.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="terms">Terms & Conditions</TabsTrigger>
+                  <TabsTrigger value="venue">
+                    Venue Layouts ({editEventData.venueLayouts.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="tickets">
+                    Ticket Categories ({editEventData.ticketCategories.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="discounts">
+                    Discounts ({editEventData.discounts.length})
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Basic Information Tab */}
+                <TabsContent value="basic" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4 rtl:space-x-reverse">
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.form.eventTitle")}
+                      </label>
+                      <Input
+                        value={editEventData.title}
+                        onChange={(e) =>
+                          handleEditEventDataChange("title", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.form.organizer")}
+                      </label>
+                      <Input
+                        value={editEventData.organizer}
+                        onChange={(e) =>
+                          handleEditEventDataChange("organizer", e.target.value)
+                        }
+                        placeholder="Enter organizer name"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.form.category")}
+                      </label>
+                      <Select
+                        value={editEventData.category}
+                        onValueChange={(value) =>
+                          handleEditEventDataChange("category", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Music">Music</SelectItem>
+                          <SelectItem value="Technology">Technology</SelectItem>
+                          <SelectItem value="Art">Art</SelectItem>
+                          <SelectItem value="Entertainment">
+                            Entertainment
+                          </SelectItem>
+                          <SelectItem value="Sports">Sports</SelectItem>
+                          <SelectItem value="Education">Education</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.form.date")}
+                      </label>
+                      <Input
+                        type="date"
+                        value={editEventData.date}
+                        onChange={(e) =>
+                          handleEditEventDataChange("date", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.form.time")}
+                      </label>
+                      <Input
+                        type="time"
+                        value={editEventData.time}
+                        onChange={(e) =>
+                          handleEditEventDataChange("time", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.form.location")}
+                      </label>
+                      <Input
+                        value={editEventData.location}
+                        onChange={(e) =>
+                          handleEditEventDataChange("location", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.form.totalTickets")}
+                      </label>
+                      <Input
+                        type="number"
+                        value={editEventData.totalTickets}
+                        onChange={(e) =>
+                          handleEditEventDataChange(
+                            "totalTickets",
+                            parseInt(e.target.value) || 0
+                          )
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.form.ticketLimit")}
+                      </label>
+                      <Input
+                        type="number"
+                        value={editEventData.ticketLimit}
+                        onChange={(e) =>
+                          handleEditEventDataChange(
+                            "ticketLimit",
+                            parseInt(e.target.value) || 1
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.form.description")}
+                      </label>
+                      <Textarea
+                        value={editEventData.description}
+                        onChange={(e) =>
+                          handleEditEventDataChange(
+                            "description",
+                            e.target.value
+                          )
+                        }
+                        placeholder="Enter event description..."
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 rtl:flex-row-reverse rtl:space-x-reverse">
+                    <Switch
+                      checked={editEventData.ticketTransferEnabled}
+                      onCheckedChange={(checked) =>
+                        handleEditEventDataChange(
+                          "ticketTransferEnabled",
+                          checked
+                        )
+                      }
+                    />
+                    <span className="text-sm">
+                      {t("admin.events.form.enableTicketTransfers")}
+                    </span>
+                  </div>
+
+                  {/* Commission Rate Configuration */}
+                  <div className="border-t pt-4">
+                    <h4 className="text-sm font-medium mb-3 rtl:text-right">
+                      Commission Rate Configuration
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="text-sm font-medium rtl:text-right">
+                          Commission Type
+                        </label>
+                        <Select
+                          value={editEventData.commissionRate.type}
+                          onValueChange={(value) =>
+                            handleEditEventDataChange("commissionRate", {
+                              ...editEventData.commissionRate,
+                              type: value as "percentage" | "flat",
+                            })
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="percentage">
+                              Percentage (%)
+                            </SelectItem>
+                            <SelectItem value="flat">Flat Fee (E£)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium rtl:text-right">
+                          Commission Value
+                        </label>
+                        <Input
+                          type="number"
+                          value={editEventData.commissionRate.value}
+                          onChange={(e) =>
+                            handleEditEventDataChange("commissionRate", {
+                              ...editEventData.commissionRate,
+                              value: parseFloat(e.target.value) || 0,
+                            })
+                          }
+                          placeholder={
+                            editEventData.commissionRate.type === "percentage"
+                              ? "10"
+                              : "50"
+                          }
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <div className="text-sm text-muted-foreground">
+                          {editEventData.commissionRate.type ===
+                          "percentage" ? (
+                            <span>
+                              Commission: {editEventData.commissionRate.value}%
+                              of ticket price
+                            </span>
+                          ) : (
+                            <span>
+                              Commission: E£{editEventData.commissionRate.value}{" "}
+                              per ticket
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="text-xs text-blue-800">
+                        <strong>Commission Calculation:</strong>
+                        {editEventData.commissionRate.type === "percentage" ? (
+                          <span>
+                            {" "}
+                            {editEventData.commissionRate.value}% of total
+                            revenue
+                          </span>
+                        ) : (
+                          <span>
+                            {" "}
+                            E£{editEventData.commissionRate.value} × number of
+                            tickets sold
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Transfer Fee Configuration */}
+                  <div className="border-t pt-4">
+                    <h4 className="text-sm font-medium mb-3 rtl:text-right">
+                      Transfer Fee Configuration
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="text-sm font-medium rtl:text-right">
+                          Transfer Fee Type
+                        </label>
+                        <Select
+                          value={editEventData.transferFee.type}
+                          onValueChange={(value) =>
+                            handleEditEventDataChange("transferFee", {
+                              ...editEventData.transferFee,
+                              type: value as "percentage" | "flat",
+                            })
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="percentage">
+                              Percentage (%)
+                            </SelectItem>
+                            <SelectItem value="flat">Flat Fee (E£)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium rtl:text-right">
+                          Transfer Fee Value
+                        </label>
+                        <Input
+                          type="number"
+                          value={editEventData.transferFee.value}
+                          onChange={(e) =>
+                            handleEditEventDataChange("transferFee", {
+                              ...editEventData.transferFee,
+                              value: parseFloat(e.target.value) || 0,
+                            })
+                          }
+                          placeholder={
+                            editEventData.transferFee.type === "percentage"
+                              ? "5"
+                              : "25"
+                          }
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <div className="text-sm text-muted-foreground">
+                          {editEventData.transferFee.type === "percentage" ? (
+                            <span>
+                              Transfer Fee: {editEventData.transferFee.value}%
+                              of ticket price
+                            </span>
+                          ) : (
+                            <span>
+                              Transfer Fee: E£{editEventData.transferFee.value}{" "}
+                              per transfer
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-2 p-3 bg-orange-50 rounded-lg border border-orange-200">
+                      <div className="text-xs text-orange-800">
+                        <strong>Transfer Fee Calculation:</strong>
+                        {editEventData.transferFee.type === "percentage" ? (
+                          <span>
+                            {" "}
+                            {editEventData.transferFee.value}% of ticket price
+                            when transferred
+                          </span>
+                        ) : (
+                          <span>
+                            {" "}
+                            E£{editEventData.transferFee.value} per ticket
+                            transfer
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                {/* Gallery Tab */}
+                <TabsContent value="gallery" className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 rtl:text-right">
+                      Event Gallery
+                    </h3>
+
+                    {/* Add Image Section */}
+                    <Card className="mb-4">
+                      <CardHeader>
+                        <CardTitle className="text-sm">Add New Image</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-sm font-medium rtl:text-right">
+                              Image URL
+                            </label>
+                            <div className="flex gap-2 mt-1">
+                              <Input
+                                placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+                                onKeyPress={(e) => {
+                                  if (e.key === "Enter") {
+                                    const input = e.target as HTMLInputElement;
+                                    if (input.value.trim()) {
+                                      handleAddGalleryImage(input.value.trim());
+                                      input.value = "";
+                                    }
+                                  }
+                                }}
+                              />
+                              <Button
+                                onClick={(e) => {
+                                  const input = e.currentTarget
+                                    .previousElementSibling as HTMLInputElement;
+                                  if (input && input.value.trim()) {
+                                    handleAddGalleryImage(input.value.trim());
+                                    input.value = "";
+                                  }
+                                }}
+                              >
+                                Add
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Sample Image URLs for testing */}
+                          <div>
+                            <label className="text-sm font-medium rtl:text-right">
+                              Quick Add Sample Images
+                            </label>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                              {[
+                                "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
+                                "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=300&fit=crop",
+                                "https://images.unsplash.com/photo-1501281669025-7ec9d6aec993?w=400&h=300&fit=crop",
+                                "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
+                              ].map((url, index) => (
+                                <Button
+                                  key={index}
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleAddGalleryImage(url)}
+                                >
+                                  Sample {index + 1}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Gallery Display */}
+                    <div>
+                      <div className="flex justify-between items-center mb-4">
+                        <h4 className="text-md font-medium rtl:text-right">
+                          Gallery Images ({editEventData.gallery.length})
+                        </h4>
+                        {editEventData.gallery.length > 0 && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              handleEditEventDataChange("gallery", [])
+                            }
+                            className="text-red-600"
+                          >
+                            Clear All
+                          </Button>
+                        )}
+                      </div>
+
+                      {editEventData.gallery.length === 0 ? (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <ImageIcon className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                          <p>No images in gallery yet</p>
+                          <p className="text-sm">
+                            Add images using the form above
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {editEventData.gallery.map((image, index) => (
+                            <div key={index} className="relative group">
+                              <img
+                                src={image}
+                                alt={`Gallery image ${index + 1}`}
+                                className="w-full h-32 object-cover rounded-lg border"
+                                onError={(e) => {
+                                  e.currentTarget.src =
+                                    "https://via.placeholder.com/400x300?text=Image+Error";
+                                }}
+                              />
+                              <button
+                                onClick={() => handleRemoveGalleryImage(index)}
+                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                                title="Remove image"
+                              >
+                                ×
+                              </button>
+                              <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                Image {index + 1}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                {/* Terms & Conditions Tab */}
+                <TabsContent value="terms" className="space-y-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold rtl:text-right">
+                        Terms & Conditions
+                      </h3>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const sampleTerms = `1. Event Terms and Conditions
+
+By purchasing a ticket for this event, you agree to the following terms:
+
+2. Entry Requirements
+- Valid ID required for entry
+- No refunds or exchanges
+- Event may be cancelled due to weather or other circumstances
+
+3. Behavior
+- Respectful behavior expected
+- No recording without permission
+- Security reserves the right to remove attendees
+
+4. Liability
+- Event organizers are not responsible for personal injury
+- Attendees participate at their own risk
+
+5. Photography
+- Event photography may be used for promotional purposes
+- By attending, you consent to being photographed
+
+6. Refund Policy
+- No refunds unless event is cancelled
+- In case of cancellation, full refunds will be issued
+
+7. Contact Information
+For questions about this event, please contact the organizer.`;
+                            handleEditEventDataChange(
+                              "termsAndConditions",
+                              sampleTerms
+                            );
+                          }}
+                        >
+                          Load Sample
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            handleEditEventDataChange("termsAndConditions", "")
+                          }
+                        >
+                          Clear
+                        </Button>
+                      </div>
+                    </div>
+                    <Textarea
+                      value={editEventData.termsAndConditions}
+                      onChange={(e) =>
+                        handleEditEventDataChange(
+                          "termsAndConditions",
+                          e.target.value
+                        )
+                      }
+                      placeholder="Enter event terms and conditions..."
+                      className="min-h-[300px]"
+                    />
+                    {editEventData.termsAndConditions && (
+                      <div className="mt-4">
+                        <h4 className="text-sm font-medium mb-2 rtl:text-right">
+                          Preview:
+                        </h4>
+                        <div className="bg-gray-50 p-4 rounded-lg text-sm max-h-40 overflow-y-auto">
+                          <pre className="whitespace-pre-wrap">
+                            {editEventData.termsAndConditions}
+                          </pre>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* Ticket Categories Tab */}
+                <TabsContent value="tickets" className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold rtl:text-right">
+                      Ticket Categories & Pricing
+                    </h3>
+                    <Button onClick={handleAddTicketCategory} size="sm">
+                      <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                      Add Category
+                    </Button>
+                  </div>
+                  <div className="space-y-4">
+                    {editEventData.ticketCategories.map((category, index) => (
+                      <Card key={category.id}>
+                        <CardHeader>
+                          <div className="flex justify-between items-center">
+                            <Input
+                              placeholder="Category name"
+                              value={category.name}
+                              onChange={(e) =>
+                                handleUpdateTicketCategory(
+                                  index,
+                                  "name",
+                                  e.target.value
+                                )
+                              }
+                              className="max-w-xs"
+                            />
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleRemoveTicketCategory(index)}
+                              className="text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Price
+                              </label>
+                              <Input
+                                type="number"
+                                value={category.price}
+                                onChange={(e) =>
+                                  handleUpdateTicketCategory(
+                                    index,
+                                    "price",
+                                    parseInt(e.target.value) || 0
+                                  )
+                                }
+                                placeholder="0"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Total Tickets
+                              </label>
+                              <Input
+                                type="number"
+                                value={category.totalTickets}
+                                onChange={(e) =>
+                                  handleUpdateTicketCategory(
+                                    index,
+                                    "totalTickets",
+                                    parseInt(e.target.value) || 0
+                                  )
+                                }
+                                placeholder="0"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Sold Tickets
+                              </label>
+                              <Input
+                                type="number"
+                                value={category.soldTickets}
+                                onChange={(e) =>
+                                  handleUpdateTicketCategory(
+                                    index,
+                                    "soldTickets",
+                                    parseInt(e.target.value) || 0
+                                  )
+                                }
+                                placeholder="0"
+                              />
+                            </div>
+                            <div className="md:col-span-3">
+                              <label className="text-sm font-medium rtl:text-right">
+                                Description
+                              </label>
+                              <Textarea
+                                value={category.description}
+                                onChange={(e) =>
+                                  handleUpdateTicketCategory(
+                                    index,
+                                    "description",
+                                    e.target.value
+                                  )
+                                }
+                                placeholder="Category description..."
+                              />
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                {/* Venue Layouts Tab */}
+                <TabsContent value="venue" className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold rtl:text-right">
+                      Venue Layouts & Seating
+                    </h3>
+                    <Button onClick={handleAddVenueLayout} size="sm">
+                      <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                      Add Layout
+                    </Button>
+                  </div>
+                  <div className="space-y-4">
+                    {editEventData.venueLayouts.map((layout, layoutIndex) => (
+                      <Card key={layout.id}>
+                        <CardHeader>
+                          <div className="flex justify-between items-center">
+                            <div className="flex-1">
+                              <Input
+                                placeholder="Layout name"
+                                value={layout.name}
+                                onChange={(e) =>
+                                  handleUpdateVenueLayout(
+                                    layoutIndex,
+                                    "name",
+                                    e.target.value
+                                  )
+                                }
+                                className="max-w-xs mb-2"
+                              />
+                              <Textarea
+                                placeholder="Layout description"
+                                value={layout.description}
+                                onChange={(e) =>
+                                  handleUpdateVenueLayout(
+                                    layoutIndex,
+                                    "description",
+                                    e.target.value
+                                  )
+                                }
+                                className="text-sm"
+                              />
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  handleAddVenueSection(layoutIndex)
+                                }
+                              >
+                                <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                                Add Section
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  handleRemoveVenueLayout(layoutIndex)
+                                }
+                                className="text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Layout Image URL
+                              </label>
+                              <Input
+                                placeholder="Enter layout image URL"
+                                value={layout.imageUrl || ""}
+                                onChange={(e) =>
+                                  handleUpdateVenueLayout(
+                                    layoutIndex,
+                                    "imageUrl",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Total Capacity
+                              </label>
+                              <Input
+                                type="number"
+                                value={layout.totalCapacity}
+                                onChange={(e) =>
+                                  handleUpdateVenueLayout(
+                                    layoutIndex,
+                                    "totalCapacity",
+                                    parseInt(e.target.value) || 0
+                                  )
+                                }
+                                placeholder="0"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Gate Times */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Gate Opening Time
+                              </label>
+                              <Input
+                                type="time"
+                                value={layout.gateOpeningTime || ""}
+                                onChange={(e) =>
+                                  handleUpdateVenueLayout(
+                                    layoutIndex,
+                                    "gateOpeningTime",
+                                    e.target.value
+                                  )
+                                }
+                                placeholder="18:00"
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Time when gates open for entry
+                              </p>
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Gate Closing Time
+                              </label>
+                              <Input
+                                type="time"
+                                value={layout.gateClosingTime || ""}
+                                onChange={(e) =>
+                                  handleUpdateVenueLayout(
+                                    layoutIndex,
+                                    "gateClosingTime",
+                                    e.target.value
+                                  )
+                                }
+                                placeholder="22:00"
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Time when gates close for entry
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Quick Gate Time Presets */}
+                          <div className="mb-4">
+                            <label className="text-sm font-medium rtl:text-right">
+                              Quick Gate Time Presets
+                            </label>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {[
+                                {
+                                  name: "Evening Event",
+                                  open: "18:00",
+                                  close: "22:00",
+                                },
+                                {
+                                  name: "Afternoon Event",
+                                  open: "14:00",
+                                  close: "18:00",
+                                },
+                                {
+                                  name: "Late Night",
+                                  open: "20:00",
+                                  close: "02:00",
+                                },
+                                {
+                                  name: "All Day",
+                                  open: "09:00",
+                                  close: "17:00",
+                                },
+                              ].map((preset, index) => (
+                                <Button
+                                  key={index}
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    handleUpdateVenueLayout(
+                                      layoutIndex,
+                                      "gateOpeningTime",
+                                      preset.open
+                                    );
+                                    handleUpdateVenueLayout(
+                                      layoutIndex,
+                                      "gateClosingTime",
+                                      preset.close
+                                    );
+                                  }}
+                                >
+                                  {preset.name}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Gate Times Summary */}
+                          {(layout.gateOpeningTime ||
+                            layout.gateClosingTime) && (
+                            <div className="mb-4">
+                              <label className="text-sm font-medium rtl:text-right">
+                                Gate Schedule
+                              </label>
+                              <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <span className="text-sm font-medium">
+                                      Opening:
+                                    </span>
+                                    <span className="text-sm text-blue-600">
+                                      {layout.gateOpeningTime || "Not set"}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                    <span className="text-sm font-medium">
+                                      Closing:
+                                    </span>
+                                    <span className="text-sm text-red-600">
+                                      {layout.gateClosingTime || "Not set"}
+                                    </span>
+                                  </div>
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-2">
+                                  ⚠️ Attendees must arrive before gate closing
+                                  time
+                                </p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Layout Preview */}
+                          {layout.imageUrl && (
+                            <div className="mb-4">
+                              <label className="text-sm font-medium rtl:text-right">
+                                Layout Preview
+                              </label>
+                              <div className="mt-2">
+                                <img
+                                  src={layout.imageUrl}
+                                  alt={layout.name}
+                                  className="w-full h-48 object-cover rounded-lg border"
+                                  onError={(e) => {
+                                    e.currentTarget.src =
+                                      "https://via.placeholder.com/400x300?text=Layout+Image";
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Sample Layout Images */}
+                          {!layout.imageUrl && (
+                            <div className="mb-4">
+                              <label className="text-sm font-medium rtl:text-right">
+                                Quick Add Sample Layout Images
+                              </label>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {[
+                                  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
+                                  "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=300&fit=crop",
+                                  "https://images.unsplash.com/photo-1501281669025-7ec9d6aec993?w=400&h=300&fit=crop",
+                                  "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
+                                ].map((url, index) => (
+                                  <Button
+                                    key={index}
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleUpdateVenueLayout(
+                                        layoutIndex,
+                                        "imageUrl",
+                                        url
+                                      )
+                                    }
+                                  >
+                                    Sample {index + 1}
+                                  </Button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Sections */}
+                          <div>
+                            <h4 className="text-md font-medium mb-3 rtl:text-right">
+                              Venue Sections ({layout.sections.length})
+                            </h4>
+                            <div className="space-y-3">
+                              {layout.sections.map((section, sectionIndex) => (
+                                <Card key={section.id} className="p-4">
+                                  <div className="flex justify-between items-start mb-3">
+                                    <div className="flex-1">
+                                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                        <div>
+                                          <label className="text-sm font-medium rtl:text-right">
+                                            Section Name
+                                          </label>
+                                          <Input
+                                            value={section.name}
+                                            onChange={(e) =>
+                                              handleUpdateVenueSection(
+                                                layoutIndex,
+                                                sectionIndex,
+                                                "name",
+                                                e.target.value
+                                              )
+                                            }
+                                            placeholder="Section name"
+                                          />
+                                        </div>
+                                        <div>
+                                          <label className="text-sm font-medium rtl:text-right">
+                                            Capacity
+                                          </label>
+                                          <Input
+                                            type="number"
+                                            value={section.capacity}
+                                            onChange={(e) =>
+                                              handleUpdateVenueSection(
+                                                layoutIndex,
+                                                sectionIndex,
+                                                "capacity",
+                                                parseInt(e.target.value) || 0
+                                              )
+                                            }
+                                            placeholder="0"
+                                          />
+                                        </div>
+                                        <div>
+                                          <label className="text-sm font-medium rtl:text-right">
+                                            Price
+                                          </label>
+                                          <Input
+                                            type="number"
+                                            value={section.price}
+                                            onChange={(e) =>
+                                              handleUpdateVenueSection(
+                                                layoutIndex,
+                                                sectionIndex,
+                                                "price",
+                                                parseInt(e.target.value) || 0
+                                              )
+                                            }
+                                            placeholder="0"
+                                          />
+                                        </div>
+                                      </div>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                                        <div>
+                                          <label className="text-sm font-medium rtl:text-right">
+                                            Color
+                                          </label>
+                                          <div className="flex gap-2 items-center">
+                                            <input
+                                              type="color"
+                                              value={section.color}
+                                              onChange={(e) =>
+                                                handleUpdateVenueSection(
+                                                  layoutIndex,
+                                                  sectionIndex,
+                                                  "color",
+                                                  e.target.value
+                                                )
+                                              }
+                                              className="w-10 h-10 rounded border"
+                                            />
+                                            <Input
+                                              value={section.color}
+                                              onChange={(e) =>
+                                                handleUpdateVenueSection(
+                                                  layoutIndex,
+                                                  sectionIndex,
+                                                  "color",
+                                                  e.target.value
+                                                )
+                                              }
+                                              placeholder="#3B82F6"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <label className="text-sm font-medium rtl:text-right">
+                                            Status
+                                          </label>
+                                          <div className="flex items-center space-x-2 rtl:flex-row-reverse rtl:space-x-reverse">
+                                            <Switch
+                                              checked={section.isActive}
+                                              onCheckedChange={(checked) =>
+                                                handleUpdateVenueSection(
+                                                  layoutIndex,
+                                                  sectionIndex,
+                                                  "isActive",
+                                                  checked
+                                                )
+                                              }
+                                            />
+                                            <span className="text-sm">
+                                              {section.isActive
+                                                ? "Active"
+                                                : "Inactive"}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="mt-3">
+                                        <label className="text-sm font-medium rtl:text-right">
+                                          Description
+                                        </label>
+                                        <Textarea
+                                          value={section.description}
+                                          onChange={(e) =>
+                                            handleUpdateVenueSection(
+                                              layoutIndex,
+                                              sectionIndex,
+                                              "description",
+                                              e.target.value
+                                            )
+                                          }
+                                          placeholder="Section description..."
+                                          className="mt-1"
+                                        />
+                                      </div>
+                                    </div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() =>
+                                        handleRemoveVenueSection(
+                                          layoutIndex,
+                                          sectionIndex
+                                        )
+                                      }
+                                      className="text-red-600 ml-2"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                {/* Discounts Tab */}
+                <TabsContent value="discounts" className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold rtl:text-right">
+                      Discounts & Promotions
+                    </h3>
+                    <Button onClick={handleAddDiscount} size="sm">
+                      <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                      Add Discount
+                    </Button>
+                  </div>
+                  <div className="space-y-4">
+                    {editEventData.discounts.map((discount, index) => (
+                      <Card key={discount.id}>
+                        <CardHeader>
+                          <div className="flex justify-between items-center">
+                            <Input
+                              placeholder="Discount name"
+                              value={discount.name}
+                              onChange={(e) =>
+                                handleUpdateDiscount(
+                                  index,
+                                  "name",
+                                  e.target.value
+                                )
+                              }
+                              className="max-w-xs"
+                            />
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleRemoveDiscount(index)}
+                              className="text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Discount Type
+                              </label>
+                              <Select
+                                value={discount.type}
+                                onValueChange={(value) =>
+                                  handleUpdateDiscount(index, "type", value)
+                                }
+                              >
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="percentage">
+                                    Percentage
+                                  </SelectItem>
+                                  <SelectItem value="fixed">
+                                    Fixed Amount
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Value
+                              </label>
+                              <Input
+                                type="number"
+                                value={discount.value}
+                                onChange={(e) =>
+                                  handleUpdateDiscount(
+                                    index,
+                                    "value",
+                                    parseInt(e.target.value) || 0
+                                  )
+                                }
+                                placeholder="0"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Discount Code
+                              </label>
+                              <div className="flex gap-2">
+                                <Input
+                                  value={discount.code}
+                                  onChange={(e) =>
+                                    handleUpdateDiscount(
+                                      index,
+                                      "code",
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder="e.g., STUDENT20"
+                                />
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    const chars =
+                                      "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                                    let result = "";
+                                    for (let i = 0; i < 8; i++) {
+                                      result += chars.charAt(
+                                        Math.floor(Math.random() * chars.length)
+                                      );
+                                    }
+                                    handleUpdateDiscount(index, "code", result);
+                                  }}
+                                  title="Generate new code"
+                                >
+                                  🔄
+                                </Button>
+                              </div>
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Max Uses
+                              </label>
+                              <Input
+                                type="number"
+                                value={discount.maxUses}
+                                onChange={(e) =>
+                                  handleUpdateDiscount(
+                                    index,
+                                    "maxUses",
+                                    parseInt(e.target.value) || 0
+                                  )
+                                }
+                                placeholder="0"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Valid From
+                              </label>
+                              <Input
+                                type="date"
+                                value={discount.validFrom}
+                                onChange={(e) =>
+                                  handleUpdateDiscount(
+                                    index,
+                                    "validFrom",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium rtl:text-right">
+                                Valid To
+                              </label>
+                              <Input
+                                type="date"
+                                value={discount.validTo}
+                                onChange={(e) =>
+                                  handleUpdateDiscount(
+                                    index,
+                                    "validTo",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="md:col-span-2">
+                              <label className="text-sm font-medium rtl:text-right">
+                                Applicable Categories
+                              </label>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {editEventData.ticketCategories.map(
+                                  (category) => (
+                                    <label
+                                      key={category.id}
+                                      className="flex items-center space-x-2 rtl:flex-row-reverse rtl:space-x-reverse"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        checked={discount.applicableCategories.includes(
+                                          category.name
+                                        )}
+                                        onChange={(e) => {
+                                          const currentCategories =
+                                            discount.applicableCategories;
+                                          if (e.target.checked) {
+                                            handleUpdateDiscount(
+                                              index,
+                                              "applicableCategories",
+                                              [
+                                                ...currentCategories,
+                                                category.name,
+                                              ]
+                                            );
+                                          } else {
+                                            handleUpdateDiscount(
+                                              index,
+                                              "applicableCategories",
+                                              currentCategories.filter(
+                                                (cat) => cat !== category.name
+                                              )
+                                            );
+                                          }
+                                        }}
+                                      />
+                                      <span className="text-sm">
+                                        {category.name}
+                                      </span>
+                                    </label>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                            {discount.type === "percentage" && (
+                              <div>
+                                <label className="text-sm font-medium rtl:text-right">
+                                  Minimum Quantity (for group discounts)
+                                </label>
+                                <Input
+                                  type="number"
+                                  value={discount.minQuantity || 0}
+                                  onChange={(e) =>
+                                    handleUpdateDiscount(
+                                      index,
+                                      "minQuantity",
+                                      parseInt(e.target.value) || 0
+                                    )
+                                  }
+                                  placeholder="0"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </>
           )}
           <DialogFooter className="rtl:flex-row-reverse">
             <Button
@@ -1703,6 +3927,139 @@ const EventsManagement: React.FC = () => {
                 {t("admin.events.form.enableTicketTransfers")}
               </span>
             </div>
+
+            {/* Commission Rate Configuration */}
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium mb-3 rtl:text-right">
+                Commission Rate Configuration
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium rtl:text-right">
+                    Commission Type
+                  </label>
+                  <Select
+                    value={newEvent.commissionRate.type}
+                    onValueChange={(value) =>
+                      handleNewEventChange("commissionRate", {
+                        ...newEvent.commissionRate,
+                        type: value as "percentage" | "flat",
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="percentage">Percentage (%)</SelectItem>
+                      <SelectItem value="flat">Flat Fee (E£)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium rtl:text-right">
+                    Commission Value
+                  </label>
+                  <Input
+                    type="number"
+                    value={newEvent.commissionRate.value}
+                    onChange={(e) =>
+                      handleNewEventChange("commissionRate", {
+                        ...newEvent.commissionRate,
+                        value: parseFloat(e.target.value) || 0,
+                      })
+                    }
+                    placeholder={
+                      newEvent.commissionRate.type === "percentage"
+                        ? "10"
+                        : "50"
+                    }
+                  />
+                </div>
+              </div>
+              <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="text-xs text-blue-800">
+                  <strong>Commission Calculation:</strong>
+                  {newEvent.commissionRate.type === "percentage" ? (
+                    <span>
+                      {" "}
+                      {newEvent.commissionRate.value}% of total revenue
+                    </span>
+                  ) : (
+                    <span>
+                      {" "}
+                      E£{newEvent.commissionRate.value} × number of tickets sold
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Transfer Fee Configuration */}
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium mb-3 rtl:text-right">
+                Transfer Fee Configuration
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium rtl:text-right">
+                    Transfer Fee Type
+                  </label>
+                  <Select
+                    value={newEvent.transferFee.type}
+                    onValueChange={(value) =>
+                      handleNewEventChange("transferFee", {
+                        ...newEvent.transferFee,
+                        type: value as "percentage" | "flat",
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="percentage">Percentage (%)</SelectItem>
+                      <SelectItem value="flat">Flat Fee (E£)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium rtl:text-right">
+                    Transfer Fee Value
+                  </label>
+                  <Input
+                    type="number"
+                    value={newEvent.transferFee.value}
+                    onChange={(e) =>
+                      handleNewEventChange("transferFee", {
+                        ...newEvent.transferFee,
+                        value: parseFloat(e.target.value) || 0,
+                      })
+                    }
+                    placeholder={
+                      newEvent.transferFee.type === "percentage" ? "5" : "25"
+                    }
+                  />
+                </div>
+              </div>
+              <div className="mt-2 p-3 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-xs text-orange-800">
+                  <strong>Transfer Fee Calculation:</strong>
+                  {newEvent.transferFee.type === "percentage" ? (
+                    <span>
+                      {" "}
+                      {newEvent.transferFee.value}% of ticket price when
+                      transferred
+                    </span>
+                  ) : (
+                    <span>
+                      {" "}
+                      E£{newEvent.transferFee.value} per ticket transfer
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
           <DialogFooter className="rtl:flex-row-reverse">
             <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
@@ -1800,6 +4157,13 @@ const EventsManagement: React.FC = () => {
                         selectedEventForAnalytics.commission,
                         i18nInstance.language
                       )}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Rate:{" "}
+                      {selectedEventForAnalytics.commissionRate.type ===
+                      "percentage"
+                        ? `${selectedEventForAnalytics.commissionRate.value}%`
+                        : `E£${selectedEventForAnalytics.commissionRate.value} per ticket`}
                     </p>
                   </CardContent>
                 </Card>
@@ -2037,7 +4401,7 @@ const EventsManagement: React.FC = () => {
         open={isUsherManagementDialogOpen}
         onOpenChange={setIsUsherManagementDialogOpen}
       >
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="rtl:text-right">
             <DialogTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
@@ -2059,32 +4423,7 @@ const EventsManagement: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {[
-                      {
-                        id: "U001",
-                        name: "Ahmed Usher",
-                        email: "ahmed@ticketrunners.com",
-                        status: "active",
-                        assignedAreas: ["Gate A", "VIP Section"],
-                        lastActive: "2 hours ago",
-                      },
-                      {
-                        id: "U002",
-                        name: "Omar Usher",
-                        email: "omar@ticketrunners.com",
-                        status: "active",
-                        assignedAreas: ["Gate B", "General Section"],
-                        lastActive: "1 hour ago",
-                      },
-                      {
-                        id: "U003",
-                        name: "Fatima Usher",
-                        email: "fatima@ticketrunners.com",
-                        status: "inactive",
-                        assignedAreas: ["Gate C"],
-                        lastActive: "3 days ago",
-                      },
-                    ].map((usher) => (
+                    {ushers.map((usher) => (
                       <div
                         key={usher.id}
                         className="flex items-center justify-between p-4 border rounded-lg rtl:flex-row-reverse"
@@ -2133,16 +4472,23 @@ const EventsManagement: React.FC = () => {
                               align="end"
                               className="rtl:text-right"
                             >
-                              <DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleEditUsher(usher)}
+                              >
                                 <Edit className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
                                 {t("admin.events.ushers.edit")}
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleViewUsherActivity(usher)}
+                              >
                                 <Activity className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
                                 {t("admin.events.ushers.viewActivity")}
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-red-600">
+                              <DropdownMenuItem
+                                className="text-red-600"
+                                onClick={() => handleRemoveUsher(usher.id)}
+                              >
                                 <UserMinus className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
                                 {t("admin.events.ushers.remove")}
                               </DropdownMenuItem>
@@ -2168,7 +4514,13 @@ const EventsManagement: React.FC = () => {
                       <label className="text-sm font-medium rtl:text-right">
                         {t("admin.events.ushers.name")}
                       </label>
-                      <Input placeholder={t("admin.events.ushers.enterName")} />
+                      <Input
+                        placeholder={t("admin.events.ushers.enterName")}
+                        value={newUsher.name}
+                        onChange={(e) =>
+                          handleNewUsherChange("name", e.target.value)
+                        }
+                      />
                     </div>
                     <div>
                       <label className="text-sm font-medium rtl:text-right">
@@ -2176,26 +4528,35 @@ const EventsManagement: React.FC = () => {
                       </label>
                       <Input
                         placeholder={t("admin.events.ushers.enterEmail")}
+                        value={newUsher.email}
+                        onChange={(e) =>
+                          handleNewUsherChange("email", e.target.value)
+                        }
                       />
                     </div>
                     <div>
                       <label className="text-sm font-medium rtl:text-right">
                         {t("admin.events.ushers.assignedArea")}
                       </label>
-                      <Select>
+                      <Select
+                        value={newUsher.assignedArea}
+                        onValueChange={(value) =>
+                          handleNewUsherChange("assignedArea", value)
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue
                             placeholder={t("admin.events.ushers.selectArea")}
                           />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="gate-a">Gate A</SelectItem>
-                          <SelectItem value="gate-b">Gate B</SelectItem>
-                          <SelectItem value="gate-c">Gate C</SelectItem>
-                          <SelectItem value="vip-section">
+                          <SelectItem value="Gate A">Gate A</SelectItem>
+                          <SelectItem value="Gate B">Gate B</SelectItem>
+                          <SelectItem value="Gate C">Gate C</SelectItem>
+                          <SelectItem value="VIP Section">
                             VIP Section
                           </SelectItem>
-                          <SelectItem value="general-section">
+                          <SelectItem value="General Section">
                             General Section
                           </SelectItem>
                         </SelectContent>
@@ -2203,7 +4564,7 @@ const EventsManagement: React.FC = () => {
                     </div>
                   </div>
                   <div className="mt-4">
-                    <Button>
+                    <Button onClick={handleAddUsher}>
                       <UserPlus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
                       {t("admin.events.ushers.addUsher")}
                     </Button>
@@ -2219,15 +4580,291 @@ const EventsManagement: React.FC = () => {
             >
               {t("admin.events.dialogs.close")}
             </Button>
+            <Button onClick={handleSaveUsherManagementChanges}>
+              {t("admin.events.ushers.saveChanges")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Usher Dialog */}
+      <Dialog
+        open={isEditUsherDialogOpen}
+        onOpenChange={setIsEditUsherDialogOpen}
+      >
+        <DialogContent className="max-w-2xl">
+          <DialogHeader className="rtl:text-right">
+            <DialogTitle className="flex items-center gap-2">
+              <Edit className="h-5 w-5" />
+              {t("admin.events.ushers.editUsher")} - {selectedUsher?.name}
+            </DialogTitle>
+            <DialogDescription>
+              {t("admin.events.ushers.editUsherSubtitle")}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedUsher && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium rtl:text-right">
+                    {t("admin.events.ushers.name")}
+                  </label>
+                  <Input
+                    value={selectedUsher.name}
+                    onChange={(e) =>
+                      setSelectedUsher({
+                        ...selectedUsher,
+                        name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium rtl:text-right">
+                    {t("admin.events.ushers.email")}
+                  </label>
+                  <Input
+                    value={selectedUsher.email}
+                    onChange={(e) =>
+                      setSelectedUsher({
+                        ...selectedUsher,
+                        email: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium rtl:text-right">
+                    {t("admin.events.ushers.status")}
+                  </label>
+                  <Select
+                    value={selectedUsher.status}
+                    onValueChange={(value) =>
+                      setSelectedUsher({ ...selectedUsher, status: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">
+                        {t("admin.events.ushers.active")}
+                      </SelectItem>
+                      <SelectItem value="inactive">
+                        {t("admin.events.ushers.inactive")}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium rtl:text-right">
+                    {t("admin.events.ushers.assignedAreas")}
+                  </label>
+                  <Select
+                    value={selectedUsher.assignedAreas[0] || ""}
+                    onValueChange={(value) =>
+                      setSelectedUsher({
+                        ...selectedUsher,
+                        assignedAreas: [value],
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={t("admin.events.ushers.selectArea")}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Gate A">Gate A</SelectItem>
+                      <SelectItem value="Gate B">Gate B</SelectItem>
+                      <SelectItem value="Gate C">Gate C</SelectItem>
+                      <SelectItem value="VIP Section">VIP Section</SelectItem>
+                      <SelectItem value="General Section">
+                        General Section
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="rtl:flex-row-reverse">
+            <Button
+              variant="outline"
+              onClick={() => setIsEditUsherDialogOpen(false)}
+            >
+              {t("admin.events.dialogs.cancel")}
+            </Button>
+            <Button onClick={handleSaveUsherChanges}>
+              {t("admin.events.dialogs.saveChanges")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Usher Activity Dialog */}
+      <Dialog
+        open={isViewUsherActivityDialogOpen}
+        onOpenChange={setIsViewUsherActivityDialogOpen}
+      >
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="rtl:text-right">
+            <DialogTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              {t("admin.events.ushers.usherActivity")} - {selectedUsher?.name}
+            </DialogTitle>
+            <DialogDescription>
+              {t("admin.events.ushers.usherActivitySubtitle")}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedUsher && (
+            <div className="space-y-6">
+              {/* Usher Info */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm rtl:text-right">
+                    {t("admin.events.ushers.usherInfo")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.ushers.name")}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {selectedUsher.name}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.ushers.email")}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {selectedUsher.email}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium rtl:text-right">
+                        {t("admin.events.ushers.status")}
+                      </p>
+                      <Badge
+                        className={
+                          selectedUsher.status === "active"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }
+                      >
+                        {selectedUsher.status === "active"
+                          ? t("admin.events.ushers.active")
+                          : t("admin.events.ushers.inactive")}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recent Activity */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm rtl:text-right">
+                    {t("admin.events.ushers.recentActivity")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      {
+                        action: t("admin.events.ushers.activity.ticketScanned"),
+                        time: "2 hours ago",
+                        details: "VIP Section - Ticket #12345",
+                      },
+                      {
+                        action: t("admin.events.ushers.activity.guestAssisted"),
+                        time: "3 hours ago",
+                        details: "Gate A - Customer inquiry",
+                      },
+                      {
+                        action: t("admin.events.ushers.activity.ticketScanned"),
+                        time: "4 hours ago",
+                        details: "VIP Section - Ticket #12344",
+                      },
+                      {
+                        action: t("admin.events.ushers.activity.areaPatrolled"),
+                        time: "5 hours ago",
+                        details: "VIP Section - Security check",
+                      },
+                    ].map((activity, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg rtl:flex-row-reverse"
+                      >
+                        <div className="flex items-center gap-3 rtl:flex-row-reverse">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-sm">{activity.action}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground rtl:text-right">
+                          {activity.time} • {activity.details}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Performance Stats */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm rtl:text-right">
+                    {t("admin.events.ushers.performanceStats")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">
+                        156
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {t("admin.events.ushers.ticketsScanned")}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">23</div>
+                      <p className="text-sm text-muted-foreground">
+                        {t("admin.events.ushers.guestsAssisted")}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">
+                        8.5h
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {t("admin.events.ushers.activeTime")}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+          <DialogFooter className="rtl:flex-row-reverse">
+            <Button
+              variant="outline"
+              onClick={() => setIsViewUsherActivityDialogOpen(false)}
+            >
+              {t("admin.events.dialogs.close")}
+            </Button>
             <Button
               onClick={() => {
                 toast({
-                  title: t("admin.events.ushers.saveSuccess"),
-                  description: t("admin.events.ushers.saveSuccessDesc"),
+                  title: t("admin.events.ushers.exportSuccess"),
+                  description: t("admin.events.ushers.exportSuccessDesc"),
                 });
               }}
             >
-              {t("admin.events.ushers.saveChanges")}
+              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+              {t("admin.events.ushers.exportActivity")}
             </Button>
           </DialogFooter>
         </DialogContent>

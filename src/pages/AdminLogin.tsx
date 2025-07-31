@@ -15,7 +15,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Shield, Eye, EyeOff, Lock, User } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import i18n from "@/lib/i18n";
-import { Footer } from "@/components/Footer";
 
 const AdminLogin: React.FC = () => {
   const { t } = useTranslation();
@@ -148,7 +147,6 @@ const AdminLogin: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-      <Footer />
     </div>
   );
 };

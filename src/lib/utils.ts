@@ -59,11 +59,16 @@ export function getTextDirection(locale: string): "ltr" | "rtl" {
 // Utility function to format numbers for Arabic/RTL
 export function formatNumberForLocale(number: number, locale: string): string {
   if (locale === "ar") {
-    // Convert to Arabic numerals
-    const arabicNumerals = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
-    return number.toString().replace(/\d/g, (d) => arabicNumerals[parseInt(d)]);
+    // Use Intl.NumberFormat for proper Arabic number formatting
+    return new Intl.NumberFormat("ar-EG", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(number);
   }
-  return number.toLocaleString();
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(number);
 }
 
 // Utility function to format currency for Arabic/RTL
@@ -71,11 +76,40 @@ export function formatCurrencyForLocale(
   amount: number,
   locale: string
 ): string {
-  const formattedNumber = formatNumberForLocale(amount, locale);
   if (locale === "ar") {
-    return `ج.م ${formattedNumber}`;
+    return new Intl.NumberFormat("ar-EG", {
+      style: "currency",
+      currency: "EGP",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(amount);
   }
-  return `E£ ${amount.toLocaleString()}`;
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "EGP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
+
+// Utility function to format percentages for Arabic/RTL
+export function formatPercentageForLocale(
+  value: number,
+  locale: string,
+  decimals: number = 1
+): string {
+  if (locale === "ar") {
+    const formattedNumber = new Intl.NumberFormat("ar-EG", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals,
+    }).format(value);
+    return `${formattedNumber}%`;
+  }
+  const formattedNumber = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals,
+  }).format(value);
+  return `${formattedNumber}%`;
 }
 
 // Utility function to format phone numbers for Arabic/RTL

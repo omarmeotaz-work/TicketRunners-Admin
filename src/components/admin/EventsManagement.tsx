@@ -50,6 +50,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  ResponsivePagination,
 } from "@/components/ui/pagination";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
@@ -89,6 +90,7 @@ import { useTranslation } from "react-i18next";
 import { format, parseISO } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { formatNumberForLocale, formatCurrencyForLocale } from "@/lib/utils";
+import i18n from "@/lib/i18n";
 import { ExportDialog } from "@/components/ui/export-dialog";
 import { commonColumns } from "@/lib/exportUtils";
 import {
@@ -136,6 +138,15 @@ interface Event {
   usheringAccounts: number;
   imageUrl: string;
   description: string;
+  gallery?: GalleryImage[];
+}
+
+interface GalleryImage {
+  id: string;
+  url: string;
+  order: number;
+  isThumbnail: boolean;
+  alt?: string;
 }
 
 interface VenueSection {
@@ -201,6 +212,8 @@ const EventsManagement: React.FC = () => {
       type: "percentage" as "percentage" | "flat",
       value: 5,
     },
+    imageUrl: "",
+    gallery: [] as GalleryImage[],
   });
 
   // Edit event state for new features
@@ -223,8 +236,9 @@ const EventsManagement: React.FC = () => {
       type: "percentage" as "percentage" | "flat",
       value: 5,
     },
+    imageUrl: "",
     termsAndConditions: "",
-    gallery: [] as string[],
+    gallery: [] as GalleryImage[],
     venueLayouts: [
       {
         id: "1",
@@ -650,6 +664,10 @@ const EventsManagement: React.FC = () => {
         type: "percentage",
         value: 10,
       },
+      transferFee: {
+        type: "percentage",
+        value: 5,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 5,
       usheringAccounts: 10,
@@ -766,6 +784,10 @@ const EventsManagement: React.FC = () => {
         type: "percentage",
         value: 10,
       },
+      transferFee: {
+        type: "percentage",
+        value: 3,
+      },
       ticketTransferEnabled: false,
       ticketLimit: 2,
       usheringAccounts: 2,
@@ -817,6 +839,10 @@ const EventsManagement: React.FC = () => {
       commissionRate: {
         type: "percentage",
         value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 5,
       },
       ticketTransferEnabled: false,
       ticketLimit: 3,
@@ -870,6 +896,10 @@ const EventsManagement: React.FC = () => {
         type: "percentage",
         value: 10,
       },
+      transferFee: {
+        type: "percentage",
+        value: 5,
+      },
       ticketTransferEnabled: true,
       ticketLimit: 4,
       usheringAccounts: 5,
@@ -921,6 +951,10 @@ const EventsManagement: React.FC = () => {
       commissionRate: {
         type: "percentage",
         value: 10,
+      },
+      transferFee: {
+        type: "percentage",
+        value: 3,
       },
       ticketTransferEnabled: false,
       ticketLimit: 2,
@@ -1042,8 +1076,9 @@ const EventsManagement: React.FC = () => {
       ticketTransferEnabled: event.ticketTransferEnabled,
       commissionRate: event.commissionRate,
       transferFee: event.transferFee,
+      imageUrl: event.imageUrl,
       termsAndConditions: "",
-      gallery: [],
+      gallery: event.gallery || [],
       venueLayouts: [
         {
           id: "1",
@@ -1304,7 +1339,7 @@ const EventsManagement: React.FC = () => {
     }
 
     // Check if URL is already in gallery
-    if (editEventData.gallery.includes(imageUrl)) {
+    if (editEventData.gallery.some((image) => image.url === imageUrl)) {
       toast({
         title: "Duplicate Image",
         description: "This image is already in the gallery",
@@ -1313,10 +1348,23 @@ const EventsManagement: React.FC = () => {
       return;
     }
 
-    setEditEventData((prev) => ({
-      ...prev,
-      gallery: [...prev.gallery, imageUrl],
-    }));
+    setEditEventData((prev) => {
+      const newOrder = prev.gallery.length;
+      const isFirstImage = prev.gallery.length === 0;
+
+      return {
+        ...prev,
+        gallery: [
+          ...prev.gallery,
+          {
+            id: Date.now().toString(),
+            url: imageUrl,
+            order: newOrder,
+            isThumbnail: isFirstImage, // First image becomes thumbnail automatically
+          },
+        ],
+      };
+    });
 
     toast({
       title: "Image Added",
@@ -1329,6 +1377,84 @@ const EventsManagement: React.FC = () => {
       ...prev,
       gallery: prev.gallery.filter((_, i) => i !== index),
     }));
+  };
+
+  const handleSetThumbnail = (imageId: string) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      gallery: prev.gallery.map((image) => ({
+        ...image,
+        isThumbnail: image.id === imageId,
+      })),
+    }));
+  };
+
+  const handleMoveImage = (fromIndex: number, toIndex: number) => {
+    setEditEventData((prev) => {
+      const newGallery = [...prev.gallery];
+      const [movedImage] = newGallery.splice(fromIndex, 1);
+      newGallery.splice(toIndex, 0, movedImage);
+
+      // Update order numbers and ensure first image is thumbnail if no thumbnail exists
+      const updatedGallery = newGallery.map((image, index) => ({
+        ...image,
+        order: index,
+      }));
+
+      // If no thumbnail is set, make the first image the thumbnail
+      const hasThumbnail = updatedGallery.some((img) => img.isThumbnail);
+      if (!hasThumbnail && updatedGallery.length > 0) {
+        updatedGallery[0].isThumbnail = true;
+      }
+
+      return {
+        ...prev,
+        gallery: updatedGallery,
+      };
+    });
+  };
+
+  const handleReorderGallery = (newOrder: GalleryImage[]) => {
+    setEditEventData((prev) => {
+      const updatedGallery = newOrder.map((image, index) => ({
+        ...image,
+        order: index,
+      }));
+
+      // If no thumbnail is set, make the first image the thumbnail
+      const hasThumbnail = updatedGallery.some((img) => img.isThumbnail);
+      if (!hasThumbnail && updatedGallery.length > 0) {
+        updatedGallery[0].isThumbnail = true;
+      }
+
+      return {
+        ...prev,
+        gallery: updatedGallery,
+      };
+    });
+  };
+
+  const handleUpdateImageAlt = (imageId: string, alt: string) => {
+    setEditEventData((prev) => ({
+      ...prev,
+      gallery: prev.gallery.map((image) =>
+        image.id === imageId ? { ...image, alt } : image
+      ),
+    }));
+  };
+
+  const handleSetMainEventImage = (imageId: string) => {
+    const image = editEventData.gallery.find((img) => img.id === imageId);
+    if (image) {
+      setEditEventData((prev) => ({
+        ...prev,
+        imageUrl: image.url, // Update the main event image
+      }));
+      toast({
+        title: "Main Event Image Updated",
+        description: "The main event image has been updated from the gallery",
+      });
+    }
   };
 
   const handleAddTicketCategory = () => {
@@ -1546,11 +1672,16 @@ const EventsManagement: React.FC = () => {
         type: "percentage",
         value: 10,
       },
+      transferFee: {
+        type: "percentage",
+        value: 5,
+      },
       ticketTransferEnabled: newEvent.ticketTransferEnabled,
       ticketLimit: newEvent.ticketLimit,
       usheringAccounts: 0,
       imageUrl: "/public/placeholderLogo.png",
       description: newEvent.description,
+      gallery: [],
     };
 
     // In a real app, you would make an API call here
@@ -1575,6 +1706,12 @@ const EventsManagement: React.FC = () => {
         type: "percentage" as "percentage" | "flat",
         value: 10,
       },
+      transferFee: {
+        type: "percentage" as "percentage" | "flat",
+        value: 5,
+      },
+      imageUrl: "",
+      gallery: [],
     });
     setIsAddDialogOpen(false);
   };
@@ -1591,6 +1728,83 @@ const EventsManagement: React.FC = () => {
       ...prev,
       [field]: value,
     }));
+  };
+
+  // Gallery management functions for new event
+  const handleAddNewEventGalleryImage = (imageUrl: string) => {
+    // Basic URL validation
+    if (!imageUrl.trim()) {
+      toast({
+        title: "Invalid URL",
+        description: "Please enter a valid image URL",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if URL is already in gallery
+    if (newEvent.gallery.some((image) => image.url === imageUrl)) {
+      toast({
+        title: "Duplicate Image",
+        description: "This image is already in the gallery",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setNewEvent((prev) => {
+      const newOrder = prev.gallery.length;
+      const isFirstImage = prev.gallery.length === 0;
+
+      return {
+        ...prev,
+        gallery: [
+          ...prev.gallery,
+          {
+            id: Date.now().toString(),
+            url: imageUrl,
+            order: newOrder,
+            isThumbnail: isFirstImage, // First image becomes thumbnail automatically
+          },
+        ],
+      };
+    });
+
+    toast({
+      title: "Image Added",
+      description: "Image has been added to the gallery",
+    });
+  };
+
+  const handleRemoveNewEventGalleryImage = (index: number) => {
+    setNewEvent((prev) => ({
+      ...prev,
+      gallery: prev.gallery.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleSetNewEventThumbnail = (imageId: string) => {
+    setNewEvent((prev) => ({
+      ...prev,
+      gallery: prev.gallery.map((image) => ({
+        ...image,
+        isThumbnail: image.id === imageId,
+      })),
+    }));
+  };
+
+  const handleSetNewEventMainImage = (imageId: string) => {
+    const image = newEvent.gallery.find((img) => img.id === imageId);
+    if (image) {
+      setNewEvent((prev) => ({
+        ...prev,
+        imageUrl: image.url,
+      }));
+      toast({
+        title: "Main Event Image Updated",
+        description: "The main event image has been updated from the gallery",
+      });
+    }
   };
 
   // Usher management handlers
@@ -1676,21 +1890,18 @@ const EventsManagement: React.FC = () => {
   };
 
   return (
-    <div
-      className="space-y-6"
-      dir={i18nInstance.language === "ar" ? "rtl" : "ltr"}
-    >
+    <div className="space-y-6" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+          <h2 className="text-xl sm:text-2xl font-bold rtl:text-right ltr:text-left">
             {t("admin.events.title")}
           </h2>
-          <p className="text-muted-foreground rtl:text-right ltr:text-left">
+          <p className="text-sm sm:text-base text-muted-foreground rtl:text-right ltr:text-left">
             {t("admin.events.subtitle")}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <ExportDialog
             data={filteredEvents}
             columns={commonColumns.events}
@@ -1711,14 +1922,20 @@ const EventsManagement: React.FC = () => {
               });
             }}
           >
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-              {t("admin.dashboard.actions.export")}
+            <Button variant="outline" className="text-xs sm:text-sm">
+              <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+              <span className="hidden sm:inline">
+                {t("admin.dashboard.actions.export")}
+              </span>
+              <span className="sm:hidden">Export</span>
             </Button>
           </ExportDialog>
-          <Button onClick={handleAddEvent}>
-            <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.dashboard.actions.addEvent")}
+          <Button onClick={handleAddEvent} className="text-xs sm:text-sm">
+            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+            <span className="hidden sm:inline">
+              {t("admin.dashboard.actions.addEvent")}
+            </span>
+            <span className="sm:hidden">Add</span>
           </Button>
         </div>
       </div>
@@ -2033,134 +2250,24 @@ const EventsManagement: React.FC = () => {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-muted-foreground rtl:text-right">
-                {t("admin.events.pagination.showing")} {startIndex + 1}-
-                {Math.min(endIndex, filteredEvents.length)}{" "}
-                {t("admin.events.pagination.of")} {filteredEvents.length}{" "}
-                {t("admin.events.pagination.results")}
-              </div>
-              <Pagination>
-                <PaginationContent>
-                  {/* First Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(1)}
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.events.pagination.first")}
-                    </PaginationLink>
-                  </PaginationItem>
-
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        setCurrentPage(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* First page number */}
-                  {currentPage > 3 && (
-                    <PaginationItem>
-                      <PaginationLink onClick={() => setCurrentPage(1)}>
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage > 4 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Previous page */}
-                  {currentPage > 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                      >
-                        {currentPage - 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Current page */}
-                  <PaginationItem>
-                    <PaginationLink isActive>{currentPage}</PaginationLink>
-                  </PaginationItem>
-
-                  {/* Next page */}
-                  {currentPage < totalPages - 1 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                      >
-                        {currentPage + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage < totalPages - 3 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Last page number */}
-                  {currentPage < totalPages - 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(totalPages)}
-                      >
-                        {totalPages}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        setCurrentPage(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* Last Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(totalPages)}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.events.pagination.last")}
-                    </PaginationLink>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+          <ResponsivePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            showInfo={true}
+            infoText={`${t("admin.events.pagination.showing")} ${
+              startIndex + 1
+            }-${Math.min(endIndex, filteredEvents.length)} ${t(
+              "admin.events.pagination.of"
+            )} ${filteredEvents.length} ${t(
+              "admin.events.pagination.results"
+            )}`}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            totalItems={filteredEvents.length}
+            itemsPerPage={itemsPerPage}
+            className="mt-4"
+          />
         </CardContent>
       </Card>
 
@@ -2256,11 +2363,17 @@ const EventsManagement: React.FC = () => {
                   </CardHeader>
                   <CardContent className="rtl:text-right">
                     <div className="text-2xl font-bold number-container">
-                      {selectedEvent.ticketsSold}
+                      {formatNumberForLocale(
+                        selectedEvent.ticketsSold,
+                        i18n.language
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {t("admin.events.metrics.ofSold", {
-                        total: selectedEvent.totalTickets,
+                        total: formatNumberForLocale(
+                          selectedEvent.totalTickets,
+                          i18n.language
+                        ),
                       })}
                     </p>
                     <div className="mt-2">
@@ -2297,17 +2410,26 @@ const EventsManagement: React.FC = () => {
                   </CardHeader>
                   <CardContent className="rtl:text-right">
                     <div className="text-2xl font-bold text-green-600 number-container">
-                      E£ {selectedEvent.revenue.toLocaleString()}
+                      {formatCurrencyForLocale(
+                        selectedEvent.revenue,
+                        i18n.language
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {t("admin.events.metrics.commission")}: E£{" "}
-                      {selectedEvent.commission.toLocaleString()}
+                      {t("admin.events.metrics.commission")}:{" "}
+                      {formatCurrencyForLocale(
+                        selectedEvent.commission,
+                        i18n.language
+                      )}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Rate:{" "}
                       {selectedEvent.commissionRate.type === "percentage"
                         ? `${selectedEvent.commissionRate.value}%`
-                        : `E£${selectedEvent.commissionRate.value} per ticket`}
+                        : `${formatCurrencyForLocale(
+                            selectedEvent.commissionRate.value,
+                            i18n.language
+                          )} per ticket`}
                     </p>
                   </CardContent>
                 </Card>
@@ -2320,7 +2442,10 @@ const EventsManagement: React.FC = () => {
                   </CardHeader>
                   <CardContent className="rtl:text-right">
                     <div className="text-2xl font-bold text-blue-600 number-container">
-                      E£ {selectedEvent.payout.toLocaleString()}
+                      {formatCurrencyForLocale(
+                        selectedEvent.payout,
+                        i18n.language
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {t("admin.events.metrics.pendingPayout")}
@@ -2823,16 +2948,31 @@ const EventsManagement: React.FC = () => {
                           Gallery Images ({editEventData.gallery.length})
                         </h4>
                         {editEventData.gallery.length > 0 && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              handleEditEventDataChange("gallery", [])
-                            }
-                            className="text-red-600"
-                          >
-                            Clear All
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                // Sort gallery by order
+                                const sortedGallery = [
+                                  ...editEventData.gallery,
+                                ].sort((a, b) => a.order - b.order);
+                                handleReorderGallery(sortedGallery);
+                              }}
+                            >
+                              Sort by Order
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleEditEventDataChange("gallery", [])
+                              }
+                              className="text-red-600"
+                            >
+                              Clear All
+                            </Button>
+                          </div>
                         )}
                       </div>
 
@@ -2845,30 +2985,226 @@ const EventsManagement: React.FC = () => {
                           </p>
                         </div>
                       ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                          {editEventData.gallery.map((image, index) => (
-                            <div key={index} className="relative group">
-                              <img
-                                src={image}
-                                alt={`Gallery image ${index + 1}`}
-                                className="w-full h-32 object-cover rounded-lg border"
-                                onError={(e) => {
-                                  e.currentTarget.src =
-                                    "https://via.placeholder.com/400x300?text=Image+Error";
-                                }}
-                              />
-                              <button
-                                onClick={() => handleRemoveGalleryImage(index)}
-                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                                title="Remove image"
-                              >
-                                ×
-                              </button>
-                              <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                Image {index + 1}
+                        <div className="space-y-4">
+                          {/* Gallery Instructions */}
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div className="flex items-start gap-3">
+                              <div className="text-blue-600 mt-1">
+                                <svg
+                                  className="w-5 h-5"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                              <div className="text-sm text-blue-800">
+                                <p className="font-medium mb-1">
+                                  Gallery Management Tips:
+                                </p>
+                                <ul className="space-y-1 text-xs">
+                                  <li>• Drag images to reorder them</li>
+                                  <li>
+                                    • Click the star icon to set an image as
+                                    thumbnail
+                                  </li>
+                                  <li>
+                                    • The first image will be used as the main
+                                    event image
+                                  </li>
+                                  <li>
+                                    • Use the number badges to see the display
+                                    order
+                                  </li>
+                                </ul>
                               </div>
                             </div>
-                          ))}
+                          </div>
+
+                          {/* Gallery Grid with Drag & Drop */}
+                          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {editEventData.gallery
+                              .sort((a, b) => a.order - b.order)
+                              .map((image, index) => (
+                                <div
+                                  key={image.id}
+                                  className="relative group cursor-move"
+                                  draggable
+                                  onDragStart={(e) => {
+                                    e.dataTransfer.setData(
+                                      "text/plain",
+                                      image.id
+                                    );
+                                  }}
+                                  onDragOver={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                  onDrop={(e) => {
+                                    e.preventDefault();
+                                    const draggedId =
+                                      e.dataTransfer.getData("text/plain");
+                                    const draggedIndex =
+                                      editEventData.gallery.findIndex(
+                                        (img) => img.id === draggedId
+                                      );
+                                    const targetIndex =
+                                      editEventData.gallery.findIndex(
+                                        (img) => img.id === image.id
+                                      );
+                                    if (
+                                      draggedIndex !== -1 &&
+                                      targetIndex !== -1 &&
+                                      draggedIndex !== targetIndex
+                                    ) {
+                                      handleMoveImage(
+                                        draggedIndex,
+                                        targetIndex
+                                      );
+                                    }
+                                  }}
+                                >
+                                  <img
+                                    src={image.url}
+                                    alt={
+                                      image.alt || `Gallery image ${index + 1}`
+                                    }
+                                    className={`w-full h-32 object-cover rounded-lg border ${
+                                      image.isThumbnail
+                                        ? "ring-2 ring-yellow-400"
+                                        : ""
+                                    }`}
+                                    onError={(e) => {
+                                      e.currentTarget.src =
+                                        "https://via.placeholder.com/400x300?text=Image+Error";
+                                    }}
+                                  />
+
+                                  {/* Order Badge */}
+                                  <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                    #{image.order + 1}
+                                  </div>
+
+                                  {/* Status Badges - Positioned to avoid overlap */}
+                                  <div className="absolute bottom-2 right-2 flex flex-col gap-1">
+                                    {/* Thumbnail Badge */}
+                                    {image.isThumbnail && (
+                                      <div className="bg-yellow-500 text-white text-xs px-2 py-1 rounded">
+                                        ★ Thumbnail
+                                      </div>
+                                    )}
+
+                                    {/* Main Event Image Badge */}
+                                    {editEventData.imageUrl === image.url && (
+                                      <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                                        🏠 Main
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Action Buttons */}
+                                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSetThumbnail(image.id);
+                                      }}
+                                      className={`bg-white text-gray-700 rounded-full w-6 h-6 flex items-center justify-center hover:bg-yellow-100 border ${
+                                        image.isThumbnail
+                                          ? "bg-yellow-100 text-yellow-700"
+                                          : ""
+                                      }`}
+                                      title={
+                                        image.isThumbnail
+                                          ? "Current thumbnail"
+                                          : "Set as thumbnail"
+                                      }
+                                    >
+                                      ★
+                                    </button>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSetMainEventImage(image.id);
+                                      }}
+                                      className={`bg-white text-gray-700 rounded-full w-6 h-6 flex items-center justify-center hover:bg-blue-100 border ${
+                                        editEventData.imageUrl === image.url
+                                          ? "bg-blue-100 text-blue-700"
+                                          : ""
+                                      }`}
+                                      title={
+                                        editEventData.imageUrl === image.url
+                                          ? "Current main image"
+                                          : "Set as main event image"
+                                      }
+                                    >
+                                      🏠
+                                    </button>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const imageIndex =
+                                          editEventData.gallery.findIndex(
+                                            (img) => img.id === image.id
+                                          );
+                                        if (imageIndex !== -1) {
+                                          handleRemoveGalleryImage(imageIndex);
+                                        }
+                                      }}
+                                      className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                                      title="Remove image"
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
+
+                                  {/* Image Info on Hover */}
+                                  <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity max-w-[calc(100%-4rem)]">
+                                    {image.alt || `Image ${index + 1}`}
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+
+                          {/* Gallery Summary */}
+                          {editEventData.gallery.length > 0 && (
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                              <div className="flex items-center justify-between">
+                                <div className="text-sm text-gray-600">
+                                  <p>
+                                    <strong>Total Images:</strong>{" "}
+                                    {editEventData.gallery.length}
+                                  </p>
+                                  <p>
+                                    <strong>Thumbnail:</strong>{" "}
+                                    {editEventData.gallery.find(
+                                      (img) => img.isThumbnail
+                                    )?.alt || "Not set"}
+                                  </p>
+                                  <p>
+                                    <strong>Main Event Image:</strong>{" "}
+                                    {editEventData.gallery.find(
+                                      (img) =>
+                                        img.url === editEventData.imageUrl
+                                    )?.alt || "Not set"}
+                                  </p>
+                                  <p>
+                                    <strong>Display Order:</strong>{" "}
+                                    {editEventData.gallery
+                                      .sort((a, b) => a.order - b.order)
+                                      .map((img, idx) => `#${idx + 1}`)
+                                      .join(" → ")}
+                                  </p>
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  <p>Drag to reorder • Click ★ for thumbnail</p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -3781,7 +4117,7 @@ For questions about this event, please contact the organizer.`;
 
       {/* Add Event Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="rtl:text-right">
             <DialogTitle>{t("admin.events.dialogs.addEvent")}</DialogTitle>
             <DialogDescription>
@@ -4058,6 +4394,316 @@ For questions about this event, please contact the organizer.`;
                     </span>
                   )}
                 </div>
+              </div>
+            </div>
+
+            {/* Event Gallery */}
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium mb-3 rtl:text-right">
+                Event Gallery
+              </h4>
+
+              {/* Add Image Section */}
+              <Card className="mb-4">
+                <CardHeader>
+                  <CardTitle className="text-sm">Add New Image</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right">
+                        Image URL
+                      </label>
+                      <div className="flex gap-2 mt-1">
+                        <Input
+                          placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+                          onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                              const input = e.target as HTMLInputElement;
+                              if (input.value.trim()) {
+                                handleAddNewEventGalleryImage(
+                                  input.value.trim()
+                                );
+                                input.value = "";
+                              }
+                            }
+                          }}
+                        />
+                        <Button
+                          onClick={(e) => {
+                            const input = e.currentTarget
+                              .previousElementSibling as HTMLInputElement;
+                            if (input && input.value.trim()) {
+                              handleAddNewEventGalleryImage(input.value.trim());
+                              input.value = "";
+                            }
+                          }}
+                        >
+                          Add
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Sample Image URLs for testing */}
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right">
+                        Quick Add Sample Images
+                      </label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {[
+                          "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop",
+                          "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=300&fit=crop",
+                          "https://images.unsplash.com/photo-1501281669025-7ec9d6aec993?w=400&h=300&fit=crop",
+                          "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
+                        ].map((url, index) => (
+                          <Button
+                            key={index}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddNewEventGalleryImage(url)}
+                          >
+                            Sample {index + 1}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Gallery Display */}
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <h4 className="text-md font-medium rtl:text-right">
+                    Gallery Images ({newEvent.gallery.length})
+                  </h4>
+                  {newEvent.gallery.length > 0 && (
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const sortedGallery = [...newEvent.gallery].sort(
+                            (a, b) => a.order - b.order
+                          );
+                          setNewEvent((prev) => ({
+                            ...prev,
+                            gallery: sortedGallery.map((image, index) => ({
+                              ...image,
+                              order: index,
+                            })),
+                          }));
+                        }}
+                      >
+                        Sort by Order
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setNewEvent((prev) => ({ ...prev, gallery: [] }))
+                        }
+                        className="text-red-600"
+                      >
+                        Clear All
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                {newEvent.gallery.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <ImageIcon className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                    <p>No images in gallery yet</p>
+                    <p className="text-sm">Add images using the form above</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {/* Gallery Instructions */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="text-blue-600 mt-1">
+                          <svg
+                            className="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div className="text-sm text-blue-800">
+                          <p className="font-medium mb-1">
+                            Gallery Management Tips:
+                          </p>
+                          <ul className="space-y-1 text-xs">
+                            <li>
+                              • Click the star icon to set an image as thumbnail
+                            </li>
+                            <li>
+                              • Click the house icon to set an image as main
+                              event image
+                            </li>
+                            <li>
+                              • The first image will be used as the main event
+                              image
+                            </li>
+                            <li>
+                              • Use the number badges to see the display order
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Gallery Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {newEvent.gallery
+                        .sort((a, b) => a.order - b.order)
+                        .map((image, index) => (
+                          <div key={image.id} className="relative group">
+                            <img
+                              src={image.url}
+                              alt={image.alt || `Gallery image ${index + 1}`}
+                              className={`w-full h-32 object-cover rounded-lg border ${
+                                image.isThumbnail
+                                  ? "ring-2 ring-yellow-400"
+                                  : ""
+                              }`}
+                              onError={(e) => {
+                                e.currentTarget.src =
+                                  "https://via.placeholder.com/400x300?text=Image+Error";
+                              }}
+                            />
+
+                            {/* Order Badge */}
+                            <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                              #{image.order + 1}
+                            </div>
+
+                            {/* Status Badges - Positioned to avoid overlap */}
+                            <div className="absolute bottom-2 right-2 flex flex-col gap-1">
+                              {/* Thumbnail Badge */}
+                              {image.isThumbnail && (
+                                <div className="bg-yellow-500 text-white text-xs px-2 py-1 rounded">
+                                  ★ Thumbnail
+                                </div>
+                              )}
+
+                              {/* Main Event Image Badge */}
+                              {newEvent.imageUrl === image.url && (
+                                <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                                  🏠 Main
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleSetNewEventThumbnail(image.id);
+                                }}
+                                className={`bg-white text-gray-700 rounded-full w-6 h-6 flex items-center justify-center hover:bg-yellow-100 border ${
+                                  image.isThumbnail
+                                    ? "bg-yellow-100 text-yellow-700"
+                                    : ""
+                                }`}
+                                title={
+                                  image.isThumbnail
+                                    ? "Current thumbnail"
+                                    : "Set as thumbnail"
+                                }
+                              >
+                                ★
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleSetNewEventMainImage(image.id);
+                                }}
+                                className={`bg-white text-gray-700 rounded-full w-6 h-6 flex items-center justify-center hover:bg-blue-100 border ${
+                                  newEvent.imageUrl === image.url
+                                    ? "bg-blue-100 text-blue-700"
+                                    : ""
+                                }`}
+                                title={
+                                  newEvent.imageUrl === image.url
+                                    ? "Current main image"
+                                    : "Set as main event image"
+                                }
+                              >
+                                🏠
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const imageIndex = newEvent.gallery.findIndex(
+                                    (img) => img.id === image.id
+                                  );
+                                  if (imageIndex !== -1) {
+                                    handleRemoveNewEventGalleryImage(
+                                      imageIndex
+                                    );
+                                  }
+                                }}
+                                className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                                title="Remove image"
+                              >
+                                ×
+                              </button>
+                            </div>
+
+                            {/* Image Info on Hover */}
+                            <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity max-w-[calc(100%-4rem)]">
+                              {image.alt || `Image ${index + 1}`}
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+
+                    {/* Gallery Summary */}
+                    {newEvent.gallery.length > 0 && (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm text-gray-600">
+                            <p>
+                              <strong>Total Images:</strong>{" "}
+                              {newEvent.gallery.length}
+                            </p>
+                            <p>
+                              <strong>Thumbnail:</strong>{" "}
+                              {newEvent.gallery.find((img) => img.isThumbnail)
+                                ?.alt || "Not set"}
+                            </p>
+                            <p>
+                              <strong>Main Event Image:</strong>{" "}
+                              {newEvent.gallery.find(
+                                (img) => img.url === newEvent.imageUrl
+                              )?.alt || "Not set"}
+                            </p>
+                            <p>
+                              <strong>Display Order:</strong>{" "}
+                              {newEvent.gallery
+                                .sort((a, b) => a.order - b.order)
+                                .map((img, idx) => `#${idx + 1}`)
+                                .join(" → ")}
+                            </p>
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            <p>
+                              Click ★ for thumbnail • Click 🏠 for main image
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>

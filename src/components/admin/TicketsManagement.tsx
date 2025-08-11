@@ -49,6 +49,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  ResponsivePagination,
 } from "@/components/ui/pagination";
 import {
   Command,
@@ -85,6 +86,14 @@ import {
   UserCheck,
   UserX,
   ChevronsUpDown,
+  Tag,
+  Tags,
+  Crown,
+  Award,
+  Shield,
+  Heart,
+  Zap,
+  Star,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, parseISO } from "date-fns";
@@ -94,6 +103,14 @@ import { formatCurrencyForLocale } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { ExportDialog } from "@/components/ui/export-dialog";
 import { commonColumns } from "@/lib/exportUtils";
+
+type TicketLabel = {
+  id: string;
+  name: string;
+  color: string;
+  description?: string;
+  icon?: string;
+};
 
 type Ticket = {
   id: string;
@@ -109,6 +126,7 @@ type Ticket = {
   phoneNumber: string;
   ticketNumber: string;
   qrCode: string;
+  labels: TicketLabel[];
 };
 
 type CheckInLog = {
@@ -145,6 +163,42 @@ const TicketsManagement: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  // Label management state
+  const [showLabelDialog, setShowLabelDialog] = useState(false);
+  const [showManageLabelsDialog, setShowManageLabelsDialog] = useState(false);
+  const [selectedLabels, setSelectedLabels] = useState<TicketLabel[]>([]);
+  const [newLabel, setNewLabel] = useState({
+    name: "",
+    color: "#3B82F6",
+    description: "",
+    icon: "Tag",
+  });
+
+  // Available label colors and icons
+  const labelColors = [
+    "#3B82F6",
+    "#10B981",
+    "#F59E0B",
+    "#EF4444",
+    "#8B5CF6",
+    "#06B6D4",
+    "#84CC16",
+    "#F97316",
+    "#EC4899",
+    "#6366F1",
+  ];
+
+  const labelIcons = [
+    { name: "Tag", icon: Tag },
+    { name: "Crown", icon: Crown },
+    { name: "Award", icon: Award },
+    { name: "Shield", icon: Shield },
+    { name: "Heart", icon: Heart },
+    { name: "Zap", icon: Zap },
+    { name: "Star", icon: Star },
+    { name: "CheckCircle", icon: CheckCircle },
+  ];
+
   // Mock events data for assign ticket dialog
   const mockEvents = Array.from({ length: 100 }, (_, i) => ({
     id: `${i + 1}`,
@@ -166,6 +220,22 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966501234567",
       ticketNumber: "TKT-001-2025",
       qrCode: "QR-001-2025",
+      labels: [
+        {
+          id: "label-1",
+          name: "VIP",
+          color: "#F59E0B",
+          description: "Very Important Person",
+          icon: "Crown",
+        },
+        {
+          id: "label-2",
+          name: "Front Row",
+          color: "#10B981",
+          description: "Front row seating",
+          icon: "Star",
+        },
+      ],
     },
     {
       id: "2",
@@ -181,6 +251,15 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966502345678",
       ticketNumber: "TKT-002-2025",
       qrCode: "QR-002-2025",
+      labels: [
+        {
+          id: "label-3",
+          name: "Premium",
+          color: "#8B5CF6",
+          description: "Premium ticket",
+          icon: "Award",
+        },
+      ],
     },
     {
       id: "3",
@@ -195,6 +274,15 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966503456789",
       ticketNumber: "TKT-003-2025",
       qrCode: "QR-003-2025",
+      labels: [
+        {
+          id: "label-4",
+          name: "Early Bird",
+          color: "#10B981",
+          description: "Early bird discount",
+          icon: "Star",
+        },
+      ],
     },
     {
       id: "4",
@@ -209,6 +297,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966504567890",
       ticketNumber: "TKT-004-2025",
       qrCode: "QR-004-2025",
+      labels: [],
     },
     {
       id: "5",
@@ -223,6 +312,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966505678901",
       ticketNumber: "TKT-005-2025",
       qrCode: "QR-005-2025",
+      labels: [],
     },
     {
       id: "6",
@@ -237,6 +327,22 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966506789012",
       ticketNumber: "TKT-006-2025",
       qrCode: "QR-006-2025",
+      labels: [
+        {
+          id: "label-5",
+          name: "VIP",
+          color: "#F59E0B",
+          description: "Very Important Person",
+          icon: "Crown",
+        },
+        {
+          id: "label-6",
+          name: "Front Row",
+          color: "#10B981",
+          description: "Front row seating",
+          icon: "Star",
+        },
+      ],
     },
     {
       id: "7",
@@ -252,6 +358,15 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966507890123",
       ticketNumber: "TKT-007-2025",
       qrCode: "QR-007-2025",
+      labels: [
+        {
+          id: "label-7",
+          name: "Premium",
+          color: "#8B5CF6",
+          description: "Premium ticket",
+          icon: "Award",
+        },
+      ],
     },
     {
       id: "8",
@@ -266,6 +381,15 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966508901234",
       ticketNumber: "TKT-008-2025",
       qrCode: "QR-008-2025",
+      labels: [
+        {
+          id: "label-8",
+          name: "Student",
+          color: "#06B6D4",
+          description: "Student discount",
+          icon: "Shield",
+        },
+      ],
     },
     {
       id: "9",
@@ -280,6 +404,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966509012345",
       ticketNumber: "TKT-009-2025",
       qrCode: "QR-009-2025",
+      labels: [],
     },
     {
       id: "10",
@@ -294,6 +419,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966500123456",
       ticketNumber: "TKT-010-2025",
       qrCode: "QR-010-2025",
+      labels: [],
     },
     {
       id: "11",
@@ -308,6 +434,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966511234567",
       ticketNumber: "TKT-011-2025",
       qrCode: "QR-011-2025",
+      labels: [],
     },
     {
       id: "12",
@@ -323,6 +450,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966522345678",
       ticketNumber: "TKT-012-2025",
       qrCode: "QR-012-2025",
+      labels: [],
     },
     {
       id: "13",
@@ -337,6 +465,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966533456789",
       ticketNumber: "TKT-013-2025",
       qrCode: "QR-013-2025",
+      labels: [],
     },
     {
       id: "14",
@@ -351,6 +480,15 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966544567890",
       ticketNumber: "TKT-014-2025",
       qrCode: "QR-014-2025",
+      labels: [
+        {
+          id: "label-12",
+          name: "Early Bird",
+          color: "#10B981",
+          description: "Early bird discount",
+          icon: "Star",
+        },
+      ],
     },
     {
       id: "15",
@@ -365,6 +503,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966555678901",
       ticketNumber: "TKT-015-2025",
       qrCode: "QR-015-2025",
+      labels: [],
     },
     {
       id: "16",
@@ -379,6 +518,15 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966566789012",
       ticketNumber: "TKT-016-2025",
       qrCode: "QR-016-2025",
+      labels: [
+        {
+          id: "label-13",
+          name: "VIP",
+          color: "#F59E0B",
+          description: "Very Important Person",
+          icon: "Crown",
+        },
+      ],
     },
     {
       id: "17",
@@ -394,6 +542,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966577890123",
       ticketNumber: "TKT-017-2025",
       qrCode: "QR-017-2025",
+      labels: [],
     },
     {
       id: "18",
@@ -408,6 +557,15 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966588901234",
       ticketNumber: "TKT-018-2025",
       qrCode: "QR-018-2025",
+      labels: [
+        {
+          id: "label-14",
+          name: "Student",
+          color: "#06B6D4",
+          description: "Student discount",
+          icon: "Shield",
+        },
+      ],
     },
     {
       id: "19",
@@ -422,6 +580,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966599012345",
       ticketNumber: "TKT-019-2025",
       qrCode: "QR-019-2025",
+      labels: [],
     },
     {
       id: "20",
@@ -436,6 +595,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966500987654",
       ticketNumber: "TKT-020-2025",
       qrCode: "QR-020-2025",
+      labels: [],
     },
     {
       id: "21",
@@ -450,6 +610,15 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966511876543",
       ticketNumber: "TKT-021-2025",
       qrCode: "QR-021-2025",
+      labels: [
+        {
+          id: "label-15",
+          name: "VIP",
+          color: "#F59E0B",
+          description: "Very Important Person",
+          icon: "Crown",
+        },
+      ],
     },
     {
       id: "22",
@@ -465,6 +634,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966522765432",
       ticketNumber: "TKT-022-2025",
       qrCode: "QR-022-2025",
+      labels: [],
     },
     {
       id: "23",
@@ -479,6 +649,15 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966533654321",
       ticketNumber: "TKT-023-2025",
       qrCode: "QR-023-2025",
+      labels: [
+        {
+          id: "label-16",
+          name: "Student",
+          color: "#06B6D4",
+          description: "Student discount",
+          icon: "Shield",
+        },
+      ],
     },
     {
       id: "24",
@@ -493,6 +672,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966544543210",
       ticketNumber: "TKT-024-2025",
       qrCode: "QR-024-2025",
+      labels: [],
     },
     {
       id: "25",
@@ -507,6 +687,7 @@ const TicketsManagement: React.FC = () => {
       phoneNumber: "+966555432109",
       ticketNumber: "TKT-025-2025",
       qrCode: "QR-025-2025",
+      labels: [],
     },
   ];
 
@@ -733,19 +914,104 @@ const TicketsManagement: React.FC = () => {
     setIsEditDialogOpen(false);
   };
 
+  // Label management functions
+  const handleManageLabels = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
+    setSelectedLabels(ticket.labels);
+    setShowManageLabelsDialog(true);
+  };
+
+  const handleAddLabel = () => {
+    if (!newLabel.name.trim()) {
+      toast({
+        title: t("admin.tickets.labels.error.nameRequired"),
+        description: t("admin.tickets.labels.error.nameRequiredDesc"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const label: TicketLabel = {
+      id: `label-${Date.now()}`,
+      name: newLabel.name,
+      color: newLabel.color,
+      description: newLabel.description,
+      icon: newLabel.icon,
+    };
+
+    if (selectedTicket) {
+      const updatedTicket = {
+        ...selectedTicket,
+        labels: [...selectedTicket.labels, label],
+      };
+      setSelectedTicket(updatedTicket);
+      setSelectedLabels(updatedTicket.labels);
+    }
+
+    setNewLabel({
+      name: "",
+      color: "#3B82F6",
+      description: "",
+      icon: "Tag",
+    });
+
+    toast({
+      title: t("admin.tickets.labels.toast.labelAdded"),
+      description: t("admin.tickets.labels.toast.labelAddedDesc"),
+    });
+  };
+
+  const handleRemoveLabel = (labelId: string) => {
+    if (selectedTicket) {
+      const updatedTicket = {
+        ...selectedTicket,
+        labels: selectedTicket.labels.filter((label) => label.id !== labelId),
+      };
+      setSelectedTicket(updatedTicket);
+      setSelectedLabels(updatedTicket.labels);
+    }
+
+    toast({
+      title: t("admin.tickets.labels.toast.labelRemoved"),
+      description: t("admin.tickets.labels.toast.labelRemovedDesc"),
+    });
+  };
+
+  const handleSaveLabels = () => {
+    if (selectedTicket) {
+      // Update the ticket with new labels
+      const updatedTickets = tickets.map((ticket) =>
+        ticket.id === selectedTicket.id
+          ? { ...ticket, labels: selectedLabels }
+          : ticket
+      );
+
+      toast({
+        title: t("admin.tickets.labels.toast.labelsSaved"),
+        description: t("admin.tickets.labels.toast.labelsSavedDesc"),
+      });
+    }
+    setShowManageLabelsDialog(false);
+  };
+
+  const getLabelIcon = (iconName: string | undefined) => {
+    const iconObj = labelIcons.find((icon) => icon.name === iconName);
+    return iconObj ? iconObj.icon : Tag;
+  };
+
   return (
     <div className="space-y-6" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+          <h2 className="text-xl sm:text-2xl font-bold rtl:text-right ltr:text-left">
             {t("admin.tickets.title")}
           </h2>
-          <p className="text-muted-foreground rtl:text-right ltr:text-left">
+          <p className="text-sm sm:text-base text-muted-foreground rtl:text-right ltr:text-left">
             {t("admin.tickets.subtitle")}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <ExportDialog
             data={filteredTickets}
             columns={commonColumns.tickets}
@@ -766,14 +1032,20 @@ const TicketsManagement: React.FC = () => {
               });
             }}
           >
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-              {t("admin.tickets.actions.export")}
+            <Button variant="outline" className="text-xs sm:text-sm">
+              <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+              <span className="hidden sm:inline">
+                {t("admin.tickets.actions.export")}
+              </span>
+              <span className="sm:hidden">Export</span>
             </Button>
           </ExportDialog>
-          <Button onClick={handleAssignTicket}>
-            <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.tickets.actions.assignTicket")}
+          <Button onClick={handleAssignTicket} className="text-xs sm:text-sm">
+            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+            <span className="hidden sm:inline">
+              {t("admin.tickets.actions.assignTicket")}
+            </span>
+            <span className="sm:hidden">Assign</span>
           </Button>
         </div>
       </div>
@@ -984,6 +1256,9 @@ const TicketsManagement: React.FC = () => {
                     {t("admin.tickets.table.price")}
                   </TableHead>
                   <TableHead className="rtl:text-right">
+                    {t("admin.tickets.table.labels")}
+                  </TableHead>
+                  <TableHead className="rtl:text-right">
                     {t("admin.tickets.table.actions")}
                   </TableHead>
                 </TableRow>
@@ -1036,6 +1311,31 @@ const TicketsManagement: React.FC = () => {
                       </p>
                     </TableCell>
                     <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {ticket.labels.map((label) => {
+                          const IconComponent = getLabelIcon(label.icon);
+                          return (
+                            <Badge
+                              key={label.id}
+                              className="text-xs"
+                              style={{
+                                backgroundColor: label.color,
+                                color: "white",
+                              }}
+                            >
+                              <IconComponent className="h-3 w-3 mr-1 rtl:ml-1 rtl:mr-0" />
+                              {label.name}
+                            </Badge>
+                          );
+                        })}
+                        {ticket.labels.length === 0 && (
+                          <span className="text-xs text-muted-foreground">
+                            {t("admin.tickets.table.noLabels")}
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="sm">
@@ -1051,6 +1351,12 @@ const TicketsManagement: React.FC = () => {
                           >
                             <Edit className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
                             {t("admin.tickets.actions.editTicket")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleManageLabels(ticket)}
+                          >
+                            <Tags className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
+                            {t("admin.tickets.actions.manageLabels")}
                           </DropdownMenuItem>
 
                           <DropdownMenuSeparator />
@@ -1091,134 +1397,24 @@ const TicketsManagement: React.FC = () => {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-muted-foreground rtl:text-right">
-                {t("admin.tickets.pagination.showing")} {startIndex + 1}-
-                {Math.min(endIndex, filteredTickets.length)}{" "}
-                {t("admin.tickets.pagination.of")} {filteredTickets.length}{" "}
-                {t("admin.tickets.pagination.results")}
-              </div>
-              <Pagination>
-                <PaginationContent>
-                  {/* First Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(1)}
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.tickets.pagination.first")}
-                    </PaginationLink>
-                  </PaginationItem>
-
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        setCurrentPage(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* First page number */}
-                  {currentPage > 3 && (
-                    <PaginationItem>
-                      <PaginationLink onClick={() => setCurrentPage(1)}>
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage > 4 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Previous page */}
-                  {currentPage > 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                      >
-                        {currentPage - 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Current page */}
-                  <PaginationItem>
-                    <PaginationLink isActive>{currentPage}</PaginationLink>
-                  </PaginationItem>
-
-                  {/* Next page */}
-                  {currentPage < totalPages - 1 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                      >
-                        {currentPage + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage < totalPages - 3 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Last page number */}
-                  {currentPage < totalPages - 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(totalPages)}
-                      >
-                        {totalPages}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        setCurrentPage(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* Last Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(totalPages)}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.tickets.pagination.last")}
-                    </PaginationLink>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+          <ResponsivePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            showInfo={true}
+            infoText={`${t("admin.tickets.pagination.showing")} ${
+              startIndex + 1
+            }-${Math.min(endIndex, filteredTickets.length)} ${t(
+              "admin.tickets.pagination.of"
+            )} ${filteredTickets.length} ${t(
+              "admin.tickets.pagination.results"
+            )}`}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            totalItems={filteredTickets.length}
+            itemsPerPage={itemsPerPage}
+            className="mt-4"
+          />
         </CardContent>
       </Card>
 
@@ -1534,6 +1730,189 @@ const TicketsManagement: React.FC = () => {
             </Button>
             <Button onClick={handleAssignTicketAction}>
               {t("admin.tickets.dialogs.assignTicketButton")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Manage Labels Dialog */}
+      <Dialog
+        open={showManageLabelsDialog}
+        onOpenChange={setShowManageLabelsDialog}
+      >
+        <DialogContent className="max-w-2xl rtl:text-right ltr:text-left max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="rtl:text-right ltr:text-left">
+              {t("admin.tickets.labels.manageLabels")}
+            </DialogTitle>
+            <DialogDescription className="rtl:text-right ltr:text-left">
+              {selectedTicket &&
+                `${t("admin.tickets.labels.manageLabelsFor")} ${
+                  selectedTicket.ticketNumber
+                }`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedTicket && (
+            <div className="space-y-6 flex-1 overflow-y-auto">
+              {/* Current Labels */}
+              <div>
+                <h4 className="text-sm font-medium mb-3 rtl:text-right ltr:text-left">
+                  {t("admin.tickets.labels.currentLabels")}
+                </h4>
+                <div className="space-y-2">
+                  {selectedLabels.map((label) => {
+                    const IconComponent = getLabelIcon(label.icon);
+                    return (
+                      <div
+                        key={label.id}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
+                        <div className="flex items-center gap-3 rtl:gap-reverse">
+                          <Badge
+                            className="text-sm"
+                            style={{
+                              backgroundColor: label.color,
+                              color: "white",
+                            }}
+                          >
+                            <IconComponent className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                            {label.name}
+                          </Badge>
+                          {label.description && (
+                            <span className="text-sm text-muted-foreground">
+                              {label.description}
+                            </span>
+                          )}
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveLabel(label.id)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    );
+                  })}
+                  {selectedLabels.length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Tags className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>{t("admin.tickets.labels.noLabels")}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Add New Label */}
+              <div className="border-t pt-6">
+                <h4 className="text-sm font-medium mb-4 rtl:text-right ltr:text-left">
+                  {t("admin.tickets.labels.addNewLabel")}
+                </h4>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                        {t("admin.tickets.labels.labelName")}
+                      </label>
+                      <Input
+                        value={newLabel.name}
+                        onChange={(e) =>
+                          setNewLabel({ ...newLabel, name: e.target.value })
+                        }
+                        placeholder={t(
+                          "admin.tickets.labels.labelNamePlaceholder"
+                        )}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                        {t("admin.tickets.labels.labelColor")}
+                      </label>
+                      <div className="flex gap-2 mt-1">
+                        {labelColors.map((color) => (
+                          <button
+                            key={color}
+                            type="button"
+                            className={`w-8 h-8 rounded-full border-2 ${
+                              newLabel.color === color
+                                ? "border-gray-900"
+                                : "border-gray-300"
+                            }`}
+                            style={{ backgroundColor: color }}
+                            onClick={() => setNewLabel({ ...newLabel, color })}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                      {t("admin.tickets.labels.labelIcon")}
+                    </label>
+                    <div className="grid grid-cols-4 gap-2 mt-1">
+                      {labelIcons.map((iconObj) => {
+                        const IconComponent = iconObj.icon;
+                        return (
+                          <button
+                            key={iconObj.name}
+                            type="button"
+                            className={`p-2 rounded border-2 ${
+                              newLabel.icon === iconObj.name
+                                ? "border-blue-500 bg-blue-50"
+                                : "border-gray-300 hover:border-gray-400"
+                            }`}
+                            onClick={() =>
+                              setNewLabel({ ...newLabel, icon: iconObj.name })
+                            }
+                          >
+                            <IconComponent className="h-5 w-5" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                      {t("admin.tickets.labels.labelDescription")}
+                    </label>
+                    <Input
+                      value={newLabel.description}
+                      onChange={(e) =>
+                        setNewLabel({
+                          ...newLabel,
+                          description: e.target.value,
+                        })
+                      }
+                      placeholder={t(
+                        "admin.tickets.labels.labelDescriptionPlaceholder"
+                      )}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <Button onClick={handleAddLabel} className="w-full">
+                    <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                    {t("admin.tickets.labels.addLabel")}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="flex-shrink-0">
+            <Button
+              variant="outline"
+              onClick={() => setShowManageLabelsDialog(false)}
+            >
+              {t("admin.tickets.dialogs.cancel")}
+            </Button>
+            <Button onClick={handleSaveLabels}>
+              {t("admin.tickets.labels.saveLabels")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -325,239 +325,592 @@ All colors MUST be HSL.
   }
 }
 
-/* Admin Components RTL Support */
-[dir="rtl"] .admin-table th,
-[dir="rtl"] .admin-table td {
-  text-align: right;
-}
-
-[dir="rtl"] .admin-dialog .dialog-content {
-  text-align: right;
-}
-
-[dir="rtl"] .admin-form label {
-  text-align: right;
-}
-
-[dir="rtl"] .admin-dropdown {
-  text-align: right;
-}
-
-[dir="rtl"] .admin-badge {
-  direction: ltr;
-  unicode-bidi: bidi-override;
-}
-
-/* RTL support for admin icons */
-[dir="rtl"] .admin-icon {
-  margin-left: 0.5rem;
-  margin-right: 0;
-}
-
-/* RTL support for admin buttons */
-[dir="rtl"] .admin-button {
-  flex-direction: row-reverse;
-}
-
-/* RTL support for admin cards */
-[dir="rtl"] .admin-card-header {
-  text-align: right;
-}
-
-/* RTL support for admin filters */
-[dir="rtl"] .admin-filter-input {
-  text-align: right;
-}
-
-/* RTL support for admin search */
-[dir="rtl"] .admin-search-icon {
-  left: auto;
-  right: 0.75rem;
-}
-
-/* RTL support for admin dropdown menus */
-[dir="rtl"] .admin-dropdown-menu {
-  text-align: right;
-}
-
-/* RTL support for admin form fields */
-[dir="rtl"] .admin-form-field {
-  text-align: right;
-}
-
-/* RTL support for admin status badges */
-[dir="rtl"] .admin-status-badge {
-  direction: ltr;
-  unicode-bidi: bidi-override;
-}
-
-/* RTL Support */
+/* Comprehensive RTL Support */
 [dir="rtl"] {
   direction: rtl;
   text-align: right;
 }
 
+/* RTL Text Alignment */
 [dir="rtl"] .rtl\:text-right {
-  text-align: right;
+  text-align: right !important;
 }
 
 [dir="rtl"] .rtl\:text-left {
-  text-align: left;
+  text-align: left !important;
 }
 
+[dir="rtl"] .rtl\:text-center {
+  text-align: center !important;
+}
+
+[dir="rtl"] .rtl\:text-justify {
+  text-align: justify !important;
+}
+
+/* RTL Flex Direction */
 [dir="rtl"] .rtl\:flex-row-reverse {
-  flex-direction: row-reverse;
+  flex-direction: row-reverse !important;
 }
 
+[dir="rtl"] .rtl\:flex-row {
+  flex-direction: row !important;
+}
+
+/* RTL Spacing */
 [dir="rtl"] .rtl\:space-x-reverse> :not([hidden])~ :not([hidden]) {
   --tw-space-x-reverse: 1;
 }
 
+[dir="rtl"] .rtl\:space-y-reverse> :not([hidden])~ :not([hidden]) {
+  --tw-space-y-reverse: 1;
+}
+
+/* RTL Margins */
+[dir="rtl"] .rtl\:mr-auto {
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+
+[dir="rtl"] .rtl\:ml-auto {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+[dir="rtl"] .rtl\:mr-0 {
+  margin-right: 0 !important;
+}
+
+[dir="rtl"] .rtl\:ml-0 {
+  margin-left: 0 !important;
+}
+
+/* RTL Padding */
+[dir="rtl"] .rtl\:pr-0 {
+  padding-right: 0 !important;
+}
+
+[dir="rtl"] .rtl\:pl-0 {
+  padding-left: 0 !important;
+}
+
+/* RTL Borders */
+[dir="rtl"] .rtl\:border-r {
+  border-right-width: 1px !important;
+  border-left-width: 0 !important;
+}
+
+[dir="rtl"] .rtl\:border-l {
+  border-left-width: 1px !important;
+  border-right-width: 0 !important;
+}
+
+/* RTL Position */
+[dir="rtl"] .rtl\:right-0 {
+  right: 0 !important;
+  left: auto !important;
+}
+
+[dir="rtl"] .rtl\:left-0 {
+  left: 0 !important;
+  right: auto !important;
+}
+
+/* RTL Transform */
+[dir="rtl"] .rtl\:scale-x-[-1] {
+  transform: scaleX(-1) !important;
+}
+
 /* Number formatting for Arabic */
 [dir="rtl"] .number-container {
-  direction: ltr;
-  text-align: right;
+  direction: ltr !important;
+  text-align: right !important;
+  font-family: 'Arial', 'Segoe UI', sans-serif !important;
+  unicode-bidi: bidi-override !important;
+}
+
+[dir="rtl"] .currency-container {
+  direction: ltr !important;
+  text-align: right !important;
+  font-family: 'Arial', 'Segoe UI', sans-serif !important;
+  unicode-bidi: bidi-override !important;
+}
+
+/* Percentage formatting for Arabic */
+[dir="rtl"] .percentage-container {
+  direction: ltr !important;
+  text-align: right !important;
+  font-family: 'Arial', 'Segoe UI', sans-serif !important;
+  unicode-bidi: bidi-override !important;
+}
+
+/* Enhanced RTL number support */
+[dir="rtl"] .rtl-number {
+  direction: ltr !important;
+  text-align: right !important;
+  font-family: 'Arial', 'Segoe UI', sans-serif !important;
+  unicode-bidi: bidi-override !important;
+}
+
+/* RTL number formatting for tables */
+[dir="rtl"] .rtl-table .number-container,
+[dir="rtl"] .rtl-table .currency-container,
+[dir="rtl"] .rtl-table .percentage-container {
+  direction: ltr !important;
+  text-align: right !important;
+  font-family: 'Arial', 'Segoe UI', sans-serif !important;
+  unicode-bidi: bidi-override !important;
+}
+
+/* RTL number formatting for cards */
+[dir="rtl"] .card .number-container,
+[dir="rtl"] .card .currency-container,
+[dir="rtl"] .card .percentage-container {
+  direction: ltr !important;
+  text-align: right !important;
+  font-family: 'Arial', 'Segoe UI', sans-serif !important;
+  unicode-bidi: bidi-override !important;
 }
 
 /* Table RTL support */
-[dir="rtl"] .rtl\:table-header {
-  text-align: right;
+[dir="rtl"] .rtl-table {
+  direction: rtl !important;
 }
 
-[dir="rtl"] .rtl\:table-cell {
-  text-align: right;
+[dir="rtl"] .rtl-table th {
+  text-align: right !important;
+  padding-right: 1rem !important;
+  padding-left: 1rem !important;
+}
+
+[dir="rtl"] .rtl-table td {
+  text-align: right !important;
+  padding-right: 1rem !important;
+  padding-left: 1rem !important;
+}
+
+/* RTL Table Header Component */
+[dir="rtl"] .rtl-table-header {
+  text-align: right !important;
+  padding-right: 1rem !important;
+  padding-left: 1rem !important;
+}
+
+/* RTL Table Cell Component */
+[dir="rtl"] .rtl-table-cell {
+  text-align: right !important;
+  padding-right: 1rem !important;
+  padding-left: 1rem !important;
+}
+
+/* Ensure proper table structure in RTL */
+[dir="rtl"] table {
+  direction: rtl !important;
+}
+
+[dir="rtl"] table th,
+[dir="rtl"] table td {
+  text-align: right !important;
 }
 
 /* Dialog RTL support */
 [dir="rtl"] .rtl\:dialog-content {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Form RTL support */
 [dir="rtl"] .rtl\:form-input {
-  text-align: right;
+  text-align: right !important;
 }
 
 [dir="rtl"] .rtl\:form-label {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Button RTL support */
 [dir="rtl"] .rtl\:button-icon {
-  margin-left: 0;
-  margin-right: 0.5rem;
+  margin-left: 0 !important;
+  margin-right: 0.5rem !important;
 }
 
 /* Card RTL support */
 [dir="rtl"] .rtl\:card-header {
-  text-align: right;
+  text-align: right !important;
 }
 
 [dir="rtl"] .rtl\:card-content {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Badge RTL support */
 [dir="rtl"] .rtl\:badge {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Dropdown RTL support */
 [dir="rtl"] .rtl\:dropdown-content {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Pagination RTL support */
 [dir="rtl"] .rtl\:pagination {
-  flex-direction: row-reverse;
+  flex-direction: row-reverse !important;
 }
 
 /* Statistics cards RTL support */
 [dir="rtl"] .rtl\:stats-card {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Filter section RTL support */
 [dir="rtl"] .rtl\:filter-section {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Loading states RTL support */
 [dir="rtl"] .rtl\:loading-text {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Action buttons RTL support */
 [dir="rtl"] .rtl\:action-button {
-  flex-direction: row-reverse;
+  flex-direction: row-reverse !important;
 }
 
 /* Table actions RTL support */
 [dir="rtl"] .rtl\:table-actions {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Dialog footer RTL support */
 [dir="rtl"] .rtl\:dialog-footer {
-  flex-direction: row-reverse;
+  flex-direction: row-reverse !important;
 }
 
 /* Form field RTL support */
 [dir="rtl"] .rtl\:form-field {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Select dropdown RTL support */
 [dir="rtl"] .rtl\:select-content {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Toast RTL support */
 [dir="rtl"] .rtl\:toast {
-  text-align: right;
+  text-align: right !important;
 }
 
 /* Progress bar RTL support */
 [dir="rtl"] .rtl\:progress-bar {
-  direction: rtl;
+  direction: rtl !important;
 }
 
 /* Icon alignment for RTL */
 [dir="rtl"] .rtl\:icon-left {
-  margin-left: 0;
-  margin-right: 0.5rem;
+  margin-left: 0 !important;
+  margin-right: 0.5rem !important;
 }
 
 [dir="rtl"] .rtl\:icon-right {
-  margin-right: 0;
-  margin-left: 0.5rem;
+  margin-right: 0 !important;
+  margin-left: 0.5rem !important;
 }
 
 /* Text alignment utilities for RTL */
 [dir="rtl"] .rtl\:text-start {
-  text-align: start;
+  text-align: start !important;
 }
 
 [dir="rtl"] .rtl\:text-end {
-  text-align: end;
+  text-align: end !important;
 }
 
 /* Flex utilities for RTL */
 [dir="rtl"] .rtl\:flex-start {
-  justify-content: flex-start;
+  justify-content: flex-start !important;
 }
 
 [dir="rtl"] .rtl\:flex-end {
-  justify-content: flex-end;
+  justify-content: flex-end !important;
 }
 
 /* Grid utilities for RTL */
 [dir="rtl"] .rtl\:grid-flow-row {
-  grid-auto-flow: row;
+  grid-auto-flow: row !important;
 }
 
 [dir="rtl"] .rtl\:grid-flow-col {
-  grid-auto-flow: column;
+  grid-auto-flow: column !important;
+}
+
+/* Animation utilities for RTL */
+[dir="rtl"] .rtl\:animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out !important;
+}
+
+[dir="rtl"] .rtl\:animate-slide-in-left {
+  animation: slideInLeft 0.3s ease-out !important;
+}
+
+/* Custom animations for RTL */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Admin Components RTL Support */
+[dir="rtl"] .admin-table th,
+[dir="rtl"] .admin-table td {
+  text-align: right !important;
+}
+
+[dir="rtl"] .admin-dialog .dialog-content {
+  text-align: right !important;
+}
+
+[dir="rtl"] .admin-form label {
+  text-align: right !important;
+}
+
+[dir="rtl"] .admin-dropdown {
+  text-align: right !important;
+}
+
+[dir="rtl"] .admin-badge {
+  direction: ltr !important;
+  unicode-bidi: bidi-override !important;
+}
+
+/* RTL support for admin icons */
+[dir="rtl"] .admin-icon {
+  margin-left: 0.5rem !important;
+  margin-right: 0 !important;
+}
+
+/* RTL support for admin buttons */
+[dir="rtl"] .admin-button {
+  flex-direction: row-reverse !important;
+}
+
+/* RTL support for admin cards */
+[dir="rtl"] .admin-card-header {
+  text-align: right !important;
+}
+
+/* RTL support for admin filters */
+[dir="rtl"] .admin-filter-input {
+  text-align: right !important;
+}
+
+/* RTL support for admin search */
+[dir="rtl"] .admin-search-icon {
+  left: auto !important;
+  right: 0.75rem !important;
+}
+
+/* RTL support for admin dropdown menus */
+[dir="rtl"] .admin-dropdown-menu {
+  text-align: right !important;
+}
+
+/* RTL support for admin form fields */
+[dir="rtl"] .admin-form-field {
+  text-align: right !important;
+}
+
+/* RTL support for admin status badges */
+[dir="rtl"] .admin-status-badge {
+  direction: ltr !important;
+  unicode-bidi: bidi-override !important;
+}
+
+/* Additional RTL table styling */
+[dir="rtl"] .rtl-table th,
+[dir="rtl"] .rtl-table td {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rtl-table .rtl-table-header {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rtl-table .rtl-table-cell {
+  text-align: right !important;
+}
+
+/* Ensure proper table structure in RTL */
+[dir="rtl"] .rtl-table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+[dir="rtl"] .rtl-table thead th {
+  text-align: right !important;
+  padding: 1rem !important;
+}
+
+[dir="rtl"] .rtl-table tbody td {
+  text-align: right !important;
+  padding: 1rem !important;
+}
+
+/* Ensure proper table alignment in RTL */
+[dir="rtl"] table {
+  direction: rtl !important;
+}
+
+[dir="rtl"] table th,
+[dir="rtl"] table td {
+  text-align: right !important;
+}
+
+/* Dialog RTL support */
+[dir="rtl"] .rtl\:dialog-content {
+  text-align: right !important;
+}
+
+/* Form RTL support */
+[dir="rtl"] .rtl\:form-input {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rtl\:form-label {
+  text-align: right !important;
+}
+
+/* Button RTL support */
+[dir="rtl"] .rtl\:button-icon {
+  margin-left: 0 !important;
+  margin-right: 0.5rem !important;
+}
+
+/* Card RTL support */
+[dir="rtl"] .rtl\:card-header {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rtl\:card-content {
+  text-align: right !important;
+}
+
+/* Badge RTL support */
+[dir="rtl"] .rtl\:badge {
+  text-align: right !important;
+}
+
+/* Dropdown RTL support */
+[dir="rtl"] .rtl\:dropdown-content {
+  text-align: right !important;
+}
+
+/* Pagination RTL support */
+[dir="rtl"] .rtl\:pagination {
+  flex-direction: row-reverse !important;
+}
+
+/* Statistics cards RTL support */
+[dir="rtl"] .rtl\:stats-card {
+  text-align: right !important;
+}
+
+/* Filter section RTL support */
+[dir="rtl"] .rtl\:filter-section {
+  text-align: right !important;
+}
+
+/* Loading states RTL support */
+[dir="rtl"] .rtl\:loading-text {
+  text-align: right !important;
+}
+
+/* Action buttons RTL support */
+[dir="rtl"] .rtl\:action-button {
+  flex-direction: row-reverse !important;
+}
+
+/* Table actions RTL support */
+[dir="rtl"] .rtl\:table-actions {
+  text-align: right !important;
+}
+
+/* Dialog footer RTL support */
+[dir="rtl"] .rtl\:dialog-footer {
+  flex-direction: row-reverse !important;
+}
+
+/* Form field RTL support */
+[dir="rtl"] .rtl\:form-field {
+  text-align: right !important;
+}
+
+/* Select dropdown RTL support */
+[dir="rtl"] .rtl\:select-content {
+  text-align: right !important;
+}
+
+/* Toast RTL support */
+[dir="rtl"] .rtl\:toast {
+  text-align: right !important;
+}
+
+/* Progress bar RTL support */
+[dir="rtl"] .rtl\:progress-bar {
+  direction: rtl !important;
+}
+
+/* Icon alignment for RTL */
+[dir="rtl"] .rtl\:icon-left {
+  margin-left: 0 !important;
+  margin-right: 0.5rem !important;
+}
+
+[dir="rtl"] .rtl\:icon-right {
+  margin-right: 0 !important;
+  margin-left: 0.5rem !important;
+}
+
+/* Text alignment utilities for RTL */
+[dir="rtl"] .rtl\:text-start {
+  text-align: start !important;
+}
+
+[dir="rtl"] .rtl\:text-end {
+  text-align: end !important;
+}
+
+/* Flex utilities for RTL */
+[dir="rtl"] .rtl\:flex-start {
+  justify-content: flex-start !important;
+}
+
+[dir="rtl"] .rtl\:flex-end {
+  justify-content: flex-end !important;
+}
+
+/* Grid utilities for RTL */
+[dir="rtl"] .rtl\:grid-flow-row {
+  grid-auto-flow: row !important;
+}
+
+[dir="rtl"] .rtl\:grid-flow-col {
+  grid-auto-flow: column !important;
 }
 
 /* Spacing utilities for RTL */

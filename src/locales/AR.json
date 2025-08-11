@@ -1115,6 +1115,11 @@
   },
 
   "admin": {
+    "common": {
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "actions": "الإجراءات"
+    },
     "export": {
       "title": "تصدير البيانات",
       "description": "تصدير بياناتك بتنسيقات مختلفة للتحليل والتقارير",
@@ -1327,6 +1332,529 @@
         "saveUserChanges": "تم تحديث المستخدم",
         "saveUserChangesDesc": "تم تحديث معلومات المستخدم بنجاح"
       }
+    },
+    "payouts": {
+      "title": "إدارة المدفوعات",
+      "subtitle": "إدارة مدفوعات المنظمين وتتبع سجل المدفوعات ومعالجة المدفوعات الجديدة",
+      "createNewPayout": "إنشاء دفعة جديدة",
+      "createNewPayoutDesc": "إنشاء دفعة جديدة لمنظم لديه أموال معلقة",
+      "payoutHistory": "سجل المدفوعات",
+      "payoutHistoryDesc": "عرض وإدارة جميع معاملات المدفوعات",
+      "stats": {
+        "pendingPayouts": "المدفوعات المعلقة",
+        "completedPayouts": "المدفوعات المكتملة",
+        "totalPayouts": "إجمالي المدفوعات",
+        "totalAmount": "إجمالي المبلغ",
+        "awaitingProcessing": "في انتظار المعالجة",
+        "successfullyProcessed": "تمت المعالجة بنجاح",
+        "allTime": "طوال الوقت",
+        "totalProcessed": "إجمالي المعالج"
+      },
+      "fields": {
+        "organizer": "المنظم",
+        "selectOrganizer": "اختر المنظم",
+        "amount": "المبلغ",
+        "enterAmount": "أدخل المبلغ",
+        "notes": "ملاحظات",
+        "enterNotes": "أدخل ملاحظات (اختياري)",
+        "reference": "المرجع",
+        "status": "الحالة",
+        "method": "الطريقة",
+        "createdAt": "تاريخ الإنشاء",
+        "processedAt": "تاريخ المعالجة"
+      },
+      "pagination": {
+        "showing": "عرض",
+        "of": "من",
+        "results": "نتيجة"
+      },
+      "filters": {
+        "status": "الحالة",
+        "organizer": "المنظم",
+        "allStatus": "جميع الحالات",
+        "allOrganizers": "جميع المنظمين",
+        "pending": "معلق",
+        "processing": "قيد المعالجة",
+        "completed": "مكتمل",
+        "failed": "فشل"
+      },
+      "table": {
+        "reference": "المرجع",
+        "organizer": "المنظم",
+        "amount": "المبلغ",
+        "status": "الحالة",
+        "method": "الطريقة",
+        "createdAt": "تاريخ الإنشاء",
+        "actions": "الإجراءات"
+      },
+      "status": {
+        "pending": "معلق",
+        "processing": "قيد المعالجة",
+        "completed": "مكتمل",
+        "failed": "فشل"
+      },
+      "methods": {
+        "bank_transfer": "تحويل بنكي",
+        "paypal": "PayPal",
+        "stripe": "Stripe"
+      },
+      "actions": {
+        "createPayout": "إنشاء دفعة",
+        "close": "إغلاق"
+      },
+      "dialogs": {
+        "payoutDetails": "تفاصيل الدفعة",
+        "payoutDetailsDesc": "معلومات مفصلة حول معاملة الدفعة هذه"
+      },
+      "errors": {
+        "invalidInput": "إدخال غير صحيح",
+        "pleaseCheckInput": "يرجى التحقق من إدخالك والمحاولة مرة أخرى",
+        "amountExceeds": "المبلغ يتجاوز الحد",
+        "maxAmount": "الحد الأقصى للمبلغ المسموح به هو {{amount}}"
+      },
+      "success": {
+        "payoutCreated": "تم إنشاء الدفعة",
+        "payoutCreatedDesc": "تم إنشاء الدفعة الجديدة بنجاح"
+      }
+    },
+    "accountSettings": {
+      "title": "إعدادات الحساب",
+      "subtitle": "إدارة معلوماتك الشخصية وإعدادات الأمان وكلمة المرور",
+      "status": {
+        "active": "نشط",
+        "inactive": "غير نشط"
+      },
+      "tabs": {
+        "personal": "المعلومات الشخصية",
+        "security": "الأمان",
+        "password": "كلمة المرور"
+      },
+      "personalInfo": {
+        "title": "المعلومات الشخصية",
+        "description": "تحديث معلوماتك الشخصية وتفاصيل الاتصال",
+        "fullName": "الاسم الكامل",
+        "username": "اسم المستخدم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "fullNamePlaceholder": "أدخل اسمك الكامل",
+        "usernamePlaceholder": "أدخل اسم المستخدم",
+        "emailPlaceholder": "أدخل عنوان البريد الإلكتروني",
+        "phonePlaceholder": "أدخل رقم الهاتف",
+        "lastLogin": "آخر تسجيل دخول",
+        "createdAt": "تاريخ الإنشاء",
+        "save": "حفظ التغييرات",
+        "updating": "جاري التحديث...",
+        "updated": "تم تحديث المعلومات",
+        "updatedDesc": "تم تحديث معلوماتك الشخصية بنجاح"
+      },
+      "security": {
+        "title": "إعدادات الأمان",
+        "description": "تكوين تفضيلات أمان حسابك",
+        "twoFactorAuth": "المصادقة الثنائية",
+        "twoFactorAuthDesc": "تفعيل المصادقة الثنائية لتعزيز الأمان",
+        "emailNotifications": "إشعارات البريد الإلكتروني",
+        "emailNotificationsDesc": "استلام إشعارات البريد الإلكتروني للأنشطة المهمة للحساب",
+        "loginNotifications": "إشعارات تسجيل الدخول",
+        "loginNotificationsDesc": "الحصول على إشعار عند تسجيل دخول شخص ما إلى حسابك",
+        "sessionTimeout": "مهلة الجلسة",
+        "sessionTimeoutDesc": "تسجيل الخروج تلقائياً بعد دقائق محددة من عدم النشاط",
+        "minutes": "دقائق",
+        "warning": "قد تتطلب تغييرات إعدادات الأمان إعادة تسجيل الدخول لأسباب أمنية.",
+        "save": "حفظ الإعدادات",
+        "updating": "جاري التحديث...",
+        "updated": "تم تحديث الأمان",
+        "updatedDesc": "تم تحديث إعدادات الأمان بنجاح"
+      },
+      "password": {
+        "title": "إعادة تعيين كلمة المرور",
+        "description": "تغيير كلمة مرور حسابك بأمان",
+        "currentPassword": "كلمة المرور الحالية",
+        "newPassword": "كلمة المرور الجديدة",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "currentPasswordPlaceholder": "أدخل كلمة المرور الحالية",
+        "newPasswordPlaceholder": "أدخل كلمة المرور الجديدة",
+        "confirmPasswordPlaceholder": "تأكيد كلمة المرور الجديدة",
+        "requirements": "يجب أن تكون كلمة المرور 8 أحرف على الأقل وتحتوي على مزيج من الأحرف والأرقام والرموز الخاصة.",
+        "update": "تحديث كلمة المرور",
+        "updating": "جاري التحديث...",
+        "updated": "تم تحديث كلمة المرور",
+        "updatedDesc": "تم تحديث كلمة المرور بنجاح",
+        "mismatch": "عدم تطابق كلمة المرور",
+        "mismatchDesc": "كلمة المرور الجديدة وتأكيد كلمة المرور غير متطابقين",
+        "tooShort": "كلمة المرور قصيرة جداً",
+        "tooShortDesc": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+        "otpVerification": "التحقق من رمز OTP",
+        "otpVerificationDesc": "أدخل رمز التحقق المكون من 6 أرقام المرسل إلى بريدك الإلكتروني للمتابعة لتغيير كلمة المرور",
+        "sendOtp": "إرسال رمز OTP",
+        "sendingOtp": "جاري إرسال رمز OTP...",
+        "enterOtp": "أدخل رمز OTP",
+        "verifyOtp": "التحقق من رمز OTP",
+        "verifyingOtp": "جاري التحقق...",
+        "cancel": "إلغاء",
+        "otpSent": "تم إرسال رمز OTP",
+        "otpSentDesc": "تم إرسال رمز تحقق مكون من 6 أرقام إلى بريدك الإلكتروني",
+        "otpVerified": "تم التحقق من رمز OTP",
+        "otpVerifiedDesc": "تم التحقق من رمز OTP بنجاح. يمكنك الآن تغيير كلمة المرور",
+        "otpVerifiedSuccess": "تم إكمال التحقق من رمز OTP بنجاح",
+        "otpInvalid": "رمز OTP غير صحيح",
+        "otpInvalidDesc": "رمز OTP الذي أدخلته غير صحيح. يرجى المحاولة مرة أخرى",
+        "invalidOtp": "رمز OTP غير صحيح",
+        "invalidOtpDesc": "يرجى إدخال رمز OTP صحيح مكون من 6 أرقام",
+        "otpRequired": "رمز OTP مطلوب",
+        "otpRequiredDesc": "يرجى إكمال التحقق من رمز OTP قبل تغيير كلمة المرور",
+        "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
+        "currentPasswordRequiredDesc": "يرجى إدخال كلمة المرور الحالية لطلب رمز OTP"
+      }
+    },
+    "companyFinances": {
+      "subtitle": "إدارة البيانات المالية للمؤسسة وتتبع الإيرادات والتقارير المالية",
+      "tabs": {
+        "overview": "نظرة عامة",
+        "wallet": "محفظة الشركة",
+        "owners": "محافظ المالكين",
+        "profitShare": "تقاسم الأرباح",
+        "reports": "التقارير"
+      },
+      "stats": {
+        "totalRevenue": "إجمالي الإيرادات",
+        "totalExpenses": "إجمالي المصروفات",
+        "netProfit": "صافي الربح",
+        "profitMargin": "هامش الربح",
+        "fromLastYear": "من العام الماضي"
+      },
+      "recentPeriods": "الفترات المالية الأخيرة",
+      "recentPeriodsDescription": "نظرة عامة على الأداء المالي الفصلي الأخير",
+      "revenue": "الإيرادات",
+      "expenses": "المصروفات",
+      "netProfit": "صافي الربح",
+      "margin": "الهامش",
+      "revenueDescription": "تحليل وتتبع مفصل للإيرادات",
+      "expensesDescription": "إدارة شاملة للمصروفات وتصنيفها",
+      "reportsDescription": "التقارير المالية والتحليلات",
+      "comingSoon": "هذه الميزة قيد التطوير. سيتم تنفيذ قدرات الإدارة المالية الكاملة هنا.",
+      "wallet": {
+        "title": "إدارة محفظة الشركة",
+        "description": "مراقبة رصيد محفظة الشركة والنظرة المالية العامة",
+        "companyBalance": "رصيد محفظة الشركة",
+        "availableBalance": "الرصيد المتاح في محفظة الشركة",
+        "totalOwners": "إجمالي المالكين",
+        "activeStakeholders": "أصحاب المصلحة النشطين",
+        "totalProfitShare": "إجمالي تقاسم الأرباح",
+        "fullyAllocated": "مخصص بالكامل",
+        "partiallyAllocated": "مخصص جزئياً"
+      },
+      "owners": {
+        "title": "إدارة محافظ المالكين",
+        "description": "إدارة جميع محافظ المالكين والأرصدة والمعاملات",
+        "searchPlaceholder": "البحث عن المالكين...",
+        "addNew": "إضافة مالك جديد",
+        "addNewDescription": "إضافة صاحب مصلحة جديد للشركة مع تخصيص حصة الأرباح",
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "profitShare": "حصة الأرباح (%)",
+        "initialDeposit": "الوديعة الأولية",
+        "addOwner": "إضافة مالك",
+        "joined": "انضم",
+        "currentBalance": "الرصيد الحالي",
+        "deposits": "الودائع",
+        "withdrawals": "السحوبات",
+        "netPosition": "المركز الصافي"
+      },
+      "profitShare": {
+        "title": "تخصيص تقاسم الأرباح",
+        "description": "إدارة توزيع تقاسم الأرباح بين المالكين",
+        "percentage": "نسبة الحصة",
+        "estimatedShare": "الحصة المقدرة",
+        "totalAllocated": "إجمالي المخصص",
+        "remaining": "المتبقي"
+      },
+      "validation": {
+        "error": "خطأ في التحقق",
+        "profitShareExceeded": "لا يمكن أن تتجاوز نسبة تقاسم الأرباح الإجمالية 100%",
+        "requiredFields": "يرجى ملء جميع الحقول المطلوبة"
+      },
+      "ownerAdded": "تم إضافة المالك",
+      "ownerAddedDesc": "تم إضافة المالك الجديد للشركة بنجاح"
+    },
+    "profitShare": {
+      "subtitle": "إدارة تقاسم الأرباح وتوزيعات المساهمين وإدارة الأسهم",
+      "stats": {
+        "totalProfit": "إجمالي الربح",
+        "shareholders": "المساهمون",
+        "totalDistributed": "إجمالي الموزع",
+        "avgShare": "متوسط الحصة",
+        "fromLastPeriod": "من الفترة الماضية",
+        "activeShareholders": "مساهمين نشطين",
+        "ofTotalProfit": "من إجمالي الربح",
+        "perShareholder": "لكل مساهم"
+      },
+      "title": "إدارة تقاسم الأرباح",
+      "description": "إدارة توزيع الأرباح بين المساهمين وحاملي الأسهم",
+      "comingSoon": "هذه الميزة قيد التطوير. سيتم تنفيذ إدارة تقاسم الأرباح الكاملة هنا."
+    },
+    "settlements": {
+      "subtitle": "إدارة التسويات المالية ومعالجة المدفوعات وتسوية المعاملات",
+      "stats": {
+        "totalSettlements": "إجمالي التسويات",
+        "totalAmount": "إجمالي المبلغ",
+        "pendingSettlements": "التسويات المعلقة",
+        "completedSettlements": "التسويات المكتملة",
+        "totalOwed": "إجمالي المستحق",
+        "fromLastMonth": "من الشهر الماضي",
+        "awaitingProcessing": "في انتظار المعالجة",
+        "completionRate": "معدل الإكمال",
+        "allTime": "جميع الأوقات",
+        "toOwners": "للمالكين"
+      },
+      "title": "إدارة التسويات",
+      "description": "تتبع وإدارة جميع التسويات المالية ومعالجة المدفوعات",
+      "comingSoon": "هذه الميزة قيد التطوير. سيتم تنفيذ إدارة التسويات الكاملة هنا.",
+      "actions": {
+        "addSettlement": "إضافة تسوية",
+        "export": "تصدير",
+        "view": "عرض",
+        "delete": "حذف",
+        "title": "الإجراءات"
+      },
+      "filters": {
+        "title": "المرشحات",
+        "search": "البحث",
+        "searchPlaceholder": "البحث في التسويات...",
+        "owner": "المالك",
+        "status": "الحالة",
+        "paymentMethod": "طريقة الدفع",
+        "dateRange": "نطاق التاريخ",
+        "allOwners": "جميع المالكين",
+        "allStatuses": "جميع الحالات",
+        "allMethods": "جميع الطرق",
+        "from": "من",
+        "to": "إلى"
+      },
+      "form": {
+        "owner": "المالك",
+        "selectOwner": "اختر المالك",
+        "amount": "المبلغ",
+        "amountPlaceholder": "أدخل المبلغ",
+        "paymentMethod": "طريقة الدفع",
+        "selectPaymentMethod": "اختر طريقة الدفع",
+        "date": "التاريخ",
+        "notes": "ملاحظات",
+        "notesPlaceholder": "ملاحظات اختيارية",
+        "owed": "مستحق"
+      },
+      "table": {
+        "reference": "المرجع",
+        "owner": "المالك",
+        "amount": "المبلغ",
+        "paymentMethod": "طريقة الدفع",
+        "date": "التاريخ",
+        "status": "الحالة",
+        "notes": "ملاحظات",
+        "actions": "الإجراءات",
+        "createdAt": "تاريخ الإنشاء",
+        "updatedAt": "تاريخ التحديث"
+      },
+      "status": {
+        "completed": "مكتمل",
+        "pending": "معلق",
+        "cancelled": "ملغي"
+      },
+      "dialogs": {
+        "addSettlement": {
+          "title": "إضافة تسوية جديدة",
+          "subtitle": "إنشاء تسوية جديدة للمالك"
+        },
+        "details": {
+          "title": "تفاصيل التسوية",
+          "subtitle": "عرض المعلومات التفصيلية عن هذه التسوية"
+        }
+      },
+      "validation": {
+        "error": "خطأ في التحقق",
+        "requiredFields": "يرجى ملء جميع الحقول المطلوبة",
+        "invalidAmount": "يرجى إدخال مبلغ صحيح",
+        "insufficientOwedAmount": "لا يمكن أن يتجاوز مبلغ التسوية المبلغ المستحق"
+      },
+      "settlementAdded": "تمت إضافة التسوية",
+      "settlementAddedDesc": "تم إنشاء التسوية الجديدة بنجاح",
+      "settlementDeleted": "تم حذف التسوية",
+      "settlementDeletedDesc": "تم حذف التسوية بنجاح",
+      "exportSuccess": "تم التصدير بنجاح",
+      "exportSuccessDesc": "تم تصدير بيانات التسويات بنجاح",
+      "pagination": {
+        "showing": "عرض",
+        "of": "من",
+        "results": "نتيجة"
+      }
+    },
+    "deposits": {
+      "subtitle": "إدارة الودائع وتتبع الاستثمارات وإدارة رأس المال",
+      "stats": {
+        "totalDeposits": "إجمالي الودائع",
+        "activeDeposits": "الودائع النشطة",
+        "avgDeposit": "متوسط الوديعة",
+        "monthlyGrowth": "النمو الشهري",
+        "fromLastMonth": "من الشهر الماضي",
+        "currentlyActive": "نشطة حالياً",
+        "perDeposit": "لكل وديعة"
+      },
+      "title": "إدارة الودائع",
+      "description": "تتبع وإدارة جميع الودائع وأنشطة الاستثمار",
+      "comingSoon": "هذه الميزة قيد التطوير. سيتم تنفيذ إدارة الودائع الكاملة هنا.",
+      "filters": {
+        "title": "المرشحات",
+        "search": "البحث",
+        "searchPlaceholder": "البحث في الودائع...",
+        "status": "الحالة",
+        "paymentMethod": "طريقة الدفع",
+        "date": "التاريخ",
+        "allStatus": "جميع الحالات",
+        "allPaymentMethods": "جميع طرق الدفع",
+        "allDates": "جميع التواريخ",
+        "today": "اليوم",
+        "thisWeek": "هذا الأسبوع",
+        "thisMonth": "هذا الشهر",
+        "thisYear": "هذا العام"
+      },
+      "table": {
+        "id": "الرقم التعريفي",
+        "owner": "المالك",
+        "amount": "المبلغ",
+        "paymentMethod": "طريقة الدفع",
+        "depositDate": "تاريخ الإيداع",
+        "status": "الحالة",
+        "notes": "ملاحظات",
+        "actions": "الإجراءات",
+        "noNotes": "لا توجد ملاحظات",
+        "createdAt": "تاريخ الإنشاء",
+        "updatedAt": "تاريخ التحديث",
+        "noDeposits": "لا توجد ودائع",
+        "noResults": "لا توجد نتائج"
+      },
+      "status": {
+        "completed": "مكتمل",
+        "pending": "معلق",
+        "cancelled": "ملغي"
+      },
+      "actions": {
+        "export": "تصدير",
+        "addDeposit": "إضافة وديعة",
+        "viewDetails": "عرض التفاصيل",
+        "editDeposit": "تعديل الوديعة",
+        "deleteDeposit": "حذف الوديعة",
+        "updateDeposit": "تحديث الوديعة",
+        "cancel": "إلغاء",
+        "close": "إغلاق",
+        "actions": "الإجراءات",
+        "addSuccess": "تمت إضافة الوديعة",
+        "addSuccessDescription": "تمت إضافة الوديعة بنجاح",
+        "updateSuccess": "تم تحديث الوديعة",
+        "updateSuccessDescription": "تم تحديث الوديعة بنجاح",
+        "deleteSuccess": "تم حذف الوديعة",
+        "deleteSuccessDescription": "تم حذف الوديعة بنجاح"
+      },
+      "form": {
+        "owner": "المالك",
+        "amount": "المبلغ",
+        "paymentMethod": "طريقة الدفع",
+        "depositDate": "تاريخ الإيداع",
+        "notes": "ملاحظات",
+        "selectOwner": "اختر مالكاً",
+        "amountPlaceholder": "أدخل المبلغ",
+        "selectPaymentMethod": "اختر طريقة الدفع",
+        "notesPlaceholder": "أدخل الملاحظات (اختياري)",
+        "owed": "مدين"
+      },
+      "dialogs": {
+        "addDeposit": "إضافة وديعة جديدة",
+        "addDepositSubtitle": "تسجيل وديعة جديدة من مالك",
+        "editDeposit": "تعديل الوديعة",
+        "editDepositSubtitle": "تحديث معلومات الوديعة",
+        "depositDetails": "تفاصيل الوديعة",
+        "depositDetailsSubtitle": "معلومات مفصلة عن الوديعة المحددة"
+      },
+      "export": {
+        "title": "تصدير الودائع",
+        "subtitle": "تصدير بيانات الودائع بصيغ مختلفة"
+      },
+      "pagination": {
+        "showing": "عرض",
+        "of": "من",
+        "results": "نتيجة"
+      },
+      "errors": {
+        "validationError": "خطأ في التحقق",
+        "requiredFields": "يرجى ملء جميع الحقول المطلوبة",
+        "ownerNotFound": "المالك غير موجود",
+        "ownerNotFoundDescription": "لم يتم العثور على المالك المحدد"
+      },
+      "toast": {
+        "exportSuccess": "تم التصدير بنجاح",
+        "exportSuccessDesc": "تم تصدير بيانات الودائع بنجاح"
+      }
+    },
+    "profitWithdrawals": {
+      "subtitle": "إدارة سحب الأرباح وتتبع التوزيعات وإدارة المدفوعات",
+      "stats": {
+        "totalWithdrawals": "إجمالي السحوبات",
+        "pendingWithdrawals": "السحوبات المعلقة",
+        "avgWithdrawal": "متوسط السحب",
+        "monthlyGrowth": "النمو الشهري",
+        "fromLastMonth": "من الشهر الماضي",
+        "awaitingProcessing": "في انتظار المعالجة",
+        "perWithdrawal": "لكل سحب",
+        "companyWallet": "محفظة الشركة",
+        "availableBalance": "الرصيد المتاح",
+        "allTimeWithdrawals": "جميع السحوبات"
+      },
+      "title": "إدارة سحب الأرباح",
+      "description": "تتبع وإدارة جميع سحوبات الأرباح والتوزيعات",
+      "comingSoon": "هذه الميزة قيد التطوير. سيتم تنفيذ إدارة السحوبات الكاملة هنا.",
+      "newWithdrawal": "سحب جديد",
+      "createWithdrawal": "إنشاء سحب جديد",
+      "createWithdrawalDesc": "معالجة طلب سحب لأحد المالكين. سيتحقق النظام تلقائياً من حدود حصة الربح.",
+      "owner": "المالك",
+      "selectOwner": "اختر مالكاً",
+      "amount": "المبلغ ($)",
+      "enterAmount": "أدخل مبلغ السحب",
+      "exceedsWarning": "هذا السحب يتجاوز حصة الربح المتاحة وسيتم تسجيله كالتزام.",
+      "paymentMethod": "طريقة الدفع",
+      "selectPaymentMethod": "اختر طريقة الدفع",
+      "bankTransfer": "تحويل بنكي",
+      "paypal": "PayPal",
+      "check": "شيك",
+      "wireTransfer": "تحويل سريع",
+      "notes": "ملاحظات",
+      "optionalNotes": "ملاحظات اختيارية حول هذا السحب",
+      "cancel": "إلغاء",
+      "createWithdrawalButton": "إنشاء السحب",
+      "ownerBalances": "حصص الأرباح وأرصدة المالكين",
+      "ownerBalancesDesc": "توزيعات حصص الأرباح الحالية وأرصدة السحب لكل مالك",
+      "liability": "الالتزام",
+      "profitShare": "حصة الربح",
+      "currentBalance": "الرصيد الحالي",
+      "available": "المتاح",
+      "withdrawalHistory": "تاريخ السحوبات",
+      "withdrawalHistoryDesc": "جميع طلبات السحب وحالتها الحالية",
+      "ownerColumn": "المالك",
+      "amountColumn": "المبلغ",
+      "paymentMethodColumn": "طريقة الدفع",
+      "dateColumn": "التاريخ",
+      "typeColumn": "النوع",
+      "statusColumn": "الحالة",
+      "notesColumn": "ملاحظات",
+      "actionsColumn": "الإجراءات",
+      "profitType": "ربح",
+      "liabilityType": "التزام",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "fillRequiredFields": "يرجى ملء جميع الحقول المطلوبة",
+      "ownerNotFound": "لم يتم العثور على المالك",
+      "exceedsShareWarning": "السحب يتجاوز حصة الربح المتاحة بمقدار ${{amount}}. سيتم تسجيل هذا كالتزام.",
+      "withdrawalCreated": "تم إنشاء طلب السحب بنجاح",
+      "withdrawalApproved": "تمت الموافقة على السحب",
+      "withdrawalRejected": "تم رفض السحب"
     },
     "customers": {
       "title": "إدارة العملاء",
@@ -1541,19 +2069,569 @@
         "saveCustomerChangesDesc": "تم تحديث معلومات العميل بنجاح"
       }
     },
+    "organizers": {
+      "title": "إدارة المنظمين",
+      "subtitle": "إدارة منظمي الفعاليات وملفاتهم الشخصية وأنشطتهم",
+      "verified": "موثق",
+      "pagination": {
+        "showing": "عرض",
+        "of": "من",
+        "results": "نتيجة",
+        "first": "الأول",
+        "last": "الأخير"
+      },
+      "filters": {
+        "title": "المرشحات",
+        "searchPlaceholder": "البحث عن المنظمين...",
+        "status": "الحالة",
+        "category": "الفئة",
+        "location": "الموقع",
+        "allStatus": "جميع الحالات",
+        "allCategories": "جميع الفئات",
+        "allLocations": "جميع المواقع",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "suspended": "معلق",
+        "pending": "قيد الانتظار",
+        "verified": "موثق",
+        "unverified": "غير موثق"
+      },
+      "table": {
+        "organizer": "المنظم",
+        "contact": "معلومات الاتصال",
+        "status": "الحالة",
+        "category": "الفئة",
+        "location": "الموقع",
+        "registration": "التسجيل",
+        "lastLogin": "آخر تسجيل دخول",
+        "events": "الفعاليات",
+        "revenue": "الإيرادات",
+        "rating": "التقييم",
+        "verified": "موثق",
+        "actions": "الإجراءات"
+      },
+      "status": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "suspended": "معلق",
+        "pending": "قيد الانتظار"
+      },
+      "categories": {
+        "music": "موسيقى",
+        "sports": "رياضة",
+        "technology": "تكنولوجيا",
+        "art": "فن",
+        "food": "طعام",
+        "education": "تعليم",
+        "business": "أعمال",
+        "other": "أخرى"
+      },
+      "actions": {
+        "export": "تصدير",
+        "addOrganizer": "إضافة منظم",
+        "viewDetails": "عرض التفاصيل",
+        "editOrganizer": "تعديل المنظم",
+        "viewEvents": "عرض الفعاليات",
+        "viewActivity": "عرض النشاط",
+        "suspend": "إيقاف",
+        "activate": "تفعيل",
+        "verify": "توثيق",
+        "unverify": "إلغاء التوثيق",
+        "forcePasswordReset": "إجبار إعادة تعيين كلمة المرور",
+        "deleteOrganizer": "حذف المنظم",
+        "editEvent": "تعديل الفعالية",
+        "deleteEvent": "حذف الفعالية"
+      },
+      "dialogs": {
+        "organizerDetails": "تفاصيل المنظم",
+        "organizerDetailsSubtitle": "معلومات مفصلة عن المنظم المحدد",
+        "editOrganizer": "تعديل المنظم",
+        "editOrganizerSubtitle": "تحديث معلومات المنظم والإعدادات",
+        "addOrganizer": "إضافة منظم جديد",
+        "addOrganizerSubtitle": "إنشاء حساب منظم جديد",
+        "viewEvents": "عرض الفعاليات",
+        "viewEventsFor": "عرض الفعاليات لـ",
+        "viewActivity": "عرض النشاط",
+        "viewActivityFor": "عرض النشاط لـ",
+        "close": "إغلاق",
+        "cancel": "إلغاء",
+        "saveChanges": "حفظ التغييرات",
+        "addOrganizerButton": "إضافة المنظم"
+      },
+      "add": {
+        "title": "إضافة منظم جديد",
+        "subtitle": "إنشاء حساب منظم جديد",
+        "name": "اسم المنظم",
+        "email": "البريد الإلكتروني",
+        "phone": "رقم الهاتف",
+        "status": "الحالة",
+        "category": "الفئة",
+        "location": "الموقع",
+        "description": "الوصف",
+        "cancel": "إلغاء",
+        "save": "إضافة المنظم"
+      },
+      "form": {
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "website": "الموقع الإلكتروني",
+        "category": "الفئة",
+        "location": "الموقع",
+        "status": "الحالة",
+        "description": "الوصف",
+        "contactPerson": "الشخص المسؤول",
+        "businessLicense": "رخصة العمل",
+        "taxId": "الرقم الضريبي",
+        "bankAccount": "الحساب البنكي",
+        "payoutMethod": "طريقة الدفع",
+        "payoutEmail": "بريد الدفع الإلكتروني",
+        "minimumPayout": "الحد الأدنى للدفع",
+        "commissionRate": "معدل العمولة",
+        "namePlaceholder": "أدخل اسم المنظم",
+        "emailPlaceholder": "أدخل البريد الإلكتروني",
+        "phonePlaceholder": "أدخل رقم الهاتف",
+        "websitePlaceholder": "أدخل رابط الموقع الإلكتروني"
+      },
+      "details": {
+        "title": "تفاصيل المنظم",
+        "subtitle": "معلومات مفصلة عن المنظم المحدد",
+        "basicInfo": "المعلومات الأساسية",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "website": "الموقع الإلكتروني",
+        "statistics": "الإحصائيات",
+        "totalEvents": "إجمالي الفعاليات",
+        "totalRevenue": "إجمالي الإيرادات",
+        "rating": "التقييم",
+        "commissionRate": "معدل العمولة",
+        "description": "الوصف",
+        "close": "إغلاق",
+        "profileImage": "صورة الملف الشخصي",
+        "location": "الموقع",
+        "registrationDate": "تاريخ التسجيل",
+        "lastLogin": "آخر تسجيل دخول",
+        "verified": "موثق",
+        "category": "الفئة",
+        "contactPerson": "الشخص المسؤول",
+        "businessLicense": "رخصة العمل",
+        "taxId": "الرقم الضريبي",
+        "bankAccount": "الحساب البنكي",
+        "payoutMethod": "طريقة الدفع",
+        "payoutEmail": "بريد الدفع الإلكتروني",
+        "minimumPayout": "الحد الأدنى للدفع",
+        "totalPayouts": "إجمالي المدفوعات",
+        "pendingPayout": "الدفع المعلق",
+        "eventsThisMonth": "الفعاليات هذا الشهر",
+        "eventsLastMonth": "الفعاليات الشهر الماضي",
+        "averageRating": "متوسط التقييم",
+        "totalReviews": "إجمالي المراجعات",
+        "responseRate": "معدل الاستجابة",
+        "responseTime": "وقت الاستجابة",
+        "cancellationRate": "معدل الإلغاء",
+        "refundRate": "معدل الاسترداد"
+      },
+      "edit": {
+        "title": "تعديل المنظم",
+        "subtitle": "تحديث معلومات المنظم والإعدادات",
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "status": "الحالة",
+        "category": "الفئة",
+        "location": "الموقع",
+        "description": "الوصف",
+        "profileImage": "صورة الملف الشخصي",
+        "cancel": "إلغاء",
+        "save": "حفظ التغييرات"
+      },
+      "events": {
+        "title": "فعاليات المنظم",
+        "subtitle": "عرض وإدارة جميع الفعاليات لهذا المنظم",
+        "event": "الفعالية",
+        "date": "التاريخ",
+        "status": "الحالة",
+        "tickets": "التذاكر المباعة",
+        "revenue": "الإيرادات",
+        "rating": "التقييم",
+        "close": "إغلاق",
+        "statusLabel": "الحالة"
+      },
+      "activity": {
+        "title": "نشاط المنظم",
+        "subtitle": "عرض النشاط الأخير والإجراءات التي قام بها هذا المنظم",
+        "close": "إغلاق"
+      },
+      "form": {
+        "locationPlaceholder": "أدخل الموقع",
+        "descriptionPlaceholder": "أدخل وصف المنظم",
+        "contactPersonPlaceholder": "أدخل اسم الشخص المسؤول",
+        "businessLicensePlaceholder": "أدخل رقم رخصة العمل",
+        "taxIdPlaceholder": "أدخل الرقم الضريبي",
+        "bankAccountPlaceholder": "أدخل تفاصيل الحساب البنكي",
+        "payoutEmailPlaceholder": "أدخل بريد الدفع الإلكتروني",
+        "minimumPayoutPlaceholder": "أدخل الحد الأدنى لمبلغ الدفع",
+        "commissionRatePlaceholder": "أدخل معدل العمولة (%)",
+        "required": "مطلوب",
+        "passwordSection": "إدارة كلمة المرور",
+        "newPassword": "كلمة المرور الجديدة",
+        "newPasswordPlaceholder": "أدخل كلمة المرور الجديدة",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "confirmPasswordPlaceholder": "تأكيد كلمة المرور الجديدة",
+        "passwordNote": "اتركه فارغاً للاحتفاظ بكلمة المرور الحالية",
+        "passwordRequired": "كلمة المرور مطلوبة للمنظمين الجدد"
+      },
+      "activity": {
+        "eventCreated": "تم إنشاء فعالية",
+        "eventUpdated": "تم تحديث فعالية",
+        "eventCancelled": "تم إلغاء فعالية",
+        "paymentReceived": "تم استلام الدفع",
+        "payoutProcessed": "تم معالجة الدفع",
+        "login": "تسجيل دخول المنظم",
+        "recentActivity": "النشاط الأخير",
+        "totalActivities": "إجمالي الأنشطة",
+        "activityTypes": "أنواع الأنشطة",
+        "events": "الفعاليات",
+        "payments": "المدفوعات",
+        "payouts": "المدفوعات",
+        "logins": "تسجيلات الدخول",
+        "timeStats": "إحصائيات الوقت",
+        "lastActivity": "آخر نشاط",
+        "avgSession": "متوسط الجلسة",
+        "totalSessions": "إجمالي الجلسات",
+        "deviceInfo": "معلومات الجهاز",
+        "lastDevice": "آخر جهاز",
+        "browser": "المتصفح",
+        "location": "الموقع",
+        "event": "الفعالية",
+        "exportActivity": "تصدير النشاط"
+      },
+      "events": {
+        "title": "فعاليات المنظم",
+        "subtitle": "عرض وإدارة جميع الفعاليات لهذا المنظم",
+        "totalEvents": "إجمالي الفعاليات",
+        "event": "الفعالية",
+        "date": "التاريخ",
+        "tickets": "التذاكر",
+        "revenue": "الإيرادات",
+        "commission": "العمولة",
+        "rating": "التقييم",
+        "statusLabel": "الحالة",
+        "status": {
+          "upcoming": "قادمة",
+          "ongoing": "جارية",
+          "completed": "مكتملة",
+          "cancelled": "ملغية"
+        },
+        "actions": {
+          "title": "الإجراءات",
+          "view": "عرض الفعالية",
+          "edit": "تعديل الفعالية"
+        },
+        "actions": "الإجراءات",
+        "addEvent": "إضافة فعالية",
+        "add": {
+          "title": "إضافة فعالية جديدة",
+          "subtitle": "إنشاء فعالية جديدة لهذا المنظم",
+          "name": "عنوان الفعالية",
+          "namePlaceholder": "أدخل عنوان الفعالية",
+          "date": "تاريخ الفعالية",
+          "time": "وقت الفعالية",
+          "status": "حالة الفعالية",
+          "category": "الفئة",
+          "selectCategory": "اختر الفئة",
+          "ticketsSold": "التذاكر المباعة",
+          "totalTickets": "إجمالي التذاكر",
+          "ticketLimit": "حد التذكرة",
+          "revenue": "الإيرادات (جنيه مصري)",
+          "commission": "العمولة (جنيه مصري)",
+          "rating": "التقييم",
+          "image": "رابط صورة الفعالية",
+          "imageUrl": "رابط الصورة",
+          "imageUrlPlaceholder": "أدخل رابط الصورة",
+          "description": "وصف الفعالية",
+          "descriptionPlaceholder": "أدخل وصف الفعالية",
+          "location": "موقع الفعالية",
+          "locationPlaceholder": "أدخل موقع الفعالية",
+          "price": "سعر التذكرة (جنيه مصري)",
+          "cancel": "إلغاء",
+          "save": "حفظ الفعالية",
+          "add": "إضافة الفعالية",
+          "enableTicketTransfers": "تفعيل نقل التذاكر",
+          "commissionRateConfig": "تكوين معدل العمولة",
+          "commissionType": "نوع العمولة",
+          "commissionValue": "قيمة العمولة",
+          "commissionCalculation": "حساب العمولة",
+          "ofTotalRevenue": "من إجمالي الإيرادات",
+          "numberOfTicketsSold": "عدد التذاكر المباعة",
+          "transferFeeConfig": "تكوين رسوم النقل",
+          "transferFeeType": "نوع رسوم النقل",
+          "transferFeeValue": "قيمة رسوم النقل",
+          "transferFeeCalculation": "حساب رسوم النقل",
+          "ofTicketPriceWhenTransferred": "من سعر التذكرة عند النقل",
+          "perTicketTransfer": "لكل نقل تذكرة",
+          "eventImage": "صورة الفعالية"
+        },
+        "edit": {
+          "title": "تعديل الفعالية",
+          "subtitle": "تحديث معلومات الفعالية",
+          "name": "عنوان الفعالية",
+          "date": "تاريخ الفعالية",
+          "status": "حالة الفعالية",
+          "ticketsSold": "التذاكر المباعة",
+          "totalTickets": "إجمالي التذاكر",
+          "revenue": "الإيرادات (جنيه مصري)",
+          "commission": "العمولة (جنيه مصري)",
+          "rating": "التقييم",
+          "image": "رابط صورة الفعالية",
+          "description": "وصف الفعالية",
+          "location": "موقع الفعالية",
+          "price": "سعر التذكرة (جنيه مصري)",
+          "cancel": "إلغاء",
+          "save": "حفظ التغييرات"
+        }
+      },
+      "toast": {
+        "organizerDeleted": "تم حذف المنظم",
+        "organizerDeletedDesc": "تم حذف المنظم بنجاح",
+        "exportSuccess": "تم التصدير بنجاح",
+        "exportSuccessDesc": "تم تصدير بيانات المنظمين إلى Excel",
+        "organizerSuspended": "تم إيقاف المنظم",
+        "organizerSuspendedDesc": "تم إيقاف حساب المنظم",
+        "organizerActivated": "تم تفعيل المنظم",
+        "organizerActivatedDesc": "تم تفعيل حساب المنظم",
+        "organizerVerified": "تم توثيق المنظم",
+        "organizerVerifiedDesc": "تم توثيق حساب المنظم",
+        "organizerUnverified": "تم إلغاء توثيق المنظم",
+        "organizerUnverifiedDesc": "تم إلغاء توثيق المنظم",
+        "passwordReset": "إعادة تعيين كلمة المرور",
+        "passwordResetDesc": "تم إرسال بريد إعادة تعيين كلمة المرور إلى المنظم",
+        "viewEvents": "عرض الفعاليات",
+        "viewEventsDesc": "تم فتح فعاليات المنظم بنجاح",
+        "viewActivity": "عرض النشاط",
+        "viewActivityDesc": "تم فتح نشاط المنظم بنجاح",
+        "addOrganizer": "إضافة منظم",
+        "addOrganizerDesc": "تم فتح حوار إضافة المنظم بنجاح",
+        "saveOrganizerChanges": "تم تحديث المنظم",
+        "saveOrganizerChangesDesc": "تم تحديث معلومات المنظم بنجاح",
+        "organizerAdded": "تمت إضافة المنظم",
+        "organizerAddedDesc": "تم إنشاء المنظم الجديد بنجاح",
+        "organizerUpdated": "تم تحديث المنظم",
+        "organizerUpdatedDesc": "تم تحديث معلومات المنظم بنجاح",
+        "eventAdded": "تم إضافة الفعالية",
+        "eventAddedDesc": "تم إنشاء الفعالية الجديدة بنجاح",
+        "eventUpdated": "تم تحديث الفعالية",
+        "eventUpdatedDesc": "تم تحديث معلومات الفعالية بنجاح",
+        "eventDeleted": "تم حذف الفعالية",
+        "eventDeletedDesc": "تم حذف الفعالية بنجاح"
+      }
+    },
+    "ushers": {
+      "title": "إدارة المرشدين",
+      "subtitle": "إدارة جميع المرشدين وتعيينات الفعاليات",
+      "filters": {
+        "title": "المرشحات",
+        "searchPlaceholder": "البحث في المرشدين...",
+        "status": "الحالة",
+        "role": "الدور",
+        "performance": "الأداء",
+        "allStatus": "جميع الحالات",
+        "allRoles": "جميع الأدوار",
+        "allPerformance": "جميع الأداءات"
+      },
+      "table": {
+        "ushers": "المرشدون",
+        "usher": "المرشد",
+        "contact": "التواصل",
+        "role": "الدور",
+        "status": "الحالة",
+        "performance": "الأداء",
+        "events": "الفعاليات",
+        "rating": "التقييم",
+        "actions": "الإجراءات",
+        "id": "الرقم التعريفي",
+        "assigned": "مخصص"
+      },
+      "pagination": {
+        "showing": "عرض",
+        "of": "من",
+        "results": "نتيجة",
+        "first": "الأول",
+        "last": "الأخير"
+      },
+      "stats": {
+        "totalUshers": "إجمالي المرشدين",
+        "activeUshers": "المرشدون النشطون",
+        "inactiveUshers": "المرشدون غير النشطين",
+        "suspendedUshers": "المرشدون المعلقون"
+      },
+      "status": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "suspended": "معلق"
+      },
+      "roles": {
+        "coordinator": "منسق",
+        "supervisor": "مشرف",
+        "senior": "كبير",
+        "junior": "مبتدئ"
+      },
+      "performance": {
+        "excellent": "ممتاز",
+        "good": "جيد",
+        "average": "متوسط",
+        "needsImprovement": "يحتاج تحسين"
+      },
+      "actions": {
+        "export": "تصدير",
+        "addUsher": "إضافة مرشد",
+        "editUsher": "تعديل المرشد",
+        "assignEvents": "تعيين الفعاليات",
+        "deactivateUsher": "إلغاء تفعيل المرشد",
+        "reactivateUsher": "إعادة تفعيل المرشد",
+        "deleteUsher": "حذف المرشد"
+      },
+      "form": {
+        "fullName": "الاسم الكامل",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "role": "الدور",
+        "status": "الحالة",
+        "location": "الموقع",
+        "hourlyRate": "المعدل بالساعة",
+        "experience": "الخبرة",
+        "fullNamePlaceholder": "أدخل الاسم الكامل",
+        "emailPlaceholder": "أدخل البريد الإلكتروني",
+        "phonePlaceholder": "أدخل رقم الهاتف",
+        "locationPlaceholder": "أدخل الموقع",
+        "hourlyRatePlaceholder": "أدخل المعدل بالساعة",
+        "experiencePlaceholder": "أدخل سنوات الخبرة",
+        "selectRole": "اختر الدور"
+      },
+      "dialogs": {
+        "editUsher": "تعديل المرشد",
+        "editUsherSubtitle": "تحديث معلومات المرشد والإعدادات",
+        "addUsher": "إضافة مرشد جديد",
+        "addUsherSubtitle": "إضافة مرشد جديد للنظام",
+        "assignEvents": "تعيين الفعاليات",
+        "assignEventsSubtitle": "تعيين أو إزالة الفعاليات لهذا المرشد",
+        "usherDetails": "تفاصيل المرشد",
+        "usherDetailsSubtitle": "عرض معلومات مفصلة عن هذا المرشد",
+        "cancel": "إلغاء",
+        "saveChanges": "حفظ التغييرات",
+        "saveAssignments": "حفظ التعيينات",
+        "close": "إغلاق"
+      },
+      "assignEvents": {
+        "usherInfo": "معلومات المرشد",
+        "availableEvents": "الفعاليات المتاحة",
+        "currentAssignments": "التعيينات الحالية",
+        "assigned": "مخصص",
+        "notAssigned": "غير مخصص",
+        "assign": "تعيين",
+        "remove": "إزالة",
+        "noAssignments": "لا توجد تعيينات حالية"
+      },
+      "details": {
+        "basicInfo": "المعلومات الأساسية",
+        "performanceInfo": "معلومات الأداء",
+        "assignedEvents": "الفعاليات المخصصة",
+        "recentActivity": "النشاط الأخير",
+        "totalEvents": "إجمالي الفعاليات",
+        "rating": "التقييم",
+        "experience": "الخبرة",
+        "totalHours": "إجمالي الساعات",
+        "hourlyRate": "المعدل بالساعة",
+        "performance": "الأداء",
+        "years": "سنوات",
+        "hours": "ساعات",
+        "noAssignedEvents": "لا توجد فعاليات مخصصة"
+      },
+      "activity": {
+        "eventCompleted": "تم إكمال الفعالية بنجاح",
+        "eventAssigned": "تم تعيين الفعالية",
+        "performanceReview": "تم إكمال مراجعة الأداء",
+        "concert2025": "حفل موسيقي 2025",
+        "festival2025": "مهرجان 2025",
+        "excellentRating": "تم الحصول على تقييم ممتاز"
+      },
+      "toast": {
+        "usherDeleted": "تم حذف المرشد",
+        "usherDeletedDesc": "تم حذف المرشد بنجاح",
+        "exportSuccess": "تم التصدير بنجاح",
+        "exportSuccessDesc": "تم تصدير بيانات المرشدين بنجاح",
+        "usherDeactivated": "تم إلغاء تفعيل المرشد",
+        "usherDeactivatedDesc": "تم إلغاء تفعيل المرشد بنجاح",
+        "usherReactivated": "تم إعادة تفعيل المرشد",
+        "usherReactivatedDesc": "تم إعادة تفعيل المرشد بنجاح",
+        "usherAdded": "تم إضافة المرشد",
+        "usherAddedDesc": "تم إضافة المرشد الجديد بنجاح",
+        "eventsAssigned": "تم تعيين الفعاليات",
+        "eventsAssignedDesc": "تم تحديث تعيينات الفعاليات بنجاح",
+        "usherUpdated": "تم تحديث المرشد",
+        "usherUpdatedDesc": "تم تحديث معلومات المرشد بنجاح"
+      },
+      "mock": {
+        "ahmedHassan": "أحمد حسن",
+        "sarahMohamed": "سارة محمد",
+        "omarAli": "عمر علي",
+        "fatimaAhmed": "فاطمة أحمد",
+        "youssefIbrahim": "يوسف إبراهيم",
+        "nourHassan": "نور حسن",
+        "mariamAli": "مريم علي",
+        "karimHassan": "كريم حسن",
+        "laylaAhmed": "ليلى أحمد",
+        "hassanAli": "حسن علي",
+        "events": {
+          "concert2025": "حفل موسيقي 2025",
+          "festival2025": "مهرجان 2025",
+          "exhibition2025": "معرض 2025",
+          "sports2025": "فعالية رياضية 2025"
+        },
+        "venues": {
+          "cairoOpera": "دار الأوبرا المصرية",
+          "alexandriaCenter": "مركز الإسكندرية للمؤتمرات",
+          "gizaMuseum": "متحف الجيزة",
+          "cairoStadium": "ملعب القاهرة"
+        },
+        "organizers": {
+          "musicCorp": "شركة الموسيقى",
+          "festivalOrg": "منظمة المهرجانات",
+          "artGallery": "معرض الفنون",
+          "sportsLeague": "الدوري الرياضي"
+        }
+      }
+    },
     "dashboard": {
       "title": "لوحة تحكم المدير",
       "subtitle": "إدارة منصتك والفعاليات والمستخدمين والتحليلات",
       "tabs": {
         "dashboard": "لوحة التحكم",
         "events": "الفعاليات",
-        "venues": "المرافق",
+        "venues": "الأماكن",
         "tickets": "التذاكر",
         "nfc": "بطاقات NFC",
         "customers": "العملاء",
+        "organizers": "المنظمون",
+        "ushers": "المرشدون",
         "admins": "مستخدمي المدير",
         "logs": "سجلات النظام",
-        "analytics": "التحليلات"
+        "expenses": "المصروفات",
+        "payouts": "المدفوعات",
+        "analytics": "التحليلات",
+        "companyFinances": "المالية المؤسسية",
+        "profitShare": "إدارة تقاسم الأرباح",
+        "settlements": "التسويات",
+        "deposits": "الودائع",
+        "profitWithdrawals": "سحب الأرباح",
+        "groups": {
+          "main": "الرئيسية",
+          "management": "الإدارة",
+          "users": "المستخدمون",
+          "finances": "المالية",
+          "ownersFinances": "مالية المالك",
+          "system": "النظام"
+        }
       },
       "stats": {
         "totalEvents": "إجمالي الفعاليات",
@@ -1619,6 +2697,10 @@
       "logs": {
         "title": "سجلات النظام",
         "subtitle": "مراقبة وتتبع جميع أنشطة النظام وإجراءات المستخدمين وأحداث الأمان",
+        "checkInLogs": {
+          "title": "سجلات تسجيل الدخول",
+          "subtitle": "مراقبة عمليات مسح بطاقات NFC في الوقت الفعلي ونشاط الدخول"
+        },
         "export": "تصدير السجلات",
         "clearFilters": "مسح المرشحات",
         "stats": {
@@ -1655,7 +2737,6 @@
           "eventManagement": "إدارة الفعاليات",
           "ticketManagement": "إدارة التذاكر",
           "nfcManagement": "إدارة NFC",
-          "venueManagement": "إدارة المرافق",
           "system": "النظام",
           "security": "الأمان",
           "financial": "المالية",
@@ -2020,7 +3101,7 @@
         "validationError": "خطأ في التحقق",
         "validationErrorDesc": "يرجى ملء جميع الحقول المطلوبة",
         "viewAnalytics": "عرض التحليلات",
-        "viewAnalyticsDesc": "تم فتح تحليلات الفعالية بنجاح",
+        "viewAnalyticsDesc": "تم فتح لوحة التحليلات بنجاح",
         "manageUshers": "إدارة المرشدين",
         "manageUshersDesc": "تم فتح إدارة المرشدين بنجاح",
         "manageTickets": "إدارة التذاكر",
@@ -2118,7 +3199,10 @@
         "price": "السعر",
         "actions": "الإجراءات",
         "dependents": "المرافقون",
-        "id": "المعرف"
+        "id": "المعرف",
+        "phoneNumber": "رقم الجوال",
+        "labels": "العلامات",
+        "noLabels": "لا توجد علامات"
       },
       "status": {
         "valid": "صالح",
@@ -2134,7 +3218,8 @@
         "viewQrCode": "عرض رمز QR",
         "refundTicket": "استرداد التذكرة",
         "banTicket": "حظر التذكرة",
-        "unbanTicket": "إلغاء حظر التذكرة"
+        "unbanTicket": "إلغاء حظر التذكرة",
+        "manageLabels": "إدارة العلامات"
       },
       "dialogs": {
         "editTicket": "تعديل التذكرة",
@@ -2162,19 +3247,549 @@
       },
       "checkInLogs": {
         "title": "سجلات تسجيل الدخول المباشرة",
-        "subtitle": "نشاط تسجيل الدخول المباشر ونتائج المسح",
-        "customer": "العميل",
-        "event": "الفعالية",
-        "checkInTime": "وقت تسجيل الدخول",
-        "scanResult": "نتيجة المسح",
-        "location": "الموقع",
-        "usher": "المرشد"
+        "subtitle": "مراقبة مسح بطاقات NFC ونشاط الدخول في الوقت الفعلي",
+        "realTimeEnabled": "مباشر نشط",
+        "realTimeDisabled": "مباشر معطل",
+        "realTimeActive": "المراقبة المباشرة نشطة",
+        "lastUpdate": "آخر تحديث",
+        "export": "تصدير السجلات",
+        "clearFilters": "مسح المرشحات",
+        "stats": {
+          "totalScans": "إجمالي المسح",
+          "todayScans": "مسح اليوم",
+          "thisWeekScans": "هذا الأسبوع",
+          "thisMonthScans": "هذا الشهر",
+          "validScans": "مسح صالح",
+          "invalidScans": "مسح غير صالح",
+          "uniqueEvents": "فعاليات فريدة",
+          "uniqueCustomers": "عملاء فريدون",
+          "uniqueDevices": "أجهزة نشطة",
+          "averageProcessingTime": "متوسط وقت المعالجة",
+          "allTime": "كل الوقت",
+          "today": "اليوم",
+          "successRate": "معدل النجاح",
+          "failureRate": "معدل الفشل",
+          "deviceStatus": "حالة الجهاز",
+          "networkStatus": "حالة الشبكة"
+        },
+        "filters": {
+          "title": "مرشحات متقدمة",
+          "search": "بحث",
+          "searchPlaceholder": "البحث بالعميل أو الفعالية أو المكان أو NFC...",
+          "event": "الفعالية",
+          "scanResult": "نتيجة المسح",
+          "device": "الجهاز",
+          "operator": "المشغل",
+          "venue": "المكان",
+          "dateRange": "نطاق التاريخ",
+          "allEvents": "جميع الفعاليات",
+          "allResults": "جميع النتائج",
+          "allDevices": "جميع الأجهزة",
+          "allOperators": "جميع المشغلين",
+          "allVenues": "جميع الأماكن",
+          "allTime": "كل الوقت",
+          "today": "اليوم",
+          "thisWeek": "هذا الأسبوع",
+          "thisMonth": "هذا الشهر",
+          "sortBy": "ترتيب حسب",
+          "sortOrder": "ترتيب",
+          "ascending": "تصاعدي",
+          "descending": "تنازلي"
+        },
+        "table": {
+          "timestamp": "الطابع الزمني",
+          "customer": "العميل",
+          "event": "الفعالية",
+          "venue": "المكان",
+          "entryPoint": "نقطة الدخول",
+          "nfcCard": "بطاقة NFC",
+          "scanResult": "نتيجة المسح",
+          "scanType": "نوع المسح",
+          "device": "الجهاز",
+          "operator": "المشغل",
+          "processingTime": "وقت المعالجة",
+          "signalStrength": "الإشارة",
+          "batteryLevel": "البطارية",
+          "networkStatus": "الشبكة",
+          "actions": "الإجراءات",
+          "details": "التفاصيل",
+          "viewDetails": "عرض التفاصيل",
+          "id": "الرقم التعريفي"
+        },
+        "scanResults": {
+          "valid": "صالح",
+          "invalid": "غير صالح",
+          "expired": "منتهي الصلاحية",
+          "blocked": "محظور",
+          "duplicate": "مكرر",
+          "unauthorized": "غير مصرح"
+        },
+        "scanTypes": {
+          "entry": "دخول",
+          "exit": "خروج",
+          "reentry": "إعادة دخول",
+          "transfer": "تحويل"
+        },
+        "deviceTypes": {
+          "nfc_reader": "قارئ NFC",
+          "qr_scanner": "ماسح QR",
+          "mobile_app": "تطبيق الجوال",
+          "tablet": "تابلت",
+          "kiosk": "كشك"
+        },
+        "operatorRoles": {
+          "usher": "مرشد",
+          "security": "أمن",
+          "admin": "مدير",
+          "volunteer": "متطوع"
+        },
+        "signalStrength": {
+          "excellent": "ممتاز",
+          "good": "جيد",
+          "fair": "مقبول",
+          "poor": "ضعيف"
+        },
+        "networkStatus": {
+          "connected": "متصل",
+          "disconnected": "غير متصل",
+          "offline": "غير متصل بالإنترنت",
+          "syncing": "مزامنة"
+        },
+        "cardStatus": {
+          "active": "نشط",
+          "inactive": "غير نشط",
+          "expired": "منتهي الصلاحية",
+          "blocked": "محظور"
+        },
+        "details": {
+          "title": "تفاصيل سجل تسجيل الدخول",
+          "subtitle": "معلومات مفصلة عن مسح تسجيل الدخول",
+          "customerInfo": "معلومات العميل",
+          "eventInfo": "معلومات الفعالية",
+          "deviceInfo": "معلومات الجهاز",
+          "scanInfo": "معلومات المسح",
+          "metadata": "البيانات الوصفية التقنية",
+          "sessionId": "معرف الجلسة",
+          "requestId": "معرف الطلب",
+          "ipAddress": "عنوان IP",
+          "userAgent": "وكيل المستخدم",
+          "location": "الموقع",
+          "deviceInfo": "معلومات الجهاز",
+          "processingTime": "وقت المعالجة",
+          "signalQuality": "جودة الإشارة",
+          "batteryStatus": "حالة البطارية",
+          "networkQuality": "جودة الشبكة",
+          "notes": "ملاحظات",
+          "changes": "التغييرات المنجزة",
+          "affectedRecords": "السجلات المتأثرة",
+          "additionalData": "بيانات إضافية"
+        },
+        "analytics": {
+          "title": "تحليلات تسجيل الدخول",
+          "subtitle": "تحليلات فورية ومقاييس الأداء",
+          "scanTrends": "اتجاهات المسح",
+          "devicePerformance": "أداء الجهاز",
+          "operatorActivity": "نشاط المشغل",
+          "venueActivity": "نشاط المكان",
+          "successRate": "معدل النجاح",
+          "failureRate": "معدل الفشل",
+          "averageProcessingTime": "متوسط وقت المعالجة",
+          "deviceUptime": "وقت تشغيل الجهاز",
+          "networkReliability": "موثوقية الشبكة",
+          "batteryHealth": "صحة البطارية"
+        },
+        "toast": {
+          "exportSuccess": "تم التصدير بنجاح",
+          "exportSuccessDesc": "تم تصدير سجلات تسجيل الدخول بنجاح",
+          "realTimeEnabled": "تم تفعيل المراقبة المباشرة",
+          "realTimeDisabled": "تم تعطيل المراقبة المباشرة",
+          "filtersCleared": "تم مسح المرشحات",
+          "filtersClearedDesc": "تم مسح جميع المرشحات"
+        },
+        "dialogs": {
+          "close": "إغلاق",
+          "cancel": "إلغاء",
+          "saveChanges": "حفظ التغييرات"
+        }
+      },
+      "checkInLogs": {
+        "title": "سجلات تسجيل الدخول المباشرة",
+        "subtitle": "مراقبة مسح بطاقات NFC ونشاط الدخول في الوقت الفعلي",
+        "realTimeEnabled": "مباشر نشط",
+        "realTimeDisabled": "مباشر معطل",
+        "realTimeActive": "المراقبة المباشرة نشطة",
+        "lastUpdate": "آخر تحديث",
+        "export": "تصدير السجلات",
+        "clearFilters": "مسح المرشحات",
+        "stats": {
+          "totalScans": "إجمالي المسح",
+          "todayScans": "مسح اليوم",
+          "thisWeekScans": "هذا الأسبوع",
+          "thisMonthScans": "هذا الشهر",
+          "validScans": "مسح صالح",
+          "invalidScans": "مسح غير صالح",
+          "uniqueEvents": "فعاليات فريدة",
+          "uniqueCustomers": "عملاء فريدون",
+          "uniqueDevices": "أجهزة نشطة",
+          "averageProcessingTime": "متوسط وقت المعالجة",
+          "allTime": "كل الوقت",
+          "today": "اليوم",
+          "successRate": "معدل النجاح",
+          "failureRate": "معدل الفشل",
+          "deviceStatus": "حالة الجهاز",
+          "networkStatus": "حالة الشبكة"
+        },
+        "filters": {
+          "title": "مرشحات متقدمة",
+          "search": "بحث",
+          "searchPlaceholder": "البحث بالعميل أو الفعالية أو المكان أو NFC...",
+          "event": "الفعالية",
+          "scanResult": "نتيجة المسح",
+          "device": "الجهاز",
+          "operator": "المشغل",
+          "venue": "المكان",
+          "dateRange": "نطاق التاريخ",
+          "allEvents": "جميع الفعاليات",
+          "allResults": "جميع النتائج",
+          "allDevices": "جميع الأجهزة",
+          "allOperators": "جميع المشغلين",
+          "allVenues": "جميع الأماكن",
+          "allTime": "كل الوقت",
+          "today": "اليوم",
+          "thisWeek": "هذا الأسبوع",
+          "thisMonth": "هذا الشهر",
+          "sortBy": "ترتيب حسب",
+          "sortOrder": "ترتيب",
+          "ascending": "تصاعدي",
+          "descending": "تنازلي"
+        },
+        "table": {
+          "timestamp": "الطابع الزمني",
+          "customer": "العميل",
+          "event": "الفعالية",
+          "venue": "المكان",
+          "entryPoint": "نقطة الدخول",
+          "nfcCard": "بطاقة NFC",
+          "scanResult": "نتيجة المسح",
+          "scanType": "نوع المسح",
+          "device": "الجهاز",
+          "operator": "المشغل",
+          "processingTime": "وقت المعالجة",
+          "signalStrength": "الإشارة",
+          "batteryLevel": "البطارية",
+          "networkStatus": "الشبكة",
+          "actions": "الإجراءات",
+          "details": "التفاصيل",
+          "viewDetails": "عرض التفاصيل",
+          "id": "الرقم التعريفي"
+        },
+        "scanResults": {
+          "valid": "صالح",
+          "invalid": "غير صالح",
+          "expired": "منتهي الصلاحية",
+          "blocked": "محظور",
+          "duplicate": "مكرر",
+          "unauthorized": "غير مصرح"
+        },
+        "scanTypes": {
+          "entry": "دخول",
+          "exit": "خروج",
+          "reentry": "إعادة دخول",
+          "transfer": "تحويل"
+        },
+        "deviceTypes": {
+          "nfc_reader": "قارئ NFC",
+          "qr_scanner": "ماسح QR",
+          "mobile_app": "تطبيق الجوال",
+          "tablet": "تابلت",
+          "kiosk": "كشك"
+        },
+        "operatorRoles": {
+          "usher": "مرشد",
+          "security": "أمن",
+          "admin": "مدير",
+          "volunteer": "متطوع"
+        },
+        "signalStrength": {
+          "excellent": "ممتاز",
+          "good": "جيد",
+          "fair": "مقبول",
+          "poor": "ضعيف"
+        },
+        "networkStatus": {
+          "connected": "متصل",
+          "disconnected": "غير متصل",
+          "offline": "غير متصل بالإنترنت",
+          "syncing": "مزامنة"
+        },
+        "cardStatus": {
+          "active": "نشط",
+          "inactive": "غير نشط",
+          "expired": "منتهي الصلاحية",
+          "blocked": "محظور"
+        },
+        "details": {
+          "title": "تفاصيل سجل تسجيل الدخول",
+          "subtitle": "معلومات مفصلة عن مسح تسجيل الدخول",
+          "customerInfo": "معلومات العميل",
+          "eventInfo": "معلومات الفعالية",
+          "deviceInfo": "معلومات الجهاز",
+          "scanInfo": "معلومات المسح",
+          "metadata": "البيانات الوصفية التقنية",
+          "sessionId": "معرف الجلسة",
+          "requestId": "معرف الطلب",
+          "ipAddress": "عنوان IP",
+          "userAgent": "وكيل المستخدم",
+          "location": "الموقع",
+          "deviceInfo": "معلومات الجهاز",
+          "processingTime": "وقت المعالجة",
+          "signalQuality": "جودة الإشارة",
+          "batteryStatus": "حالة البطارية",
+          "networkQuality": "جودة الشبكة",
+          "notes": "ملاحظات",
+          "changes": "التغييرات المنجزة",
+          "affectedRecords": "السجلات المتأثرة",
+          "additionalData": "بيانات إضافية"
+        },
+        "analytics": {
+          "title": "تحليلات تسجيل الدخول",
+          "subtitle": "تحليلات فورية ومقاييس الأداء",
+          "scanTrends": "اتجاهات المسح",
+          "devicePerformance": "أداء الجهاز",
+          "operatorActivity": "نشاط المشغل",
+          "venueActivity": "نشاط المكان",
+          "successRate": "معدل النجاح",
+          "failureRate": "معدل الفشل",
+          "averageProcessingTime": "متوسط وقت المعالجة",
+          "deviceUptime": "وقت تشغيل الجهاز",
+          "networkReliability": "موثوقية الشبكة",
+          "batteryHealth": "صحة البطارية"
+        },
+        "toast": {
+          "exportSuccess": "تم التصدير بنجاح",
+          "exportSuccessDesc": "تم تصدير سجلات تسجيل الدخول بنجاح",
+          "realTimeEnabled": "تم تفعيل المراقبة المباشرة",
+          "realTimeDisabled": "تم تعطيل المراقبة المباشرة",
+          "filtersCleared": "تم مسح المرشحات",
+          "filtersClearedDesc": "تم مسح جميع المرشحات"
+        },
+        "dialogs": {
+          "close": "إغلاق",
+          "cancel": "إلغاء",
+          "saveChanges": "حفظ التغييرات"
+        },
+        "pagination": {
+          "showing": "عرض",
+          "of": "من",
+          "results": "نتيجة",
+          "first": "الأول",
+          "last": "الأخير"
+        }
+      },
+      "checkInLogs": {
+        "title": "سجلات تسجيل الدخول المباشرة",
+        "subtitle": "مراقبة مسح بطاقات NFC ونشاط الدخول في الوقت الفعلي",
+        "realTimeEnabled": "مباشر نشط",
+        "realTimeDisabled": "مباشر معطل",
+        "realTimeActive": "المراقبة المباشرة نشطة",
+        "lastUpdate": "آخر تحديث",
+        "export": "تصدير السجلات",
+        "clearFilters": "مسح المرشحات",
+        "stats": {
+          "totalScans": "إجمالي المسح",
+          "todayScans": "مسح اليوم",
+          "thisWeekScans": "هذا الأسبوع",
+          "thisMonthScans": "هذا الشهر",
+          "validScans": "مسح صالح",
+          "invalidScans": "مسح غير صالح",
+          "uniqueEvents": "فعاليات فريدة",
+          "uniqueCustomers": "عملاء فريدون",
+          "uniqueDevices": "أجهزة نشطة",
+          "averageProcessingTime": "متوسط وقت المعالجة",
+          "allTime": "كل الوقت",
+          "today": "اليوم",
+          "successRate": "معدل النجاح",
+          "failureRate": "معدل الفشل",
+          "deviceStatus": "حالة الجهاز",
+          "networkStatus": "حالة الشبكة"
+        },
+        "filters": {
+          "title": "مرشحات متقدمة",
+          "search": "بحث",
+          "searchPlaceholder": "البحث بالعميل أو الفعالية أو المكان أو NFC...",
+          "event": "الفعالية",
+          "scanResult": "نتيجة المسح",
+          "device": "الجهاز",
+          "operator": "المشغل",
+          "venue": "المكان",
+          "dateRange": "نطاق التاريخ",
+          "allEvents": "جميع الفعاليات",
+          "allResults": "جميع النتائج",
+          "allDevices": "جميع الأجهزة",
+          "allOperators": "جميع المشغلين",
+          "allVenues": "جميع الأماكن",
+          "allTime": "كل الوقت",
+          "today": "اليوم",
+          "thisWeek": "هذا الأسبوع",
+          "thisMonth": "هذا الشهر",
+          "sortBy": "ترتيب حسب",
+          "sortOrder": "ترتيب",
+          "ascending": "تصاعدي",
+          "descending": "تنازلي"
+        },
+        "table": {
+          "timestamp": "الطابع الزمني",
+          "customer": "العميل",
+          "event": "الفعالية",
+          "venue": "المكان",
+          "entryPoint": "نقطة الدخول",
+          "nfcCard": "بطاقة NFC",
+          "scanResult": "نتيجة المسح",
+          "scanType": "نوع المسح",
+          "device": "الجهاز",
+          "operator": "المشغل",
+          "processingTime": "وقت المعالجة",
+          "signalStrength": "الإشارة",
+          "batteryLevel": "البطارية",
+          "networkStatus": "الشبكة",
+          "actions": "الإجراءات",
+          "details": "التفاصيل",
+          "viewDetails": "عرض التفاصيل",
+          "id": "الرقم التعريفي"
+        },
+        "scanResults": {
+          "valid": "صالح",
+          "invalid": "غير صالح",
+          "expired": "منتهي الصلاحية",
+          "blocked": "محظور",
+          "duplicate": "مكرر",
+          "unauthorized": "غير مصرح"
+        },
+        "scanTypes": {
+          "entry": "دخول",
+          "exit": "خروج",
+          "reentry": "إعادة دخول",
+          "transfer": "تحويل"
+        },
+        "deviceTypes": {
+          "nfc_reader": "قارئ NFC",
+          "qr_scanner": "ماسح QR",
+          "mobile_app": "تطبيق الجوال",
+          "tablet": "تابلت",
+          "kiosk": "كشك"
+        },
+        "operatorRoles": {
+          "usher": "مرشد",
+          "security": "أمن",
+          "admin": "مدير",
+          "volunteer": "متطوع"
+        },
+        "signalStrength": {
+          "excellent": "ممتاز",
+          "good": "جيد",
+          "fair": "مقبول",
+          "poor": "ضعيف"
+        },
+        "networkStatus": {
+          "connected": "متصل",
+          "disconnected": "غير متصل",
+          "offline": "غير متصل بالإنترنت",
+          "syncing": "مزامنة"
+        },
+        "cardStatus": {
+          "active": "نشط",
+          "inactive": "غير نشط",
+          "expired": "منتهي الصلاحية",
+          "blocked": "محظور"
+        },
+        "details": {
+          "title": "تفاصيل سجل تسجيل الدخول",
+          "subtitle": "معلومات مفصلة عن مسح تسجيل الدخول",
+          "customerInfo": "معلومات العميل",
+          "eventInfo": "معلومات الفعالية",
+          "deviceInfo": "معلومات الجهاز",
+          "scanInfo": "معلومات المسح",
+          "metadata": "البيانات الوصفية التقنية",
+          "sessionId": "معرف الجلسة",
+          "requestId": "معرف الطلب",
+          "ipAddress": "عنوان IP",
+          "userAgent": "وكيل المستخدم",
+          "location": "الموقع",
+          "deviceInfo": "معلومات الجهاز",
+          "processingTime": "وقت المعالجة",
+          "signalQuality": "جودة الإشارة",
+          "batteryStatus": "حالة البطارية",
+          "networkQuality": "جودة الشبكة",
+          "notes": "ملاحظات",
+          "changes": "التغييرات المنجزة",
+          "affectedRecords": "السجلات المتأثرة",
+          "additionalData": "بيانات إضافية"
+        },
+        "analytics": {
+          "title": "تحليلات تسجيل الدخول",
+          "subtitle": "تحليلات فورية ومقاييس الأداء",
+          "scanTrends": "اتجاهات المسح",
+          "devicePerformance": "أداء الجهاز",
+          "operatorActivity": "نشاط المشغل",
+          "venueActivity": "نشاط المكان",
+          "successRate": "معدل النجاح",
+          "failureRate": "معدل الفشل",
+          "averageProcessingTime": "متوسط وقت المعالجة",
+          "deviceUptime": "وقت تشغيل الجهاز",
+          "networkReliability": "موثوقية الشبكة",
+          "batteryHealth": "صحة البطارية"
+        },
+        "toast": {
+          "exportSuccess": "تم التصدير بنجاح",
+          "exportSuccessDesc": "تم تصدير سجلات تسجيل الدخول بنجاح",
+          "realTimeEnabled": "تم تفعيل المراقبة المباشرة",
+          "realTimeDisabled": "تم تعطيل المراقبة المباشرة",
+          "filtersCleared": "تم مسح المرشحات",
+          "filtersClearedDesc": "تم مسح جميع المرشحات"
+        },
+        "pagination": {
+          "showing": "عرض",
+          "of": "من",
+          "results": "نتيجة",
+          "first": "الأول",
+          "last": "الأخير"
+        }
       },
       "scanResults": {
         "success": "نجح",
         "alreadyUsed": "مستخدم بالفعل",
         "invalid": "غير صالح",
-        "expired": "منتهي الصلاحية"
+        "expired": "منتهي الصلاحية",
+        "blocked": "محظور",
+        "duplicate": "مكرر",
+        "unauthorized": "غير مصرح"
+      },
+      "labels": {
+        "manageLabels": "إدارة العلامات",
+        "manageLabelsFor": "إدارة العلامات لـ",
+        "currentLabels": "العلامات الحالية",
+        "noLabels": "لا توجد علامات مخصصة",
+        "addNewLabel": "إضافة علامة جديدة",
+        "labelName": "اسم العلامة",
+        "labelColor": "لون العلامة",
+        "labelIcon": "أيقونة العلامة",
+        "labelDescription": "وصف العلامة",
+        "labelNamePlaceholder": "أدخل اسم العلامة",
+        "labelDescriptionPlaceholder": "أدخل وصف العلامة",
+        "addLabel": "إضافة علامة",
+        "saveLabels": "حفظ العلامات",
+        "toast": {
+          "labelAdded": "تمت إضافة العلامة",
+          "labelAddedDesc": "تمت إضافة العلامة بنجاح",
+          "labelRemoved": "تمت إزالة العلامة",
+          "labelRemovedDesc": "تمت إزالة العلامة بنجاح",
+          "labelsSaved": "تم حفظ العلامات",
+          "labelsSavedDesc": "تم حفظ العلامات بنجاح"
+        },
+        "error": {
+          "nameRequired": "اسم مطلوب",
+          "nameRequiredDesc": "يرجى إدخال اسم العلامة"
+        }
       },
       "toast": {
         "ticketBanned": "تم حظر التذكرة",
@@ -2283,6 +3898,7 @@
         "actions": {
           "export": "تصدير",
           "assignCard": "إضافة بطاقة جديدة",
+          "assignBySerial": "تعيين بالرقم التسلسلي",
           "editCard": "تعديل البطاقة",
           "viewDetails": "عرض التفاصيل",
           "generateKey": "إنشاء مفتاح",
@@ -2301,14 +3917,20 @@
         "dialogs": {
           "editCard": "تعديل بطاقة NFC",
           "editCardSubtitle": "تحديث تفاصيل البطاقة والإعدادات",
+          "addNewCard": "إضافة بطاقة NFC جديدة",
+          "addNewCardSubtitle": "تسجيل بطاقة NFC جديدة بالرقم التسلسلي",
           "assignCard": "تعيين بطاقة NFC جديدة",
           "assignCardSubtitle": "تعيين بطاقة NFC جديدة لعميل",
+          "assignBySerial": "تعيين البطاقة بالرقم التسلسلي",
+          "assignBySerialSubtitle": "تعيين بطاقة NFC موجودة بالرقم التسلسلي لرقم هاتف العميل",
           "generateKey": "إنشاء مفتاح جديد",
           "generateKeySubtitle": "إنشاء مفتاح جديد للبطاقة المحددة",
           "close": "إغلاق",
           "cancel": "إلغاء",
           "saveChanges": "حفظ التغييرات",
+          "addNewCardButton": "إضافة البطاقة",
           "assignCardButton": "تعيين البطاقة",
+          "assignBySerialButton": "تعيين بالرقم التسلسلي",
           "generatedKey": "المفتاح المُنشأ",
           "keyNote": "ملاحظة: لن يتم كتابة هذا المفتاح تلقائياً على البطاقة. تحتاج إلى كتابته يدوياً باستخدام كاتب NFC.",
           "copyKey": "نسخ المفتاح"
@@ -2316,6 +3938,7 @@
         "form": {
           "serialNumber": "الرقم التسلسلي",
           "customer": "العميل",
+          "customerMobile": "رقم هاتف العميل",
           "cardType": "نوع البطاقة",
           "status": "الحالة",
           "issueDate": "تاريخ الإصدار",
@@ -2325,6 +3948,8 @@
           "expiryPeriod": "فترة الانتهاء",
           "selectCustomer": "اختر العميل",
           "selectType": "اختر النوع",
+          "enterSerialNumber": "أدخل الرقم التسلسلي",
+          "enterMobileNumber": "أدخل رقم الهاتف",
           "oneYear": "سنة واحدة",
           "twoYears": "سنتان",
           "threeYears": "3 سنوات",
@@ -2355,6 +3980,10 @@
           "saveCardChangesDesc": "تم تحديث معلومات البطاقة بنجاح",
           "cardAssigned": "تم تعيين البطاقة",
           "cardAssignedDesc": "تم تعيين بطاقة NFC بنجاح",
+          "cardAdded": "تم إضافة البطاقة",
+          "cardAddedDesc": "تم تسجيل بطاقة NFC جديدة بنجاح",
+          "cardAssignedBySerial": "تم تعيين البطاقة بالرقم التسلسلي",
+          "cardAssignedBySerialDesc": "تم تعيين بطاقة NFC بنجاح بالرقم التسلسلي",
           "qrCodeOpened": "تم فتح رمز QR",
           "qrCodeOpenedDesc": "تم فتح تفاصيل رمز QR بنجاح",
           "keyCopied": "تم نسخ المفتاح",
@@ -2374,6 +4003,270 @@
           }
         }
       }
+    }
+  },
+  "venueManagement": {
+    "header": {
+      "title": "إدارة الأماكن",
+      "subtitle": "إدارة جميع الأماكن وتفاصيلها وخدماتها"
+    },
+    "filters": {
+      "title": "المرشحات",
+      "searchPlaceholder": "البحث في الأماكن...",
+      "status": {
+        "label": "الحالة",
+        "all": "جميع الحالات",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "maintenance": "صيانة"
+      },
+      "city": {
+        "label": "المدينة",
+        "all": "جميع المدن"
+      }
+    },
+    "table": {
+      "title": "الأماكن",
+      "subtitle": "عرض {{count}} مكان",
+      "headers": {
+        "venue": "المكان",
+        "location": "الموقع",
+        "capacity": "السعة",
+        "facilities": "الخدمات",
+        "status": "الحالة",
+        "rating": "التقييم",
+        "events": "الفعاليات",
+        "actions": "الإجراءات"
+      }
+    },
+    "actions": {
+      "addVenue": "إضافة مكان",
+      "export": "تصدير",
+      "viewDetails": "عرض التفاصيل",
+      "editVenue": "تعديل المكان",
+      "deleteVenue": "حذف المكان",
+      "saveVenue": "حفظ المكان",
+      "saveChanges": "حفظ التغييرات",
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "addFacility": "إضافة خدمة"
+    },
+    "dialogs": {
+      "add": {
+        "title": "إضافة مكان جديد",
+        "subtitle": "إضافة مكان جديد بجميع تفاصيله وخدماته"
+      },
+      "edit": {
+        "title": "تعديل المكان",
+        "subtitle": "تحديث تفاصيل المكان وخدماته"
+      },
+      "view": {
+        "title": "تفاصيل المكان",
+        "subtitle": "معلومات مفصلة حول المكان"
+      }
+    },
+    "form": {
+      "name": "الاسم",
+      "description": "الوصف",
+      "address": "العنوان",
+      "city": "المدينة",
+      "capacity": "السعة",
+      "contactPhone": "رقم الهاتف",
+      "contactEmail": "البريد الإلكتروني",
+      "website": "الموقع الإلكتروني",
+      "facilities": "الخدمات",
+      "placeholders": {
+        "name": "أدخل اسم المكان",
+        "description": "أدخل وصف المكان",
+        "address": "أدخل عنوان المكان",
+        "city": "أدخل المدينة",
+        "capacity": "أدخل السعة",
+        "contactPhone": "أدخل رقم الهاتف",
+        "contactEmail": "أدخل البريد الإلكتروني",
+        "website": "أدخل رابط الموقع الإلكتروني"
+      }
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "maintenance": "صيانة"
+    },
+    "facilities": {
+      "wifi": "واي فاي",
+      "parking": "موقف سيارات",
+      "wheelchairAccess": "إمكانية الوصول للكراسي المتحركة",
+      "catering": "خدمة الطعام",
+      "audioVisual": "الصوت والفيديو",
+      "security": "الأمان",
+      "camera": "كاميرا"
+    },
+    "details": {
+      "location": "الموقع",
+      "capacity": "السعة",
+      "contact": "التواصل",
+      "facilities": "الخدمات",
+      "statistics": "الإحصائيات",
+      "rating": "التقييم",
+      "totalEvents": "إجمالي الفعاليات",
+      "lastEvent": "آخر فعالية",
+      "noEvents": "لا توجد فعاليات"
+    },
+    "toast": {
+      "venueAdded": "تم إضافة المكان",
+      "venueAddedDesc": "تم إضافة المكان بنجاح",
+      "venueUpdated": "تم تحديث المكان",
+      "venueUpdatedDesc": "تم تحديث المكان بنجاح",
+      "venueDeleted": "تم حذف المكان",
+      "venueDeletedDesc": "تم حذف المكان بنجاح",
+      "exportSuccess": "تم التصدير بنجاح",
+      "exportSuccessDesc": "تم تصدير الأماكن بنجاح",
+      "error": "خطأ",
+      "errorDesc": "يرجى ملء جميع الحقول المطلوبة"
+    }
+  },
+  "expenses": {
+    "title": "إدارة المصروفات",
+    "subtitle": "تتبع وإدارة جميع مصروفات الأعمال والفئات وطرق الدفع",
+    "tabs": {
+      "expenses": "المصروفات",
+      "categories": "الفئات",
+      "paymentMethods": "طرق الدفع"
+    },
+    "stats": {
+      "totalExpenses": "إجمالي المصروفات",
+      "totalAmount": "إجمالي المبلغ",
+      "categories": "الفئات",
+      "activeCategories": "الفئات النشطة",
+      "paymentMethods": "طرق الدفع",
+      "activeMethods": "الطرق النشطة"
+    },
+    "expenses": {
+      "title": "المصروفات",
+      "subtitle": "عرض {{count}} مصروف"
+    },
+    "categories": {
+      "title": "الفئات",
+      "subtitle": "عرض {{count}} فئة"
+    },
+    "paymentMethods": {
+      "title": "طرق الدفع",
+      "subtitle": "عرض {{count}} طريقة دفع"
+    },
+    "actions": {
+      "addExpense": "إضافة مصروف",
+      "addCategory": "إضافة فئة",
+      "addPaymentMethod": "إضافة طريقة دفع",
+      "export": "تصدير",
+      "saveChanges": "حفظ التغييرات"
+    },
+    "dialogs": {
+      "addExpense": {
+        "title": "إضافة مصروف جديد",
+        "subtitle": "إضافة مصروف جديد بجميع التفاصيل"
+      },
+      "editExpense": {
+        "title": "تعديل المصروف",
+        "subtitle": "تحديث تفاصيل المصروف"
+      },
+      "addCategory": {
+        "title": "إضافة فئة جديدة",
+        "subtitle": "إضافة فئة مصروفات جديدة"
+      },
+      "editCategory": {
+        "title": "تعديل الفئة",
+        "subtitle": "تحديث تفاصيل الفئة"
+      },
+      "addPaymentMethod": {
+        "title": "إضافة طريقة دفع جديدة",
+        "subtitle": "إضافة طريقة دفع جديدة"
+      },
+      "editPaymentMethod": {
+        "title": "تعديل طريقة الدفع",
+        "subtitle": "تحديث تفاصيل طريقة الدفع"
+      }
+    },
+    "form": {
+      "details": "التفاصيل",
+      "amount": "المبلغ",
+      "category": "الفئة",
+      "paidBy": "دفع بواسطة",
+      "paymentMethod": "طريقة الدفع",
+      "paymentDate": "تاريخ الدفع",
+      "notes": "ملاحظات",
+      "categoryName": "اسم الفئة",
+      "paymentMethodName": "اسم طريقة الدفع",
+      "description": "الوصف",
+      "selectCategory": "اختر الفئة",
+      "selectPaymentMethod": "اختر طريقة الدفع",
+      "detailsPlaceholder": "أدخل تفاصيل المصروف",
+      "amountPlaceholder": "أدخل المبلغ",
+      "paidByPlaceholder": "أدخل من دفع",
+      "notesPlaceholder": "أدخل ملاحظات إضافية",
+      "categoryNamePlaceholder": "أدخل اسم الفئة",
+      "paymentMethodNamePlaceholder": "أدخل اسم طريقة الدفع",
+      "descriptionPlaceholder": "أدخل الوصف"
+    },
+    "table": {
+      "details": "التفاصيل",
+      "amount": "المبلغ",
+      "category": "الفئة",
+      "paidBy": "دفع بواسطة",
+      "paymentMethod": "طريقة الدفع",
+      "paymentDate": "تاريخ الدفع",
+      "status": "الحالة",
+      "name": "الاسم",
+      "description": "الوصف",
+      "totalPayments": "إجمالي المدفوعات",
+      "totalAmount": "إجمالي المبلغ",
+      "totalTransactions": "إجمالي المعاملات",
+      "noDescription": "لا يوجد وصف"
+    },
+    "filters": {
+      "category": "الفئة",
+      "paymentMethod": "طريقة الدفع",
+      "status": "الحالة",
+      "allCategories": "جميع الفئات",
+      "allMethods": "جميع الطرق",
+      "allStatuses": "جميع الحالات"
+    },
+    "status": {
+      "paid": "مدفوع",
+      "pending": "معلق",
+      "cancelled": "ملغي",
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "search": {
+      "placeholder": "البحث في المصروفات..."
+    },
+    "pagination": {
+      "showing": "عرض",
+      "of": "من",
+      "results": "نتيجة"
+    },
+    "toast": {
+      "expenseAdded": "تم إضافة المصروف",
+      "expenseAddedDesc": "تم إضافة المصروف بنجاح",
+      "expenseUpdated": "تم تحديث المصروف",
+      "expenseUpdatedDesc": "تم تحديث المصروف بنجاح",
+      "expenseDeleted": "تم حذف المصروف",
+      "expenseDeletedDesc": "تم حذف المصروف بنجاح",
+      "categoryAdded": "تم إضافة الفئة",
+      "categoryAddedDesc": "تم إضافة الفئة بنجاح",
+      "categoryUpdated": "تم تحديث الفئة",
+      "categoryUpdatedDesc": "تم تحديث الفئة بنجاح",
+      "categoryDeleted": "تم حذف الفئة",
+      "categoryDeletedDesc": "تم حذف الفئة بنجاح",
+      "paymentMethodAdded": "تم إضافة طريقة الدفع",
+      "paymentMethodAddedDesc": "تم إضافة طريقة الدفع بنجاح",
+      "paymentMethodUpdated": "تم تحديث طريقة الدفع",
+      "paymentMethodUpdatedDesc": "تم تحديث طريقة الدفع بنجاح",
+      "paymentMethodDeleted": "تم حذف طريقة الدفع",
+      "paymentMethodDeletedDesc": "تم حذف طريقة الدفع بنجاح",
+      "exportSuccess": "تم التصدير بنجاح",
+      "exportSuccessDesc": "تم تصدير البيانات بنجاح",
+      "error": "خطأ",
+      "errorDesc": "يرجى ملء جميع الحقول المطلوبة"
     }
   }
 }

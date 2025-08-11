@@ -5,13 +5,7 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
+
 import {
   Table,
   TableBody,
@@ -38,20 +32,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -129,6 +112,7 @@ import { useToast } from "@/hooks/use-toast";
 import { formatNumberForLocale, formatCurrencyForLocale } from "@/lib/utils";
 import { ExportDialog } from "@/components/ui/export-dialog";
 import { commonColumns } from "@/lib/exportUtils";
+import { ResponsivePagination } from "@/components/ui/pagination";
 
 // Custom hook for debounced search
 const useDebounce = (value: string, delay: number) => {
@@ -937,18 +921,21 @@ const SystemLogs: React.FC = () => {
   }, [hasMoreLogs, isLoadingMore, loadMoreLogs]);
 
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6"
+      dir={i18nInstance.language === "ar" ? "rtl" : "ltr"}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+          <h2 className="text-xl sm:text-2xl font-bold rtl:text-right ltr:text-left">
             {t("admin.dashboard.logs.title")}
           </h2>
-          <p className="text-muted-foreground rtl:text-right ltr:text-left">
+          <p className="text-sm sm:text-base text-muted-foreground rtl:text-right ltr:text-left">
             {t("admin.dashboard.logs.subtitle")}
           </p>
         </div>
-        <div className="flex items-center gap-2 rtl:flex-row-reverse">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <ExportDialog
             data={filteredLogs}
             columns={commonColumns.systemLogs}
@@ -970,21 +957,24 @@ const SystemLogs: React.FC = () => {
               });
             }}
           >
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 rtl:flex-row-reverse"
-            >
-              <Download className="h-4 w-4" />
-              {t("admin.dashboard.logs.export")}
+            <Button variant="outline" className="text-xs sm:text-sm">
+              <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+              <span className="hidden sm:inline">
+                {t("admin.dashboard.logs.export")}
+              </span>
+              <span className="sm:hidden">Export</span>
             </Button>
           </ExportDialog>
           <Button
             variant="outline"
             onClick={clearFilters}
-            className="flex items-center gap-2 rtl:flex-row-reverse"
+            className="text-xs sm:text-sm"
           >
-            <FilterX className="h-4 w-4" />
-            {t("admin.dashboard.logs.clearFilters")}
+            <FilterX className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+            <span className="hidden sm:inline">
+              {t("admin.dashboard.logs.clearFilters")}
+            </span>
+            <span className="sm:hidden">Clear</span>
           </Button>
         </div>
       </div>
@@ -998,7 +988,7 @@ const SystemLogs: React.FC = () => {
                 {t("admin.dashboard.logs.stats.totalLogs")}
               </CardTitle>
             </div>
-            <Activity className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Activity className="h-4 w-4 text-muted-foreground flex-shrink-0 rtl:mr-0 rtl:ml-2" />
           </CardHeader>
           <CardContent className="rtl:text-right">
             <div className="text-2xl font-bold number-container">
@@ -1017,7 +1007,7 @@ const SystemLogs: React.FC = () => {
                 {t("admin.dashboard.logs.stats.todayLogs")}
               </CardTitle>
             </div>
-            <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0 rtl:mr-0 rtl:ml-2" />
           </CardHeader>
           <CardContent className="rtl:text-right">
             <div className="text-2xl font-bold number-container">
@@ -1036,7 +1026,7 @@ const SystemLogs: React.FC = () => {
                 {t("admin.dashboard.logs.stats.criticalLogs")}
               </CardTitle>
             </div>
-            <AlertTriangle className="h-4 w-4 text-red-500 flex-shrink-0" />
+            <AlertTriangle className="h-4 w-4 text-red-500 flex-shrink-0 rtl:mr-0 rtl:ml-2" />
           </CardHeader>
           <CardContent className="rtl:text-right">
             <div className="text-2xl font-bold text-red-600 number-container">
@@ -1055,7 +1045,7 @@ const SystemLogs: React.FC = () => {
                 {t("admin.dashboard.logs.stats.activeUsers")}
               </CardTitle>
             </div>
-            <Users className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Users className="h-4 w-4 text-muted-foreground flex-shrink-0 rtl:mr-0 rtl:ml-2" />
           </CardHeader>
           <CardContent className="rtl:text-right">
             <div className="text-2xl font-bold number-container">
@@ -1496,20 +1486,27 @@ const SystemLogs: React.FC = () => {
           </div>
 
           {/* Enhanced Pagination */}
-          <div className="flex items-center justify-between mt-4 rtl:space-x-reverse">
-            <div className="flex items-center gap-4 rtl:flex-row-reverse">
-              <div className="text-sm text-muted-foreground rtl:text-right">
-                {t("admin.dashboard.logs.pagination.showing")} {startIndex + 1}-
-                {Math.min(endIndex, filteredLogs.length)}{" "}
-                {t("admin.dashboard.logs.pagination.of")}{" "}
-                {formatNumberForLocale(
-                  filteredLogs.length,
-                  i18nInstance.language
-                )}{" "}
-                {t("admin.dashboard.logs.pagination.results")}
-              </div>
+          <div className="mt-4">
+            <ResponsivePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              startIndex={startIndex}
+              endIndex={Math.min(endIndex, filteredLogs.length)}
+              totalItems={filteredLogs.length}
+              itemsPerPage={logsPerPage}
+              infoText={`${t("admin.dashboard.logs.pagination.showing")} ${
+                startIndex + 1
+              }-${Math.min(endIndex, filteredLogs.length)} ${t(
+                "admin.dashboard.logs.pagination.of"
+              )} ${formatNumberForLocale(
+                filteredLogs.length,
+                i18nInstance.language
+              )} ${t("admin.dashboard.logs.pagination.results")}`}
+            />
 
-              {/* Page size selector */}
+            {/* Page size selector */}
+            <div className="flex items-center justify-center mt-4">
               <div className="flex items-center gap-2 rtl:flex-row-reverse">
                 <span className="text-sm text-muted-foreground">
                   {t("admin.dashboard.logs.pagination.perPage")}:
@@ -1533,58 +1530,6 @@ const SystemLogs: React.FC = () => {
                 </Select>
               </div>
             </div>
-
-            {/* Pagination controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center gap-2 rtl:flex-row-reverse">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(1)}
-                  disabled={currentPage === 1}
-                  className="flex items-center gap-1 rtl:flex-row-reverse"
-                >
-                  <ChevronUp className="h-4 w-4" />
-                  {t("admin.dashboard.logs.pagination.first")}
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  <ChevronUp className="h-4 w-4" />
-                </Button>
-
-                <div className="flex items-center gap-1 rtl:flex-row-reverse">
-                  <span className="text-sm font-medium">{currentPage}</span>
-                  <span className="text-sm text-muted-foreground">
-                    / {totalPages}
-                  </span>
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage(totalPages)}
-                  disabled={currentPage === totalPages}
-                  className="flex items-center gap-1 rtl:flex-row-reverse"
-                >
-                  {t("admin.dashboard.logs.pagination.last")}
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>

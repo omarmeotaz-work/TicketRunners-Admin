@@ -9,13 +9,19 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8081,
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(
-    Boolean
-  ),
+  plugins: [
+    react({
+      jsxImportSource: "react",
+    }),
+    mode === "development" && componentTagger(),
+  ].filter(Boolean),
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve("./src"),
     },
   },
   base: "./",
+  esbuild: {
+    jsx: "automatic",
+  },
 }));

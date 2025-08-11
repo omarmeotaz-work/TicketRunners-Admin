@@ -1,6 +1,7 @@
 {
   "english": "English",
   "arabic": "Arabic",
+  "testVenueKey": "TEST VENUE KEY WORKS",
   "searchEvents": "Search events...",
   "home": "Home",
   "bookings": "Bookings",
@@ -1099,6 +1100,11 @@
   },
 
   "admin": {
+    "common": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "actions": "Actions"
+    },
     "export": {
       "title": "Export Data",
       "description": "Export your data in various formats for analysis and reporting",
@@ -1304,6 +1310,529 @@
         "userAddedDesc": "New user has been successfully created"
       }
     },
+    "payouts": {
+      "title": "Payouts Management",
+      "subtitle": "Manage organizer payouts, track payment history, and process new payouts",
+      "createNewPayout": "Create New Payout",
+      "createNewPayoutDesc": "Create a new payout for an organizer with pending funds",
+      "payoutHistory": "Payout History",
+      "payoutHistoryDesc": "View and manage all payout transactions",
+      "stats": {
+        "pendingPayouts": "Pending Payouts",
+        "completedPayouts": "Completed Payouts",
+        "totalPayouts": "Total Payouts",
+        "totalAmount": "Total Amount",
+        "awaitingProcessing": "Awaiting processing",
+        "successfullyProcessed": "Successfully processed",
+        "allTime": "All time",
+        "totalProcessed": "Total processed"
+      },
+      "fields": {
+        "organizer": "Organizer",
+        "selectOrganizer": "Select organizer",
+        "amount": "Amount",
+        "enterAmount": "Enter amount",
+        "notes": "Notes",
+        "enterNotes": "Enter notes (optional)",
+        "reference": "Reference",
+        "status": "Status",
+        "method": "Method",
+        "createdAt": "Created At",
+        "processedAt": "Processed At"
+      },
+      "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "results": "results"
+      },
+      "filters": {
+        "status": "Status",
+        "organizer": "Organizer",
+        "allStatus": "All Status",
+        "allOrganizers": "All Organizers",
+        "pending": "Pending",
+        "processing": "Processing",
+        "completed": "Completed",
+        "failed": "Failed"
+      },
+      "table": {
+        "reference": "Reference",
+        "organizer": "Organizer",
+        "amount": "Amount",
+        "status": "Status",
+        "method": "Method",
+        "createdAt": "Created At",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "completed": "Completed",
+        "failed": "Failed"
+      },
+      "methods": {
+        "bank_transfer": "Bank Transfer",
+        "paypal": "PayPal",
+        "stripe": "Stripe"
+      },
+      "actions": {
+        "createPayout": "Create Payout",
+        "close": "Close"
+      },
+      "dialogs": {
+        "payoutDetails": "Payout Details",
+        "payoutDetailsDesc": "Detailed information about this payout transaction"
+      },
+      "errors": {
+        "invalidInput": "Invalid Input",
+        "pleaseCheckInput": "Please check your input and try again",
+        "amountExceeds": "Amount Exceeds Limit",
+        "maxAmount": "Maximum amount allowed is {{amount}}"
+      },
+      "success": {
+        "payoutCreated": "Payout Created",
+        "payoutCreatedDesc": "New payout has been created successfully"
+      }
+    },
+    "accountSettings": {
+      "title": "Account Settings",
+      "subtitle": "Manage your personal information, security settings, and password",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "tabs": {
+        "personal": "Personal Info",
+        "security": "Security",
+        "password": "Password"
+      },
+      "personalInfo": {
+        "title": "Personal Information",
+        "description": "Update your personal information and contact details",
+        "fullName": "Full Name",
+        "username": "Username",
+        "email": "Email",
+        "phone": "Phone",
+        "fullNamePlaceholder": "Enter your full name",
+        "usernamePlaceholder": "Enter username",
+        "emailPlaceholder": "Enter email address",
+        "phonePlaceholder": "Enter phone number",
+        "lastLogin": "Last Login",
+        "createdAt": "Created At",
+        "save": "Save Changes",
+        "updating": "Updating...",
+        "updated": "Information Updated",
+        "updatedDesc": "Your personal information has been successfully updated"
+      },
+      "security": {
+        "title": "Security Settings",
+        "description": "Configure your account security preferences",
+        "twoFactorAuth": "Two-Factor Authentication",
+        "twoFactorAuthDesc": "Enable two-factor authentication for enhanced security",
+        "emailNotifications": "Email Notifications",
+        "emailNotificationsDesc": "Receive email notifications for important account activities",
+        "loginNotifications": "Login Notifications",
+        "loginNotificationsDesc": "Get notified when someone logs into your account",
+        "sessionTimeout": "Session Timeout",
+        "sessionTimeoutDesc": "Automatically log out after specified minutes of inactivity",
+        "minutes": "minutes",
+        "warning": "Security settings changes may require you to log in again for security purposes.",
+        "save": "Save Settings",
+        "updating": "Updating...",
+        "updated": "Security Updated",
+        "updatedDesc": "Your security settings have been successfully updated"
+      },
+      "password": {
+        "title": "Password Reset",
+        "description": "Change your account password securely",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "currentPasswordPlaceholder": "Enter your current password",
+        "newPasswordPlaceholder": "Enter new password",
+        "confirmPasswordPlaceholder": "Confirm new password",
+        "requirements": "Password must be at least 8 characters long and contain a mix of letters, numbers, and special characters.",
+        "update": "Update Password",
+        "updating": "Updating...",
+        "updated": "Password Updated",
+        "updatedDesc": "Your password has been successfully updated",
+        "mismatch": "Password Mismatch",
+        "mismatchDesc": "New password and confirm password do not match",
+        "tooShort": "Password Too Short",
+        "tooShortDesc": "Password must be at least 8 characters long",
+        "otpVerification": "OTP Verification",
+        "otpVerificationDesc": "Enter the 6-digit verification code sent to your email to proceed with password change",
+        "sendOtp": "Send OTP",
+        "sendingOtp": "Sending OTP...",
+        "enterOtp": "Enter OTP Code",
+        "verifyOtp": "Verify OTP",
+        "verifyingOtp": "Verifying...",
+        "cancel": "Cancel",
+        "otpSent": "OTP Sent",
+        "otpSentDesc": "A 6-digit verification code has been sent to your email",
+        "otpVerified": "OTP Verified",
+        "otpVerifiedDesc": "OTP verification successful. You can now change your password",
+        "otpVerifiedSuccess": "OTP verification completed successfully",
+        "otpInvalid": "Invalid OTP",
+        "otpInvalidDesc": "The OTP code you entered is invalid. Please try again",
+        "invalidOtp": "Invalid OTP",
+        "invalidOtpDesc": "Please enter a valid 6-digit OTP code",
+        "otpRequired": "OTP Required",
+        "otpRequiredDesc": "Please complete OTP verification before changing your password",
+        "currentPasswordRequired": "Current Password Required",
+        "currentPasswordRequiredDesc": "Please enter your current password to request OTP"
+      }
+    },
+    "companyFinances": {
+      "subtitle": "Manage company financial data, revenue tracking, and financial reporting",
+      "tabs": {
+        "overview": "Overview",
+        "wallet": "Company Wallet",
+        "owners": "Owner Wallets",
+        "profitShare": "Profit Share",
+        "reports": "Reports"
+      },
+      "stats": {
+        "totalRevenue": "Total Revenue",
+        "totalExpenses": "Total Expenses",
+        "netProfit": "Net Profit",
+        "profitMargin": "Profit Margin",
+        "fromLastYear": "from last year"
+      },
+      "recentPeriods": "Recent Financial Periods",
+      "recentPeriodsDescription": "Overview of recent quarterly financial performance",
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "netProfit": "Net Profit",
+      "margin": "Margin",
+      "revenueDescription": "Detailed revenue analysis and tracking",
+      "expensesDescription": "Comprehensive expense management and categorization",
+      "reportsDescription": "Financial reports and analytics",
+      "comingSoon": "This feature is coming soon. Full financial management capabilities will be implemented here.",
+      "wallet": {
+        "title": "Company Wallet Management",
+        "description": "Monitor company wallet balance and financial overview",
+        "companyBalance": "Company Wallet Balance",
+        "availableBalance": "Available balance in company wallet",
+        "totalOwners": "Total Owners",
+        "activeStakeholders": "Active stakeholders",
+        "totalProfitShare": "Total Profit Share",
+        "fullyAllocated": "Fully allocated",
+        "partiallyAllocated": "Partially allocated"
+      },
+      "owners": {
+        "title": "Owner Wallets Management",
+        "description": "Manage all owner wallets, balances, and transactions",
+        "searchPlaceholder": "Search owners...",
+        "addNew": "Add New Owner",
+        "addNewDescription": "Add a new stakeholder to the company with profit share allocation",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "profitShare": "Profit Share (%)",
+        "initialDeposit": "Initial Deposit",
+        "addOwner": "Add Owner",
+        "joined": "Joined",
+        "currentBalance": "Current Balance",
+        "deposits": "Deposits",
+        "withdrawals": "Withdrawals",
+        "netPosition": "Net Position"
+      },
+      "profitShare": {
+        "title": "Profit Share Allocation",
+        "description": "Manage profit share distribution among owners",
+        "percentage": "Share %",
+        "estimatedShare": "Estimated Share",
+        "totalAllocated": "Total Allocated",
+        "remaining": "Remaining"
+      },
+      "validation": {
+        "error": "Validation Error",
+        "profitShareExceeded": "Total profit share percentage cannot exceed 100%",
+        "requiredFields": "Please fill in all required fields"
+      },
+      "ownerAdded": "Owner Added",
+      "ownerAddedDesc": "New owner has been successfully added to the company"
+    },
+    "profitShare": {
+      "subtitle": "Manage profit sharing, shareholder distributions, and equity management",
+      "stats": {
+        "totalProfit": "Total Profit",
+        "shareholders": "Shareholders",
+        "totalDistributed": "Total Distributed",
+        "avgShare": "Average Share",
+        "fromLastPeriod": "from last period",
+        "activeShareholders": "active shareholders",
+        "ofTotalProfit": "of total profit",
+        "perShareholder": "per shareholder"
+      },
+      "title": "Profit Share Management",
+      "description": "Manage profit distribution among shareholders and equity holders",
+      "comingSoon": "This feature is coming soon. Complete profit sharing management will be implemented here."
+    },
+    "settlements": {
+      "subtitle": "Manage financial settlements, payment processing, and transaction reconciliation",
+      "stats": {
+        "totalSettlements": "Total Settlements",
+        "totalAmount": "Total Amount",
+        "pendingSettlements": "Pending Settlements",
+        "completedSettlements": "Completed Settlements",
+        "totalOwed": "Total Owed",
+        "fromLastMonth": "from last month",
+        "awaitingProcessing": "awaiting processing",
+        "completionRate": "completion rate",
+        "allTime": "all time",
+        "toOwners": "to owners"
+      },
+      "title": "Settlements Management",
+      "description": "Track and manage all financial settlements and payment processing",
+      "comingSoon": "This feature is coming soon. Complete settlement management will be implemented here.",
+      "actions": {
+        "addSettlement": "Add Settlement",
+        "export": "Export",
+        "view": "View",
+        "delete": "Delete",
+        "title": "Actions"
+      },
+      "filters": {
+        "title": "Filters",
+        "search": "Search",
+        "searchPlaceholder": "Search settlements...",
+        "owner": "Owner",
+        "status": "Status",
+        "paymentMethod": "Payment Method",
+        "dateRange": "Date Range",
+        "allOwners": "All Owners",
+        "allStatuses": "All Statuses",
+        "allMethods": "All Methods",
+        "from": "From",
+        "to": "To"
+      },
+      "form": {
+        "owner": "Owner",
+        "selectOwner": "Select owner",
+        "amount": "Amount",
+        "amountPlaceholder": "Enter amount",
+        "paymentMethod": "Payment Method",
+        "selectPaymentMethod": "Select payment method",
+        "date": "Date",
+        "notes": "Notes",
+        "notesPlaceholder": "Optional notes",
+        "owed": "owed"
+      },
+      "table": {
+        "reference": "Reference",
+        "owner": "Owner",
+        "amount": "Amount",
+        "paymentMethod": "Payment Method",
+        "date": "Date",
+        "status": "Status",
+        "notes": "Notes",
+        "actions": "Actions",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+      },
+      "status": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "cancelled": "Cancelled"
+      },
+      "dialogs": {
+        "addSettlement": {
+          "title": "Add New Settlement",
+          "subtitle": "Create a new settlement entry for an owner"
+        },
+        "details": {
+          "title": "Settlement Details",
+          "subtitle": "View detailed information about this settlement"
+        }
+      },
+      "validation": {
+        "error": "Validation Error",
+        "requiredFields": "Please fill in all required fields",
+        "invalidAmount": "Please enter a valid amount",
+        "insufficientOwedAmount": "Settlement amount cannot exceed owed amount"
+      },
+      "settlementAdded": "Settlement Added",
+      "settlementAddedDesc": "New settlement has been successfully created",
+      "settlementDeleted": "Settlement Deleted",
+      "settlementDeletedDesc": "Settlement has been successfully deleted",
+      "exportSuccess": "Export Successful",
+      "exportSuccessDesc": "Settlements data has been exported successfully",
+      "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "results": "results"
+      }
+    },
+    "deposits": {
+      "subtitle": "Manage deposits, investment tracking, and capital management",
+      "stats": {
+        "totalDeposits": "Total Deposits",
+        "activeDeposits": "Active Deposits",
+        "avgDeposit": "Average Deposit",
+        "monthlyGrowth": "Monthly Growth",
+        "fromLastMonth": "from last month",
+        "currentlyActive": "currently active",
+        "perDeposit": "per deposit"
+      },
+      "title": "Deposits Management",
+      "description": "Track and manage all deposits and investment activities",
+      "comingSoon": "This feature is coming soon. Complete deposit management will be implemented here.",
+      "filters": {
+        "title": "Filters",
+        "search": "Search",
+        "searchPlaceholder": "Search deposits...",
+        "status": "Status",
+        "paymentMethod": "Payment Method",
+        "date": "Date",
+        "allStatus": "All Status",
+        "allPaymentMethods": "All Payment Methods",
+        "allDates": "All Dates",
+        "today": "Today",
+        "thisWeek": "This Week",
+        "thisMonth": "This Month",
+        "thisYear": "This Year"
+      },
+      "table": {
+        "id": "ID",
+        "owner": "Owner",
+        "amount": "Amount",
+        "paymentMethod": "Payment Method",
+        "depositDate": "Deposit Date",
+        "status": "Status",
+        "notes": "Notes",
+        "actions": "Actions",
+        "noNotes": "No notes",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "noDeposits": "No deposits found",
+        "noResults": "No results found"
+      },
+      "status": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "cancelled": "Cancelled"
+      },
+      "actions": {
+        "export": "Export",
+        "addDeposit": "Add Deposit",
+        "viewDetails": "View Details",
+        "editDeposit": "Edit Deposit",
+        "deleteDeposit": "Delete Deposit",
+        "updateDeposit": "Update Deposit",
+        "cancel": "Cancel",
+        "close": "Close",
+        "actions": "Actions",
+        "addSuccess": "Deposit Added",
+        "addSuccessDescription": "Deposit has been successfully added",
+        "updateSuccess": "Deposit Updated",
+        "updateSuccessDescription": "Deposit has been successfully updated",
+        "deleteSuccess": "Deposit Deleted",
+        "deleteSuccessDescription": "Deposit has been successfully deleted"
+      },
+      "form": {
+        "owner": "Owner",
+        "amount": "Amount",
+        "paymentMethod": "Payment Method",
+        "depositDate": "Deposit Date",
+        "notes": "Notes",
+        "selectOwner": "Select an owner",
+        "amountPlaceholder": "Enter amount",
+        "selectPaymentMethod": "Select payment method",
+        "notesPlaceholder": "Enter notes (optional)",
+        "owed": "owed"
+      },
+      "dialogs": {
+        "addDeposit": "Add New Deposit",
+        "addDepositSubtitle": "Record a new deposit from an owner",
+        "editDeposit": "Edit Deposit",
+        "editDepositSubtitle": "Update deposit information",
+        "depositDetails": "Deposit Details",
+        "depositDetailsSubtitle": "Detailed information about the selected deposit"
+      },
+      "export": {
+        "title": "Export Deposits",
+        "subtitle": "Export deposit data in various formats"
+      },
+      "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "results": "results"
+      },
+      "errors": {
+        "validationError": "Validation Error",
+        "requiredFields": "Please fill in all required fields",
+        "ownerNotFound": "Owner Not Found",
+        "ownerNotFoundDescription": "The selected owner could not be found"
+      },
+      "toast": {
+        "exportSuccess": "Export Successful",
+        "exportSuccessDesc": "Deposits data has been exported successfully"
+      }
+    },
+    "profitWithdrawals": {
+      "subtitle": "Manage profit withdrawals, distribution tracking, and payout management",
+      "stats": {
+        "totalWithdrawals": "Total Withdrawals",
+        "pendingWithdrawals": "Pending Withdrawals",
+        "avgWithdrawal": "Average Withdrawal",
+        "monthlyGrowth": "Monthly Growth",
+        "fromLastMonth": "from last month",
+        "awaitingProcessing": "awaiting processing",
+        "perWithdrawal": "per withdrawal",
+        "companyWallet": "Company Wallet",
+        "availableBalance": "Available balance",
+        "allTimeWithdrawals": "All time withdrawals"
+      },
+      "title": "Profit Withdrawals Management",
+      "description": "Track and manage all profit withdrawals and distributions",
+      "comingSoon": "This feature is coming soon. Complete withdrawal management will be implemented here.",
+      "newWithdrawal": "New Withdrawal",
+      "createWithdrawal": "Create New Withdrawal",
+      "createWithdrawalDesc": "Process a withdrawal request for an owner. The system will automatically check profit share limits.",
+      "owner": "Owner",
+      "selectOwner": "Select an owner",
+      "amount": "Amount ($)",
+      "enterAmount": "Enter withdrawal amount",
+      "exceedsWarning": "This withdrawal exceeds the available profit share and will be recorded as a liability.",
+      "paymentMethod": "Payment Method",
+      "selectPaymentMethod": "Select payment method",
+      "bankTransfer": "Bank Transfer",
+      "paypal": "PayPal",
+      "check": "Check",
+      "wireTransfer": "Wire Transfer",
+      "notes": "Notes",
+      "optionalNotes": "Optional notes about this withdrawal",
+      "cancel": "Cancel",
+      "createWithdrawalButton": "Create Withdrawal",
+      "ownerBalances": "Owner Profit Shares & Balances",
+      "ownerBalancesDesc": "Current profit share allocations and withdrawal balances for each owner",
+      "liability": "Liability",
+      "profitShare": "Profit Share",
+      "currentBalance": "Current Balance",
+      "available": "Available",
+      "withdrawalHistory": "Withdrawal History",
+      "withdrawalHistoryDesc": "All withdrawal requests and their current status",
+      "ownerColumn": "Owner",
+      "amountColumn": "Amount",
+      "paymentMethodColumn": "Payment Method",
+      "dateColumn": "Date",
+      "typeColumn": "Type",
+      "statusColumn": "Status",
+      "notesColumn": "Notes",
+      "actionsColumn": "Actions",
+      "profitType": "Profit",
+      "liabilityType": "Liability",
+      "approve": "Approve",
+      "reject": "Reject",
+      "fillRequiredFields": "Please fill in all required fields",
+      "ownerNotFound": "Owner not found",
+      "exceedsShareWarning": "Withdrawal exceeds available profit share by ${{amount}}. This will be recorded as a liability.",
+      "withdrawalCreated": "Withdrawal request created successfully",
+      "withdrawalApproved": "Withdrawal approved",
+      "withdrawalRejected": "Withdrawal rejected"
+    },
     "customers": {
       "title": "Customer Management",
       "subtitle": "Manage customer accounts, profiles, and activities",
@@ -1337,7 +1866,9 @@
         "id": "ID",
         "attended": "Attended",
         "nfcCard": "NFC Card",
-        "recurrent": "Recurrent"
+        "recurrent": "Recurrent",
+        "labels": "Labels",
+        "noLabels": "No labels"
       },
       "status": {
         "active": "Active",
@@ -1352,6 +1883,7 @@
         "viewBookings": "View Bookings",
         "viewNfcCard": "View NFC Card",
         "viewActivity": "View Activity",
+        "manageLabels": "Manage Labels",
         "deactivate": "Deactivate",
         "reactivate": "Reactivate",
         "banCustomer": "Ban Customer",
@@ -1507,6 +2039,559 @@
         "bookingCancelledDesc": "Booking has been successfully cancelled",
         "bookingRefunded": "Booking Refunded",
         "bookingRefundedDesc": "Booking has been successfully refunded"
+      },
+      "labels": {
+        "manageLabels": "Manage Labels",
+        "manageLabelsFor": "Manage Labels for",
+        "currentLabels": "Current Labels",
+        "addNewLabel": "Add New Label",
+        "noLabels": "No labels assigned",
+        "labelName": "Label Name",
+        "labelNamePlaceholder": "Enter label name (e.g., VIP, Front Row)",
+        "labelColor": "Label Color",
+        "labelIcon": "Label Icon",
+        "labelDescription": "Label Description",
+        "labelDescriptionPlaceholder": "Enter label description (optional)",
+        "addLabel": "Add Label",
+        "saveLabels": "Save Labels",
+        "error": {
+          "nameRequired": "Label name required",
+          "nameRequiredDesc": "Please enter a name for the label"
+        },
+        "toast": {
+          "labelAdded": "Label Added",
+          "labelAddedDesc": "New label has been successfully added",
+          "labelRemoved": "Label Removed",
+          "labelRemovedDesc": "Label has been successfully removed",
+          "labelsSaved": "Labels Saved",
+          "labelsSavedDesc": "Customer labels have been successfully updated"
+        }
+      }
+    },
+    "organizers": {
+      "title": "Organizer Management",
+      "subtitle": "Manage event organizers, their profiles, and activities",
+      "verified": "Verified",
+      "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "results": "results",
+        "first": "First",
+        "last": "Last"
+      },
+      "filters": {
+        "title": "Filters",
+        "searchPlaceholder": "Search organizers...",
+        "status": "Status",
+        "category": "Category",
+        "location": "Location",
+        "allStatus": "All Status",
+        "allCategories": "All Categories",
+        "allLocations": "All Locations",
+        "active": "Active",
+        "inactive": "Inactive",
+        "suspended": "Suspended",
+        "pending": "Pending",
+        "verified": "Verified",
+        "unverified": "Unverified"
+      },
+      "table": {
+        "organizer": "Organizer",
+        "contact": "Contact",
+        "status": "Status",
+        "category": "Category",
+        "location": "Location",
+        "registration": "Registration",
+        "lastLogin": "Last Login",
+        "events": "Events",
+        "revenue": "Revenue",
+        "rating": "Rating",
+        "verified": "Verified",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "suspended": "Suspended",
+        "pending": "Pending"
+      },
+      "categories": {
+        "music": "Music",
+        "sports": "Sports",
+        "technology": "Technology",
+        "art": "Art",
+        "food": "Food",
+        "education": "Education",
+        "business": "Business",
+        "other": "Other"
+      },
+      "actions": {
+        "export": "Export",
+        "addOrganizer": "Add Organizer",
+        "viewDetails": "View Details",
+        "editOrganizer": "Edit Organizer",
+        "viewEvents": "View Events",
+        "viewActivity": "View Activity",
+        "suspend": "Suspend",
+        "activate": "Activate",
+        "verify": "Verify",
+        "unverify": "Unverify",
+        "forcePasswordReset": "Force Password Reset",
+        "deleteOrganizer": "Delete Organizer",
+        "editEvent": "Edit Event",
+        "deleteEvent": "Delete Event"
+      },
+      "dialogs": {
+        "organizerDetails": "Organizer Details",
+        "organizerDetailsSubtitle": "Detailed information about the selected organizer",
+        "editOrganizer": "Edit Organizer",
+        "editOrganizerSubtitle": "Update organizer information and settings",
+        "addOrganizer": "Add New Organizer",
+        "addOrganizerSubtitle": "Create a new organizer account",
+        "viewEvents": "View Events",
+        "viewEventsFor": "View Events for",
+        "viewActivity": "View Activity",
+        "viewActivityFor": "View Activity for",
+        "close": "Close",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "addOrganizerButton": "Add Organizer"
+      },
+      "add": {
+        "title": "Add New Organizer",
+        "subtitle": "Create a new organizer account",
+        "name": "Organizer Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "status": "Status",
+        "category": "Category",
+        "location": "Location",
+        "description": "Description",
+        "cancel": "Cancel",
+        "save": "Add Organizer"
+      },
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "website": "Website",
+        "category": "Category",
+        "location": "Location",
+        "status": "Status",
+        "description": "Description",
+        "contactPerson": "Contact Person",
+        "businessLicense": "Business License",
+        "taxId": "Tax ID"
+      },
+      "details": {
+        "title": "Organizer Details",
+        "subtitle": "Detailed information about the selected organizer",
+        "basicInfo": "Basic Information",
+        "email": "Email",
+        "phone": "Phone",
+        "website": "Website",
+        "statistics": "Statistics",
+        "totalEvents": "Total Events",
+        "totalRevenue": "Total Revenue",
+        "rating": "Rating",
+        "commissionRate": "Commission Rate",
+        "description": "Description",
+        "close": "Close"
+      },
+      "edit": {
+        "title": "Edit Organizer",
+        "subtitle": "Update organizer information and settings",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status",
+        "category": "Category",
+        "location": "Location",
+        "description": "Description",
+        "profileImage": "Profile Image",
+        "cancel": "Cancel",
+        "save": "Save Changes"
+      },
+      "events": {
+        "title": "Organizer Events",
+        "subtitle": "View and manage all events for this organizer",
+        "event": "Event",
+        "date": "Date",
+        "status": "Status",
+        "tickets": "Tickets Sold",
+        "revenue": "Revenue",
+        "rating": "Rating",
+        "close": "Close",
+        "statusLabel": "Status"
+      },
+      "activity": {
+        "title": "Organizer Activity",
+        "subtitle": "View recent activity and actions by this organizer",
+        "close": "Close"
+      },
+      "form": {
+        "bankAccount": "Bank Account",
+        "payoutMethod": "Payout Method",
+        "payoutEmail": "Payout Email",
+        "minimumPayout": "Minimum Payout",
+        "commissionRate": "Commission Rate",
+        "namePlaceholder": "Enter organizer name",
+        "emailPlaceholder": "Enter email address",
+        "phonePlaceholder": "Enter phone number",
+        "websitePlaceholder": "Enter website URL",
+        "locationPlaceholder": "Enter location",
+        "descriptionPlaceholder": "Enter organizer description",
+        "contactPersonPlaceholder": "Enter contact person name",
+        "businessLicensePlaceholder": "Enter business license number",
+        "taxIdPlaceholder": "Enter tax ID",
+        "bankAccountPlaceholder": "Enter bank account details",
+        "payoutEmailPlaceholder": "Enter payout email",
+        "minimumPayoutPlaceholder": "Enter minimum payout amount",
+        "commissionRatePlaceholder": "Enter commission rate (%)",
+        "required": "Required",
+        "passwordSection": "Password Management",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter new password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Confirm new password",
+        "passwordNote": "Leave blank to keep current password unchanged",
+        "passwordRequired": "Password is required for new organizers",
+        "eventsThisMonth": "Events This Month",
+        "eventsLastMonth": "Events Last Month",
+        "averageRating": "Average Rating",
+        "totalReviews": "Total Reviews",
+        "responseRate": "Response Rate",
+        "responseTime": "Response Time",
+        "cancellationRate": "Cancellation Rate",
+        "refundRate": "Refund Rate",
+        "customerSatisfaction": "Customer Satisfaction",
+        "repeatCustomers": "Repeat Customers",
+        "socialMedia": "Social Media",
+        "recentActivity": "Recent Activity",
+        "never": "Never"
+      },
+      "activity": {
+        "eventCreated": "Created event",
+        "eventUpdated": "Updated event",
+        "eventCancelled": "Cancelled event",
+        "paymentReceived": "Payment received",
+        "payoutProcessed": "Payout processed",
+        "login": "Organizer logged in",
+        "recentActivity": "Recent Activity",
+        "totalActivities": "Total Activities",
+        "activityTypes": "Activity Types",
+        "events": "Events",
+        "payments": "Payments",
+        "payouts": "Payouts",
+        "logins": "Logins",
+        "timeStats": "Time Statistics",
+        "lastActivity": "Last Activity",
+        "avgSession": "Avg Session",
+        "totalSessions": "Total Sessions",
+        "deviceInfo": "Device Information",
+        "lastDevice": "Last Device",
+        "browser": "Browser",
+        "location": "Location",
+        "event": "Event",
+        "exportActivity": "Export Activity"
+      },
+      "events": {
+        "title": "Organizer Events",
+        "subtitle": "View and manage all events for this organizer",
+        "totalEvents": "Total Events",
+        "event": "Event",
+        "date": "Date",
+        "tickets": "Tickets",
+        "revenue": "Revenue",
+        "commission": "Commission",
+        "rating": "Rating",
+        "statusLabel": "Status",
+        "status": {
+          "upcoming": "Upcoming",
+          "ongoing": "Ongoing",
+          "completed": "Completed",
+          "cancelled": "Cancelled"
+        },
+        "actions": {
+          "title": "Actions",
+          "view": "View Event",
+          "edit": "Edit Event",
+          "delete": "Delete Event"
+        },
+        "actions": "Actions",
+        "addEvent": "Add Event",
+        "add": {
+          "title": "Add New Event",
+          "subtitle": "Create a new event for this organizer",
+          "name": "Event Title",
+          "namePlaceholder": "Enter event title",
+          "date": "Event Date",
+          "time": "Event Time",
+          "status": "Event Status",
+          "category": "Category",
+          "selectCategory": "Select category",
+          "ticketsSold": "Tickets Sold",
+          "totalTickets": "Total Tickets",
+          "ticketLimit": "Ticket Limit",
+          "revenue": "Revenue (EGP)",
+          "commission": "Commission (EGP)",
+          "rating": "Rating",
+          "image": "Event Image URL",
+          "imageUrl": "Image URL",
+          "imageUrlPlaceholder": "Enter image URL",
+          "description": "Event Description",
+          "descriptionPlaceholder": "Enter event description",
+          "location": "Event Location",
+          "locationPlaceholder": "Enter event location",
+          "price": "Ticket Price (EGP)",
+          "cancel": "Cancel",
+          "save": "Save Event",
+          "add": "Add Event",
+          "enableTicketTransfers": "Enable ticket transfers",
+          "commissionRateConfig": "Commission Rate Configuration",
+          "commissionType": "Commission Type",
+          "commissionValue": "Commission Value",
+          "commissionCalculation": "Commission Calculation",
+          "ofTotalRevenue": "of total revenue",
+          "numberOfTicketsSold": "number of tickets sold",
+          "transferFeeConfig": "Transfer Fee Configuration",
+          "transferFeeType": "Transfer Fee Type",
+          "transferFeeValue": "Transfer Fee Value",
+          "transferFeeCalculation": "Transfer Fee Calculation",
+          "ofTicketPriceWhenTransferred": "of ticket price when transferred",
+          "perTicketTransfer": "per ticket transfer",
+          "eventImage": "Event Image"
+        },
+        "edit": {
+          "title": "Edit Event",
+          "subtitle": "Update event information",
+          "name": "Event Title",
+          "date": "Event Date",
+          "status": "Event Status",
+          "ticketsSold": "Tickets Sold",
+          "totalTickets": "Total Tickets",
+          "revenue": "Revenue (EGP)",
+          "commission": "Commission (EGP)",
+          "rating": "Rating",
+          "image": "Event Image URL",
+          "description": "Event Description",
+          "location": "Event Location",
+          "price": "Ticket Price (EGP)",
+          "cancel": "Cancel",
+          "save": "Save Changes"
+        }
+      },
+      "toast": {
+        "organizerDeleted": "Organizer deleted",
+        "organizerDeletedDesc": "Organizer has been successfully deleted",
+        "exportSuccess": "Export successful",
+        "exportSuccessDesc": "Organizers data has been exported to Excel",
+        "organizerSuspended": "Organizer suspended",
+        "organizerSuspendedDesc": "Organizer account has been suspended",
+        "organizerActivated": "Organizer activated",
+        "organizerActivatedDesc": "Organizer account has been activated",
+        "organizerVerified": "Organizer verified",
+        "organizerVerifiedDesc": "Organizer account has been verified",
+        "organizerUnverified": "Organizer unverified",
+        "organizerUnverifiedDesc": "Organizer verification has been removed",
+        "passwordReset": "Password reset",
+        "passwordResetDesc": "Password reset email has been sent to organizer",
+        "viewEvents": "View events",
+        "viewEventsDesc": "Organizer events opened successfully",
+        "viewActivity": "View activity",
+        "viewActivityDesc": "Organizer activity opened successfully",
+        "addOrganizer": "Add organizer",
+        "addOrganizerDesc": "Add organizer dialog opened successfully",
+        "saveOrganizerChanges": "Organizer updated",
+        "saveOrganizerChangesDesc": "Organizer information has been successfully updated",
+        "organizerAdded": "Organizer Added",
+        "organizerAddedDesc": "New organizer has been successfully created",
+        "organizerUpdated": "Organizer Updated",
+        "organizerUpdatedDesc": "Organizer information has been successfully updated",
+        "eventAdded": "Event Added",
+        "eventAddedDesc": "New event has been successfully created",
+        "eventUpdated": "Event Updated",
+        "eventUpdatedDesc": "Event information has been successfully updated",
+        "eventDeleted": "Event Deleted",
+        "eventDeletedDesc": "Event has been successfully deleted",
+        "validationError": "Validation Error",
+        "validationErrorDesc": "Please fill in all required fields"
+      }
+    },
+    "ushers": {
+      "title": "Usher Management",
+      "subtitle": "Manage all ushers and their event assignments",
+      "filters": {
+        "title": "Filters",
+        "searchPlaceholder": "Search ushers...",
+        "status": "Status",
+        "role": "Role",
+        "performance": "Performance",
+        "allStatus": "All Status",
+        "allRoles": "All Roles",
+        "allPerformance": "All Performance"
+      },
+      "table": {
+        "ushers": "Ushers",
+        "usher": "Usher",
+        "contact": "Contact",
+        "role": "Role",
+        "status": "Status",
+        "performance": "Performance",
+        "events": "Events",
+        "rating": "Rating",
+        "actions": "Actions",
+        "id": "ID",
+        "assigned": "assigned"
+      },
+      "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "results": "results",
+        "first": "First",
+        "last": "Last"
+      },
+      "stats": {
+        "totalUshers": "Total Ushers",
+        "activeUshers": "Active Ushers",
+        "inactiveUshers": "Inactive Ushers",
+        "suspendedUshers": "Suspended Ushers"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "suspended": "Suspended"
+      },
+      "roles": {
+        "coordinator": "Coordinator",
+        "supervisor": "Supervisor",
+        "senior": "Senior",
+        "junior": "Junior"
+      },
+      "performance": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "average": "Average",
+        "needsImprovement": "Needs Improvement"
+      },
+      "actions": {
+        "export": "Export",
+        "addUsher": "Add Usher",
+        "editUsher": "Edit Usher",
+        "assignEvents": "Assign Events",
+        "deactivateUsher": "Deactivate Usher",
+        "reactivateUsher": "Reactivate Usher",
+        "deleteUsher": "Delete Usher"
+      },
+      "form": {
+        "fullName": "Full Name",
+        "email": "Email",
+        "phone": "Phone",
+        "role": "Role",
+        "status": "Status",
+        "location": "Location",
+        "hourlyRate": "Hourly Rate",
+        "experience": "Experience",
+        "fullNamePlaceholder": "Enter full name",
+        "emailPlaceholder": "Enter email address",
+        "phonePlaceholder": "Enter phone number",
+        "locationPlaceholder": "Enter location",
+        "hourlyRatePlaceholder": "Enter hourly rate",
+        "experiencePlaceholder": "Enter years of experience",
+        "selectRole": "Select role"
+      },
+      "dialogs": {
+        "editUsher": "Edit Usher",
+        "editUsherSubtitle": "Update usher information and settings",
+        "addUsher": "Add New Usher",
+        "addUsherSubtitle": "Add a new usher to the system",
+        "assignEvents": "Assign Events",
+        "assignEventsSubtitle": "Assign or remove events for this usher",
+        "usherDetails": "Usher Details",
+        "usherDetailsSubtitle": "View detailed information about this usher",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "saveAssignments": "Save Assignments",
+        "close": "Close"
+      },
+      "assignEvents": {
+        "usherInfo": "Usher Information",
+        "availableEvents": "Available Events",
+        "currentAssignments": "Current Assignments",
+        "assigned": "Assigned",
+        "notAssigned": "Not Assigned",
+        "assign": "Assign",
+        "remove": "Remove",
+        "noAssignments": "No current assignments"
+      },
+      "details": {
+        "basicInfo": "Basic Information",
+        "performanceInfo": "Performance Information",
+        "assignedEvents": "Assigned Events",
+        "recentActivity": "Recent Activity",
+        "totalEvents": "Total Events",
+        "rating": "Rating",
+        "experience": "Experience",
+        "totalHours": "Total Hours",
+        "hourlyRate": "Hourly Rate",
+        "performance": "Performance",
+        "years": "years",
+        "hours": "hours",
+        "noAssignedEvents": "No assigned events"
+      },
+      "activity": {
+        "eventCompleted": "Event completed successfully",
+        "eventAssigned": "Event assigned",
+        "performanceReview": "Performance review completed",
+        "concert2025": "Concert 2025",
+        "festival2025": "Festival 2025",
+        "excellentRating": "Excellent rating received"
+      },
+      "toast": {
+        "usherDeleted": "Usher Deleted",
+        "usherDeletedDesc": "Usher has been successfully deleted",
+        "exportSuccess": "Export Successful",
+        "exportSuccessDesc": "Usher data has been exported successfully",
+        "usherDeactivated": "Usher Deactivated",
+        "usherDeactivatedDesc": "Usher has been deactivated successfully",
+        "usherReactivated": "Usher Reactivated",
+        "usherReactivatedDesc": "Usher has been reactivated successfully",
+        "usherAdded": "Usher Added",
+        "usherAddedDesc": "New usher has been added successfully",
+        "eventsAssigned": "Events Assigned",
+        "eventsAssignedDesc": "Event assignments have been updated successfully",
+        "usherUpdated": "Usher Updated",
+        "usherUpdatedDesc": "Usher information has been updated successfully"
+      },
+      "mock": {
+        "ahmedHassan": "Ahmed Hassan",
+        "sarahMohamed": "Sarah Mohamed",
+        "omarAli": "Omar Ali",
+        "fatimaAhmed": "Fatima Ahmed",
+        "youssefIbrahim": "Youssef Ibrahim",
+        "nourHassan": "Nour Hassan",
+        "mariamAli": "Mariam Ali",
+        "karimHassan": "Karim Hassan",
+        "laylaAhmed": "Layla Ahmed",
+        "hassanAli": "Hassan Ali",
+        "events": {
+          "concert2025": "Concert 2025",
+          "festival2025": "Festival 2025",
+          "exhibition2025": "Exhibition 2025",
+          "sports2025": "Sports Event 2025"
+        },
+        "venues": {
+          "cairoOpera": "Cairo Opera House",
+          "alexandriaCenter": "Alexandria Convention Center",
+          "gizaMuseum": "Giza Museum",
+          "cairoStadium": "Cairo Stadium"
+        },
+        "organizers": {
+          "musicCorp": "Music Corporation",
+          "festivalOrg": "Festival Organization",
+          "artGallery": "Art Gallery",
+          "sportsLeague": "Sports League"
+        }
       }
     },
     "dashboard": {
@@ -1519,9 +2604,26 @@
         "tickets": "Tickets",
         "nfc": "NFC Cards",
         "customers": "Customers",
+        "organizers": "Organizers",
+        "ushers": "Ushers",
         "admins": "Admin Users",
         "logs": "System Logs",
-        "analytics": "Analytics"
+        "expenses": "Expenses",
+        "payouts": "Payouts",
+        "analytics": "Analytics",
+        "companyFinances": "Company Finances",
+        "profitShare": "Profit Share Management",
+        "settlements": "Settlements",
+        "deposits": "Deposits",
+        "profitWithdrawals": "Profit Withdrawals",
+        "groups": {
+          "main": "Main",
+          "management": "Management",
+          "users": "Users",
+          "finances": "Finances",
+          "ownersFinances": "Owner's Finances",
+          "system": "System"
+        }
       },
       "stats": {
         "totalEvents": "Total Events",
@@ -1587,6 +2689,10 @@
       "logs": {
         "title": "System Logs",
         "subtitle": "Monitor and track all system activities, user actions, and security events",
+        "checkInLogs": {
+          "title": "Check-in Logs",
+          "subtitle": "Monitor real-time NFC card scans and entry activity"
+        },
         "export": "Export Logs",
         "clearFilters": "Clear Filters",
         "stats": {
@@ -1623,7 +2729,6 @@
           "eventManagement": "Event Management",
           "ticketManagement": "Ticket Management",
           "nfcManagement": "NFC Management",
-          "venueManagement": "Venue Management",
           "system": "System",
           "security": "Security",
           "financial": "Financial",
@@ -2051,7 +3156,10 @@
         "price": "Price",
         "actions": "Actions",
         "dependents": "Dependents",
-        "id": "ID"
+        "id": "ID",
+        "phoneNumber": "Phone Number",
+        "labels": "Labels",
+        "noLabels": "No labels"
       },
       "status": {
         "valid": "Valid",
@@ -2067,7 +3175,8 @@
         "viewQrCode": "View QR Code",
         "refundTicket": "Refund Ticket",
         "banTicket": "Ban Ticket",
-        "unbanTicket": "Unban Ticket"
+        "unbanTicket": "Unban Ticket",
+        "manageLabels": "Manage Labels"
       },
       "dialogs": {
         "editTicket": "Edit Ticket",
@@ -2095,33 +3204,170 @@
       },
       "checkInLogs": {
         "title": "Real-time Check-in Logs",
-        "subtitle": "Live check-in activity and scan results",
-        "customer": "Customer",
-        "event": "Event",
-        "checkInTime": "Check-in Time",
-        "scanResult": "Scan Result",
-        "location": "Location",
-        "usher": "Usher"
-      },
-      "scanResults": {
-        "success": "Success",
-        "alreadyUsed": "Already Used",
-        "invalid": "Invalid",
-        "expired": "Expired"
-      },
-      "toast": {
-        "ticketBanned": "Ticket banned",
-        "ticketBannedDesc": "Ticket has been successfully banned",
-        "ticketRefunded": "Ticket refunded",
-        "ticketRefundedDesc": "Ticket has been successfully refunded",
-        "exportSuccess": "Export successful",
-        "exportSuccessDesc": "Tickets data has been exported to Excel",
-        "ticketUnbanned": "Ticket unbanned",
-        "ticketUnbannedDesc": "Ticket has been successfully unbanned",
-        "ticketAssigned": "Ticket assigned",
-        "ticketAssignedDesc": "Ticket has been successfully assigned",
-        "ticketUpdated": "Ticket updated",
-        "ticketUpdatedDesc": "Ticket information has been successfully updated"
+        "subtitle": "Monitor NFC card scans and entry activity in real-time",
+        "realTimeEnabled": "Real-time Active",
+        "realTimeDisabled": "Real-time Disabled",
+        "realTimeActive": "Real-time monitoring active",
+        "lastUpdate": "Last Update",
+        "export": "Export Logs",
+        "clearFilters": "Clear Filters",
+        "stats": {
+          "totalScans": "Total Scans",
+          "todayScans": "Today's Scans",
+          "thisWeekScans": "This Week",
+          "thisMonthScans": "This Month",
+          "validScans": "Valid Scans",
+          "invalidScans": "Invalid Scans",
+          "uniqueEvents": "Unique Events",
+          "uniqueCustomers": "Unique Customers",
+          "uniqueDevices": "Active Devices",
+          "averageProcessingTime": "Avg Processing Time",
+          "allTime": "All time",
+          "today": "Today",
+          "successRate": "Success Rate",
+          "failureRate": "Failure Rate",
+          "deviceStatus": "Device Status",
+          "networkStatus": "Network Status"
+        },
+        "filters": {
+          "title": "Advanced Filters",
+          "search": "Search",
+          "searchPlaceholder": "Search by customer, event, venue, or NFC...",
+          "event": "Event",
+          "scanResult": "Scan Result",
+          "device": "Device",
+          "operator": "Operator",
+          "venue": "Venue",
+          "dateRange": "Date Range",
+          "allEvents": "All Events",
+          "allResults": "All Results",
+          "allDevices": "All Devices",
+          "allOperators": "All Operators",
+          "allVenues": "All Venues",
+          "allTime": "All Time",
+          "today": "Today",
+          "thisWeek": "This Week",
+          "thisMonth": "This Month",
+          "sortBy": "Sort By",
+          "sortOrder": "Sort Order",
+          "ascending": "Ascending",
+          "descending": "Descending"
+        },
+        "table": {
+          "timestamp": "Timestamp",
+          "customer": "Customer",
+          "event": "Event",
+          "venue": "Venue",
+          "entryPoint": "Entry Point",
+          "nfcCard": "NFC Card",
+          "scanResult": "Scan Result",
+          "scanType": "Scan Type",
+          "device": "Device",
+          "operator": "Operator",
+          "processingTime": "Processing Time",
+          "signalStrength": "Signal",
+          "batteryLevel": "Battery",
+          "networkStatus": "Network",
+          "actions": "Actions",
+          "details": "Details",
+          "viewDetails": "View Details",
+          "id": "ID"
+        },
+        "scanResults": {
+          "valid": "Valid",
+          "invalid": "Invalid",
+          "expired": "Expired",
+          "blocked": "Blocked",
+          "duplicate": "Duplicate",
+          "unauthorized": "Unauthorized"
+        },
+        "scanTypes": {
+          "entry": "Entry",
+          "exit": "Exit",
+          "reentry": "Re-entry",
+          "transfer": "Transfer"
+        },
+        "deviceTypes": {
+          "nfc_reader": "NFC Reader",
+          "qr_scanner": "QR Scanner",
+          "mobile_app": "Mobile App",
+          "tablet": "Tablet",
+          "kiosk": "Kiosk"
+        },
+        "operatorRoles": {
+          "usher": "Usher",
+          "security": "Security",
+          "admin": "Admin",
+          "volunteer": "Volunteer"
+        },
+        "signalStrength": {
+          "excellent": "Excellent",
+          "good": "Good",
+          "fair": "Fair",
+          "poor": "Poor"
+        },
+        "networkStatus": {
+          "connected": "Connected",
+          "disconnected": "Disconnected",
+          "offline": "Offline",
+          "syncing": "Syncing"
+        },
+        "cardStatus": {
+          "active": "Active",
+          "inactive": "Inactive",
+          "expired": "Expired",
+          "blocked": "Blocked"
+        },
+        "details": {
+          "title": "Check-in Log Details",
+          "subtitle": "Detailed information about the check-in scan",
+          "customerInfo": "Customer Information",
+          "eventInfo": "Event Information",
+          "deviceInfo": "Device Information",
+          "scanInfo": "Scan Information",
+          "metadata": "Technical Metadata",
+          "sessionId": "Session ID",
+          "requestId": "Request ID",
+          "ipAddress": "IP Address",
+          "userAgent": "User Agent",
+          "location": "Location",
+          "deviceInfo": "Device Info",
+          "processingTime": "Processing Time",
+          "signalQuality": "Signal Quality",
+          "batteryStatus": "Battery Status",
+          "networkQuality": "Network Quality",
+          "notes": "Notes",
+          "changes": "Changes Made",
+          "affectedRecords": "Affected Records",
+          "additionalData": "Additional Data"
+        },
+        "analytics": {
+          "title": "Check-in Analytics",
+          "subtitle": "Real-time analytics and performance metrics",
+          "scanTrends": "Scan Trends",
+          "devicePerformance": "Device Performance",
+          "operatorActivity": "Operator Activity",
+          "venueActivity": "Venue Activity",
+          "successRate": "Success Rate",
+          "failureRate": "Failure Rate",
+          "averageProcessingTime": "Average Processing Time",
+          "deviceUptime": "Device Uptime",
+          "networkReliability": "Network Reliability",
+          "batteryHealth": "Battery Health"
+        },
+        "toast": {
+          "exportSuccess": "Export successful",
+          "exportSuccessDesc": "Check-in logs have been exported successfully",
+          "realTimeEnabled": "Real-time monitoring enabled",
+          "realTimeDisabled": "Real-time monitoring disabled",
+          "filtersCleared": "Filters cleared",
+          "filtersClearedDesc": "All filters have been cleared"
+        },
+        "dialogs": {
+          "close": "Close",
+          "cancel": "Cancel",
+          "saveChanges": "Save Changes"
+        }
       },
       "categories": {
         "vip": "VIP",
@@ -2175,7 +3421,10 @@
         "price": "Price",
         "actions": "Actions",
         "dependents": "Dependents",
-        "id": "ID"
+        "id": "ID",
+        "phoneNumber": "Phone Number",
+        "labels": "Labels",
+        "noLabels": "No labels"
       },
       "status": {
         "valid": "Valid",
@@ -2191,7 +3440,8 @@
         "viewQrCode": "View QR Code",
         "refundTicket": "Refund Ticket",
         "banTicket": "Ban Ticket",
-        "unbanTicket": "Unban Ticket"
+        "unbanTicket": "Unban Ticket",
+        "manageLabels": "Manage Labels"
       },
       "dialogs": {
         "editTicket": "Edit Ticket",
@@ -2219,33 +3469,177 @@
       },
       "checkInLogs": {
         "title": "Real-time Check-in Logs",
-        "subtitle": "Live check-in activity and scan results",
-        "customer": "Customer",
-        "event": "Event",
-        "checkInTime": "Check-in Time",
-        "scanResult": "Scan Result",
-        "location": "Location",
-        "usher": "Usher"
-      },
-      "scanResults": {
-        "success": "Success",
-        "alreadyUsed": "Already Used",
-        "invalid": "Invalid",
-        "expired": "Expired"
-      },
-      "toast": {
-        "ticketBanned": "Ticket banned",
-        "ticketBannedDesc": "Ticket has been successfully banned",
-        "ticketRefunded": "Ticket refunded",
-        "ticketRefundedDesc": "Ticket has been successfully refunded",
-        "exportSuccess": "Export successful",
-        "exportSuccessDesc": "Tickets data has been exported to Excel",
-        "ticketUnbanned": "Ticket unbanned",
-        "ticketUnbannedDesc": "Ticket has been successfully unbanned",
-        "ticketAssigned": "Ticket assigned",
-        "ticketAssignedDesc": "Ticket has been successfully assigned",
-        "ticketUpdated": "Ticket updated",
-        "ticketUpdatedDesc": "Ticket information has been successfully updated"
+        "subtitle": "Monitor NFC card scans and entry activity in real-time",
+        "realTimeEnabled": "Real-time Active",
+        "realTimeDisabled": "Real-time Disabled",
+        "realTimeActive": "Real-time monitoring active",
+        "lastUpdate": "Last Update",
+        "export": "Export Logs",
+        "clearFilters": "Clear Filters",
+        "stats": {
+          "totalScans": "Total Scans",
+          "todayScans": "Today's Scans",
+          "thisWeekScans": "This Week",
+          "thisMonthScans": "This Month",
+          "validScans": "Valid Scans",
+          "invalidScans": "Invalid Scans",
+          "uniqueEvents": "Unique Events",
+          "uniqueCustomers": "Unique Customers",
+          "uniqueDevices": "Active Devices",
+          "averageProcessingTime": "Avg Processing Time",
+          "allTime": "All time",
+          "today": "Today",
+          "successRate": "Success Rate",
+          "failureRate": "Failure Rate",
+          "deviceStatus": "Device Status",
+          "networkStatus": "Network Status"
+        },
+        "filters": {
+          "title": "Advanced Filters",
+          "search": "Search",
+          "searchPlaceholder": "Search by customer, event, venue, or NFC...",
+          "event": "Event",
+          "scanResult": "Scan Result",
+          "device": "Device",
+          "operator": "Operator",
+          "venue": "Venue",
+          "dateRange": "Date Range",
+          "allEvents": "All Events",
+          "allResults": "All Results",
+          "allDevices": "All Devices",
+          "allOperators": "All Operators",
+          "allVenues": "All Venues",
+          "allTime": "All Time",
+          "today": "Today",
+          "thisWeek": "This Week",
+          "thisMonth": "This Month",
+          "sortBy": "Sort By",
+          "sortOrder": "Sort Order",
+          "ascending": "Ascending",
+          "descending": "Descending"
+        },
+        "table": {
+          "timestamp": "Timestamp",
+          "customer": "Customer",
+          "event": "Event",
+          "venue": "Venue",
+          "entryPoint": "Entry Point",
+          "nfcCard": "NFC Card",
+          "scanResult": "Scan Result",
+          "scanType": "Scan Type",
+          "device": "Device",
+          "operator": "Operator",
+          "processingTime": "Processing Time",
+          "signalStrength": "Signal",
+          "batteryLevel": "Battery",
+          "networkStatus": "Network",
+          "actions": "Actions",
+          "details": "Details",
+          "viewDetails": "View Details",
+          "id": "ID"
+        },
+        "scanResults": {
+          "valid": "Valid",
+          "invalid": "Invalid",
+          "expired": "Expired",
+          "blocked": "Blocked",
+          "duplicate": "Duplicate",
+          "unauthorized": "Unauthorized"
+        },
+        "scanTypes": {
+          "entry": "Entry",
+          "exit": "Exit",
+          "reentry": "Re-entry",
+          "transfer": "Transfer"
+        },
+        "deviceTypes": {
+          "nfc_reader": "NFC Reader",
+          "qr_scanner": "QR Scanner",
+          "mobile_app": "Mobile App",
+          "tablet": "Tablet",
+          "kiosk": "Kiosk"
+        },
+        "operatorRoles": {
+          "usher": "Usher",
+          "security": "Security",
+          "admin": "Admin",
+          "volunteer": "Volunteer"
+        },
+        "signalStrength": {
+          "excellent": "Excellent",
+          "good": "Good",
+          "fair": "Fair",
+          "poor": "Poor"
+        },
+        "networkStatus": {
+          "connected": "Connected",
+          "disconnected": "Disconnected",
+          "offline": "Offline",
+          "syncing": "Syncing"
+        },
+        "cardStatus": {
+          "active": "Active",
+          "inactive": "Inactive",
+          "expired": "Expired",
+          "blocked": "Blocked"
+        },
+        "details": {
+          "title": "Check-in Log Details",
+          "subtitle": "Detailed information about the check-in scan",
+          "customerInfo": "Customer Information",
+          "eventInfo": "Event Information",
+          "deviceInfo": "Device Information",
+          "scanInfo": "Scan Information",
+          "metadata": "Technical Metadata",
+          "sessionId": "Session ID",
+          "requestId": "Request ID",
+          "ipAddress": "IP Address",
+          "userAgent": "User Agent",
+          "location": "Location",
+          "deviceInfo": "Device Info",
+          "processingTime": "Processing Time",
+          "signalQuality": "Signal Quality",
+          "batteryStatus": "Battery Status",
+          "networkQuality": "Network Quality",
+          "notes": "Notes",
+          "changes": "Changes Made",
+          "affectedRecords": "Affected Records",
+          "additionalData": "Additional Data"
+        },
+        "analytics": {
+          "title": "Check-in Analytics",
+          "subtitle": "Real-time analytics and performance metrics",
+          "scanTrends": "Scan Trends",
+          "devicePerformance": "Device Performance",
+          "operatorActivity": "Operator Activity",
+          "venueActivity": "Venue Activity",
+          "successRate": "Success Rate",
+          "failureRate": "Failure Rate",
+          "averageProcessingTime": "Average Processing Time",
+          "deviceUptime": "Device Uptime",
+          "networkReliability": "Network Reliability",
+          "batteryHealth": "Battery Health"
+        },
+        "toast": {
+          "exportSuccess": "Export successful",
+          "exportSuccessDesc": "Check-in logs have been exported successfully",
+          "realTimeEnabled": "Real-time monitoring enabled",
+          "realTimeDisabled": "Real-time monitoring disabled",
+          "filtersCleared": "Filters cleared",
+          "filtersClearedDesc": "All filters have been cleared"
+        },
+        "dialogs": {
+          "close": "Close",
+          "cancel": "Cancel",
+          "saveChanges": "Save Changes"
+        },
+        "pagination": {
+          "showing": "Showing",
+          "of": "of",
+          "results": "results",
+          "first": "First",
+          "last": "Last"
+        }
       },
       "categories": {
         "vip": "VIP",
@@ -2282,6 +3676,53 @@
           "usher1": "Usher 1",
           "usher2": "Usher 2"
         }
+      },
+      "toast": {
+        "ticketBanned": "Ticket Banned",
+        "ticketBannedDesc": "Ticket has been successfully banned",
+        "ticketRefunded": "Ticket Refunded",
+        "ticketRefundedDesc": "Ticket has been successfully refunded",
+        "exportSuccess": "Export Successful",
+        "exportSuccessDesc": "Tickets have been exported successfully",
+        "ticketUnbanned": "Ticket Unbanned",
+        "ticketUnbannedDesc": "Ticket has been successfully unbanned",
+        "ticketAssigned": "Ticket Assigned",
+        "ticketAssignedDesc": "Ticket has been successfully assigned",
+        "ticketUpdated": "Ticket Updated",
+        "ticketUpdatedDesc": "Ticket has been successfully updated"
+      },
+      "labels": {
+        "manageLabels": "Manage Labels",
+        "manageLabelsFor": "Manage labels for",
+        "currentLabels": "Current Labels",
+        "noLabels": "No labels assigned",
+        "addNewLabel": "Add New Label",
+        "labelName": "Label Name",
+        "labelColor": "Label Color",
+        "labelIcon": "Label Icon",
+        "labelDescription": "Label Description",
+        "labelNamePlaceholder": "Enter label name",
+        "labelDescriptionPlaceholder": "Enter label description",
+        "addLabel": "Add Label",
+        "saveLabels": "Save Labels",
+        "toast": {
+          "labelAdded": "Label Added",
+          "labelAddedDesc": "Label has been successfully added",
+          "labelRemoved": "Label Removed",
+          "labelRemovedDesc": "Label has been successfully removed",
+          "labelsSaved": "Labels Saved",
+          "labelsSavedDesc": "Labels have been successfully saved"
+        },
+        "error": {
+          "nameRequired": "Name Required",
+          "nameRequiredDesc": "Please enter a label name"
+        }
+      },
+      "scanResults": {
+        "success": "Success",
+        "alreadyUsed": "Already Used",
+        "invalid": "Invalid",
+        "expired": "Expired"
       },
       "nfc": {
         "title": "NFC Card Management",
@@ -2330,6 +3771,7 @@
         "actions": {
           "export": "Export",
           "assignCard": "Add New Card",
+          "assignBySerial": "Assign by Serial",
           "editCard": "Edit Card",
           "viewDetails": "View Details",
           "generateKey": "Generate Key",
@@ -2348,14 +3790,20 @@
         "dialogs": {
           "editCard": "Edit NFC Card",
           "editCardSubtitle": "Update card details and settings",
+          "addNewCard": "Add New NFC Card",
+          "addNewCardSubtitle": "Register a new NFC card with serial number",
           "assignCard": "Assign New NFC Card",
           "assignCardSubtitle": "Assign a new NFC card to a customer",
+          "assignBySerial": "Assign Card by Serial Number",
+          "assignBySerialSubtitle": "Assign an existing NFC card by serial number to a customer's mobile number",
           "generateKey": "Generate New Key",
           "generateKeySubtitle": "Generate a new key for the selected NFC card",
           "close": "Close",
           "cancel": "Cancel",
           "saveChanges": "Save Changes",
+          "addNewCardButton": "Add Card",
           "assignCardButton": "Assign Card",
+          "assignBySerialButton": "Assign by Serial",
           "generatedKey": "Generated Key",
           "keyNote": "Note: This key will not be automatically written to the card. You need to manually write it using the NFC writer.",
           "copyKey": "Copy Key"
@@ -2363,6 +3811,7 @@
         "form": {
           "serialNumber": "Serial Number",
           "customer": "Customer",
+          "customerMobile": "Customer Mobile",
           "cardType": "Card Type",
           "status": "Status",
           "issueDate": "Issue Date",
@@ -2372,6 +3821,8 @@
           "expiryPeriod": "Expiry Period",
           "selectCustomer": "Select customer",
           "selectType": "Select type",
+          "enterSerialNumber": "Enter serial number",
+          "enterMobileNumber": "Enter mobile number",
           "oneYear": "1 Year",
           "twoYears": "2 Years",
           "threeYears": "3 Years",
@@ -2402,12 +3853,43 @@
           "saveCardChangesDesc": "Card information has been successfully updated",
           "cardAssigned": "Card Assigned",
           "cardAssignedDesc": "NFC card has been successfully assigned",
+          "cardAdded": "Card Added",
+          "cardAddedDesc": "New NFC card has been successfully registered",
+          "cardAssignedBySerial": "Card Assigned by Serial",
+          "cardAssignedBySerialDesc": "NFC card has been successfully assigned by serial number",
           "qrCodeOpened": "QR Code Opened",
           "qrCodeOpenedDesc": "QR code details opened successfully",
           "keyCopied": "Key Copied",
           "keyCopiedDesc": "Card key has been copied to clipboard",
           "cardUpdated": "Card Updated",
           "cardUpdatedDesc": "Card information has been successfully updated"
+        },
+        "labels": {
+          "manageLabels": "Manage Labels",
+          "manageLabelsFor": "Manage Labels for",
+          "currentLabels": "Current Labels",
+          "addNewLabel": "Add New Label",
+          "noLabels": "No labels assigned",
+          "labelName": "Label Name",
+          "labelNamePlaceholder": "Enter label name (e.g., VIP, Front Row)",
+          "labelColor": "Label Color",
+          "labelIcon": "Label Icon",
+          "labelDescription": "Label Description",
+          "labelDescriptionPlaceholder": "Enter label description (optional)",
+          "addLabel": "Add Label",
+          "saveLabels": "Save Labels",
+          "error": {
+            "nameRequired": "Label name required",
+            "nameRequiredDesc": "Please enter a name for the label"
+          },
+          "toast": {
+            "labelAdded": "Label Added",
+            "labelAddedDesc": "New label has been successfully added",
+            "labelRemoved": "Label Removed",
+            "labelRemovedDesc": "Label has been successfully removed",
+            "labelsSaved": "Labels Saved",
+            "labelsSavedDesc": "Ticket labels have been successfully updated"
+          }
         },
         "mock": {
           "customer": {
@@ -2421,6 +3903,270 @@
           }
         }
       }
+    }
+  },
+  "venueManagement": {
+    "header": {
+      "title": "Venue Management",
+      "subtitle": "Manage all venues, their details, and facilities"
+    },
+    "filters": {
+      "title": "Filters",
+      "searchPlaceholder": "Search venues...",
+      "status": {
+        "label": "Status",
+        "all": "All Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "maintenance": "Maintenance"
+      },
+      "city": {
+        "label": "City",
+        "all": "All Cities"
+      }
+    },
+    "table": {
+      "title": "Venues",
+      "subtitle": "Showing {{count}} venues",
+      "headers": {
+        "venue": "Venue",
+        "location": "Location",
+        "capacity": "Capacity",
+        "facilities": "Facilities",
+        "status": "Status",
+        "rating": "Rating",
+        "events": "Events",
+        "actions": "Actions"
+      }
+    },
+    "actions": {
+      "addVenue": "Add Venue",
+      "export": "Export",
+      "viewDetails": "View Details",
+      "editVenue": "Edit Venue",
+      "deleteVenue": "Delete Venue",
+      "saveVenue": "Save Venue",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel",
+      "close": "Close",
+      "addFacility": "Add Facility"
+    },
+    "dialogs": {
+      "add": {
+        "title": "Add New Venue",
+        "subtitle": "Add a new venue with all its details and facilities"
+      },
+      "edit": {
+        "title": "Edit Venue",
+        "subtitle": "Update venue details and facilities"
+      },
+      "view": {
+        "title": "Venue Details",
+        "subtitle": "Detailed information about the venue"
+      }
+    },
+    "form": {
+      "name": "Name",
+      "description": "Description",
+      "address": "Address",
+      "city": "City",
+      "capacity": "Capacity",
+      "contactPhone": "Contact Phone",
+      "contactEmail": "Contact Email",
+      "website": "Website",
+      "facilities": "Facilities",
+      "placeholders": {
+        "name": "Enter venue name",
+        "description": "Enter venue description",
+        "address": "Enter venue address",
+        "city": "Enter city",
+        "capacity": "Enter capacity",
+        "contactPhone": "Enter contact phone",
+        "contactEmail": "Enter contact email",
+        "website": "Enter website URL"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "maintenance": "Maintenance"
+    },
+    "facilities": {
+      "wifi": "WiFi",
+      "parking": "Parking",
+      "wheelchairAccess": "Wheelchair Access",
+      "catering": "Catering",
+      "audioVisual": "Audio/Visual",
+      "security": "Security",
+      "camera": "Camera"
+    },
+    "details": {
+      "location": "Location",
+      "capacity": "Capacity",
+      "contact": "Contact",
+      "facilities": "Facilities",
+      "statistics": "Statistics",
+      "rating": "Rating",
+      "totalEvents": "Total Events",
+      "lastEvent": "Last Event",
+      "noEvents": "No events"
+    },
+    "toast": {
+      "venueAdded": "Venue Added",
+      "venueAddedDesc": "Venue has been successfully added",
+      "venueUpdated": "Venue Updated",
+      "venueUpdatedDesc": "Venue has been successfully updated",
+      "venueDeleted": "Venue Deleted",
+      "venueDeletedDesc": "Venue has been successfully deleted",
+      "exportSuccess": "Export Successful",
+      "exportSuccessDesc": "Venues exported successfully",
+      "error": "Error",
+      "errorDesc": "Please fill in all required fields"
+    }
+  },
+  "expenses": {
+    "title": "Expenses Management",
+    "subtitle": "Track and manage all business expenses, categories, and payment methods",
+    "tabs": {
+      "expenses": "Expenses",
+      "categories": "Categories",
+      "paymentMethods": "Payment Methods"
+    },
+    "stats": {
+      "totalExpenses": "Total Expenses",
+      "totalAmount": "Total Amount",
+      "categories": "Categories",
+      "activeCategories": "Active Categories",
+      "paymentMethods": "Payment Methods",
+      "activeMethods": "Active Methods"
+    },
+    "expenses": {
+      "title": "Expenses",
+      "subtitle": "Showing {{count}} expenses"
+    },
+    "categories": {
+      "title": "Categories",
+      "subtitle": "Showing {{count}} categories"
+    },
+    "paymentMethods": {
+      "title": "Payment Methods",
+      "subtitle": "Showing {{count}} payment methods"
+    },
+    "actions": {
+      "addExpense": "Add Expense",
+      "addCategory": "Add Category",
+      "addPaymentMethod": "Add Payment Method",
+      "export": "Export",
+      "saveChanges": "Save Changes"
+    },
+    "dialogs": {
+      "addExpense": {
+        "title": "Add New Expense",
+        "subtitle": "Add a new expense with all details"
+      },
+      "editExpense": {
+        "title": "Edit Expense",
+        "subtitle": "Update expense details"
+      },
+      "addCategory": {
+        "title": "Add New Category",
+        "subtitle": "Add a new expense category"
+      },
+      "editCategory": {
+        "title": "Edit Category",
+        "subtitle": "Update category details"
+      },
+      "addPaymentMethod": {
+        "title": "Add New Payment Method",
+        "subtitle": "Add a new payment method"
+      },
+      "editPaymentMethod": {
+        "title": "Edit Payment Method",
+        "subtitle": "Update payment method details"
+      }
+    },
+    "form": {
+      "details": "Details",
+      "amount": "Amount",
+      "category": "Category",
+      "paidBy": "Paid By",
+      "paymentMethod": "Payment Method",
+      "paymentDate": "Payment Date",
+      "notes": "Notes",
+      "categoryName": "Category Name",
+      "paymentMethodName": "Payment Method Name",
+      "description": "Description",
+      "selectCategory": "Select Category",
+      "selectPaymentMethod": "Select Payment Method",
+      "detailsPlaceholder": "Enter expense details",
+      "amountPlaceholder": "Enter amount",
+      "paidByPlaceholder": "Enter who paid",
+      "notesPlaceholder": "Enter additional notes",
+      "categoryNamePlaceholder": "Enter category name",
+      "paymentMethodNamePlaceholder": "Enter payment method name",
+      "descriptionPlaceholder": "Enter description"
+    },
+    "table": {
+      "details": "Details",
+      "amount": "Amount",
+      "category": "Category",
+      "paidBy": "Paid By",
+      "paymentMethod": "Payment Method",
+      "paymentDate": "Payment Date",
+      "status": "Status",
+      "name": "Name",
+      "description": "Description",
+      "totalPayments": "Total Payments",
+      "totalAmount": "Total Amount",
+      "totalTransactions": "Total Transactions",
+      "noDescription": "No description"
+    },
+    "filters": {
+      "category": "Category",
+      "paymentMethod": "Payment Method",
+      "status": "Status",
+      "allCategories": "All Categories",
+      "allMethods": "All Methods",
+      "allStatuses": "All Statuses"
+    },
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "cancelled": "Cancelled",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "search": {
+      "placeholder": "Search expenses..."
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "results": "results"
+    },
+    "toast": {
+      "expenseAdded": "Expense Added",
+      "expenseAddedDesc": "Expense has been successfully added",
+      "expenseUpdated": "Expense Updated",
+      "expenseUpdatedDesc": "Expense has been successfully updated",
+      "expenseDeleted": "Expense Deleted",
+      "expenseDeletedDesc": "Expense has been successfully deleted",
+      "categoryAdded": "Category Added",
+      "categoryAddedDesc": "Category has been successfully added",
+      "categoryUpdated": "Category Updated",
+      "categoryUpdatedDesc": "Category has been successfully updated",
+      "categoryDeleted": "Category Deleted",
+      "categoryDeletedDesc": "Category has been successfully deleted",
+      "paymentMethodAdded": "Payment Method Added",
+      "paymentMethodAddedDesc": "Payment method has been successfully added",
+      "paymentMethodUpdated": "Payment Method Updated",
+      "paymentMethodUpdatedDesc": "Payment method has been successfully updated",
+      "paymentMethodDeleted": "Payment Method Deleted",
+      "paymentMethodDeletedDesc": "Payment method has been successfully deleted",
+      "exportSuccess": "Export Successful",
+      "exportSuccessDesc": "Data exported successfully",
+      "error": "Error",
+      "errorDesc": "Please fill in all required fields"
     }
   }
 }

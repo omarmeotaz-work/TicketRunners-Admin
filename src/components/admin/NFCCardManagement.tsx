@@ -42,6 +42,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  ResponsivePagination,
 } from "@/components/ui/pagination";
 import {
   Filter,
@@ -99,6 +100,8 @@ const NFCCardManagement: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<NFCCard | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
+  const [isAssignBySerialDialogOpen, setIsAssignBySerialDialogOpen] =
+    useState(false);
   const [isGenerateKeyDialogOpen, setIsGenerateKeyDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [cardsPerPage, setCardsPerPage] = useState(10);
@@ -496,10 +499,18 @@ const NFCCardManagement: React.FC = () => {
 
   const handleAssignCard = () => {
     toast({
-      title: t("admin.tickets.nfc.toast.cardAssigned"),
-      description: t("admin.tickets.nfc.toast.cardAssignedDesc"),
+      title: t("admin.tickets.nfc.toast.cardAdded"),
+      description: t("admin.tickets.nfc.toast.cardAddedDesc"),
     });
     setIsAssignDialogOpen(false);
+  };
+
+  const handleAssignCardBySerial = () => {
+    toast({
+      title: t("admin.tickets.nfc.toast.cardAssignedBySerial"),
+      description: t("admin.tickets.nfc.toast.cardAssignedBySerialDesc"),
+    });
+    setIsAssignBySerialDialogOpen(false);
   };
 
   const handleCopyKey = () => {
@@ -521,16 +532,16 @@ const NFCCardManagement: React.FC = () => {
   return (
     <div className="space-y-6" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+          <h2 className="text-xl sm:text-2xl font-bold rtl:text-right ltr:text-left">
             {t("admin.tickets.nfc.title")}
           </h2>
-          <p className="text-muted-foreground rtl:text-right ltr:text-left">
+          <p className="text-sm sm:text-base text-muted-foreground rtl:text-right ltr:text-left">
             {t("admin.tickets.nfc.subtitle")}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <ExportDialog
             data={filteredCards}
             columns={commonColumns.nfcCards}
@@ -549,14 +560,34 @@ const NFCCardManagement: React.FC = () => {
               });
             }}
           >
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-              {t("admin.tickets.nfc.actions.export")}
+            <Button variant="outline" className="text-xs sm:text-sm">
+              <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+              <span className="hidden sm:inline">
+                {t("admin.tickets.nfc.actions.export")}
+              </span>
+              <span className="sm:hidden">Export</span>
             </Button>
           </ExportDialog>
-          <Button onClick={() => setIsAssignDialogOpen(true)}>
-            <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.tickets.nfc.actions.assignCard")}
+          <Button
+            onClick={() => setIsAssignDialogOpen(true)}
+            className="text-xs sm:text-sm"
+          >
+            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+            <span className="hidden sm:inline">
+              {t("admin.tickets.nfc.actions.assignCard")}
+            </span>
+            <span className="sm:hidden">Assign</span>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setIsAssignBySerialDialogOpen(true)}
+            className="text-xs sm:text-sm"
+          >
+            <CreditCard className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+            <span className="hidden sm:inline">
+              {t("admin.tickets.nfc.actions.assignBySerial")}
+            </span>
+            <span className="sm:hidden">Serial</span>
           </Button>
         </div>
       </div>
@@ -809,134 +840,24 @@ const NFCCardManagement: React.FC = () => {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-muted-foreground rtl:text-right">
-                {t("admin.tickets.nfc.pagination.showing")} {startIndex + 1}-
-                {Math.min(endIndex, filteredCards.length)}{" "}
-                {t("admin.tickets.nfc.pagination.of")} {filteredCards.length}{" "}
-                {t("admin.tickets.nfc.pagination.results")}
-              </div>
-              <Pagination>
-                <PaginationContent>
-                  {/* First Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(1)}
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.tickets.nfc.pagination.first")}
-                    </PaginationLink>
-                  </PaginationItem>
-
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        setCurrentPage(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* First page number */}
-                  {currentPage > 3 && (
-                    <PaginationItem>
-                      <PaginationLink onClick={() => setCurrentPage(1)}>
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage > 4 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Previous page */}
-                  {currentPage > 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                      >
-                        {currentPage - 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Current page */}
-                  <PaginationItem>
-                    <PaginationLink isActive>{currentPage}</PaginationLink>
-                  </PaginationItem>
-
-                  {/* Next page */}
-                  {currentPage < totalPages - 1 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                      >
-                        {currentPage + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage < totalPages - 3 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Last page number */}
-                  {currentPage < totalPages - 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(totalPages)}
-                      >
-                        {totalPages}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        setCurrentPage(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* Last Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(totalPages)}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.tickets.nfc.pagination.last")}
-                    </PaginationLink>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+          <ResponsivePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            showInfo={true}
+            infoText={`${t("admin.tickets.nfc.pagination.showing")} ${
+              startIndex + 1
+            }-${Math.min(endIndex, filteredCards.length)} ${t(
+              "admin.tickets.nfc.pagination.of"
+            )} ${filteredCards.length} ${t(
+              "admin.tickets.nfc.pagination.results"
+            )}`}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            totalItems={filteredCards.length}
+            itemsPerPage={cardsPerPage}
+            className="mt-4"
+          />
         </CardContent>
       </Card>
 
@@ -1034,27 +955,7 @@ const NFCCardManagement: React.FC = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.tickets.nfc.form.cardType")}
-                  </label>
-                  <Select defaultValue={selectedCard.cardType}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="standard">
-                        {t("admin.tickets.nfc.cardTypes.standard")}
-                      </SelectItem>
-                      <SelectItem value="premium">
-                        {t("admin.tickets.nfc.cardTypes.premium")}
-                      </SelectItem>
-                      <SelectItem value="vip">
-                        {t("admin.tickets.nfc.cardTypes.vip")}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
                 <div>
                   <label className="text-sm font-medium rtl:text-right">
                     {t("admin.tickets.nfc.form.status")}
@@ -1088,12 +989,6 @@ const NFCCardManagement: React.FC = () => {
                   </label>
                   <Input type="date" defaultValue={selectedCard.expiryDate} />
                 </div>
-                <div>
-                  <label className="text-sm font-medium rtl:text-right">
-                    {t("admin.tickets.nfc.form.balance")}
-                  </label>
-                  <Input type="number" defaultValue={selectedCard.balance} />
-                </div>
               </div>
             </div>
           )}
@@ -1111,93 +1006,26 @@ const NFCCardManagement: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Assign Card Dialog */}
+      {/* Add New Card Dialog */}
       <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
         <DialogContent className="rtl:text-right ltr:text-left">
           <DialogHeader>
             <DialogTitle className="rtl:text-right ltr:text-left">
-              {t("admin.tickets.nfc.dialogs.assignCard")}
+              {t("admin.tickets.nfc.dialogs.addNewCard")}
             </DialogTitle>
             <DialogDescription className="rtl:text-right ltr:text-left">
-              {t("admin.tickets.nfc.dialogs.assignCardSubtitle")}
+              {t("admin.tickets.nfc.dialogs.addNewCardSubtitle")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4 rtl:space-x-reverse">
-              <div>
-                <label className="text-sm font-medium rtl:text-right">
-                  {t("admin.tickets.nfc.form.customer")}
-                </label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={t("admin.tickets.nfc.form.selectCustomer")}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {customers
-                      .filter((customer) => !customer.hasCard)
-                      .map((customer) => (
-                        <SelectItem key={customer.id} value={customer.id}>
-                          {customer.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-sm font-medium rtl:text-right">
-                  {t("admin.tickets.nfc.form.cardType")}
-                </label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={t("admin.tickets.nfc.form.selectType")}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="standard">
-                      {t("admin.tickets.nfc.cardTypes.standard")}
-                    </SelectItem>
-                    <SelectItem value="premium">
-                      {t("admin.tickets.nfc.cardTypes.premium")}
-                    </SelectItem>
-                    <SelectItem value="vip">
-                      {t("admin.tickets.nfc.cardTypes.vip")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-sm font-medium rtl:text-right">
-                  {t("admin.tickets.nfc.form.initialBalance")}
-                </label>
-                <Input
-                  type="number"
-                  placeholder={t("admin.tickets.nfc.form.zero")}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium rtl:text-right">
-                  {t("admin.tickets.nfc.form.expiryPeriod")}
-                </label>
-                <Select defaultValue="1">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">
-                      {t("admin.tickets.nfc.form.oneYear")}
-                    </SelectItem>
-                    <SelectItem value="2">
-                      {t("admin.tickets.nfc.form.twoYears")}
-                    </SelectItem>
-                    <SelectItem value="3">
-                      {t("admin.tickets.nfc.form.threeYears")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <label className="text-sm font-medium rtl:text-right">
+                {t("admin.tickets.nfc.form.serialNumber")}
+              </label>
+              <Input
+                placeholder={t("admin.tickets.nfc.form.enterSerialNumber")}
+                dir={i18n.language === "ar" ? "rtl" : "ltr"}
+              />
             </div>
           </div>
           <DialogFooter className="rtl:flex-row-reverse">
@@ -1208,7 +1036,57 @@ const NFCCardManagement: React.FC = () => {
               {t("admin.tickets.nfc.dialogs.cancel")}
             </Button>
             <Button onClick={handleAssignCard}>
-              {t("admin.tickets.nfc.dialogs.assignCardButton")}
+              {t("admin.tickets.nfc.dialogs.addNewCardButton")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Assign Card by Serial Number Dialog */}
+      <Dialog
+        open={isAssignBySerialDialogOpen}
+        onOpenChange={setIsAssignBySerialDialogOpen}
+      >
+        <DialogContent className="rtl:text-right ltr:text-left">
+          <DialogHeader>
+            <DialogTitle className="rtl:text-right ltr:text-left">
+              {t("admin.tickets.nfc.dialogs.assignBySerial")}
+            </DialogTitle>
+            <DialogDescription className="rtl:text-right ltr:text-left">
+              {t("admin.tickets.nfc.dialogs.assignBySerialSubtitle")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 rtl:space-x-reverse">
+              <div>
+                <label className="text-sm font-medium rtl:text-right">
+                  {t("admin.tickets.nfc.form.serialNumber")}
+                </label>
+                <Input
+                  placeholder={t("admin.tickets.nfc.form.enterSerialNumber")}
+                  dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium rtl:text-right">
+                  {t("admin.tickets.nfc.form.customerMobile")}
+                </label>
+                <Input
+                  placeholder={t("admin.tickets.nfc.form.enterMobileNumber")}
+                  dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="rtl:flex-row-reverse">
+            <Button
+              variant="outline"
+              onClick={() => setIsAssignBySerialDialogOpen(false)}
+            >
+              {t("admin.tickets.nfc.dialogs.cancel")}
+            </Button>
+            <Button onClick={handleAssignCardBySerial}>
+              {t("admin.tickets.nfc.dialogs.assignBySerialButton")}
             </Button>
           </DialogFooter>
         </DialogContent>

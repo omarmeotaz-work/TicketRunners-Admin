@@ -49,6 +49,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  ResponsivePagination,
 } from "@/components/ui/pagination";
 import {
   Filter,
@@ -82,6 +83,13 @@ import {
   Repeat,
   Activity,
   Ban,
+  Tag,
+  Tags,
+  Crown,
+  Award,
+  Shield,
+  Heart,
+  Zap,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, parseISO } from "date-fns";
@@ -94,6 +102,14 @@ import {
 } from "@/lib/utils";
 import { ExportDialog } from "@/components/ui/export-dialog";
 import { commonColumns } from "@/lib/exportUtils";
+
+type CustomerLabel = {
+  id: string;
+  name: string;
+  color: string;
+  description?: string;
+  icon?: string;
+};
 
 type Customer = {
   id: string;
@@ -110,6 +126,7 @@ type Customer = {
   recurrentUser: boolean;
   location: string;
   profileImage?: string;
+  labels: CustomerLabel[];
 };
 
 type CustomerBooking = {
@@ -149,6 +166,42 @@ const CustomerManagement: React.FC = () => {
     useState<CustomerBooking | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Label management state
+  const [showLabelDialog, setShowLabelDialog] = useState(false);
+  const [showManageLabelsDialog, setShowManageLabelsDialog] = useState(false);
+  const [selectedLabels, setSelectedLabels] = useState<CustomerLabel[]>([]);
+  const [newLabel, setNewLabel] = useState({
+    name: "",
+    color: "#3B82F6",
+    description: "",
+    icon: "Tag",
+  });
+
+  // Available label colors and icons
+  const labelColors = [
+    "#3B82F6",
+    "#10B981",
+    "#F59E0B",
+    "#EF4444",
+    "#8B5CF6",
+    "#06B6D4",
+    "#84CC16",
+    "#F97316",
+    "#EC4899",
+    "#6366F1",
+  ];
+
+  const labelIcons = [
+    { name: "Tag", icon: Tag },
+    { name: "Crown", icon: Crown },
+    { name: "Award", icon: Award },
+    { name: "Shield", icon: Shield },
+    { name: "Heart", icon: Heart },
+    { name: "Zap", icon: Zap },
+    { name: "Star", icon: Star },
+    { name: "CheckCircle", icon: CheckCircle },
+  ];
 
   // Get current locale for date formatting
   const currentLocale = i18n.language === "ar" ? ar : enUS;
@@ -214,6 +267,22 @@ const CustomerManagement: React.FC = () => {
       location: "Cairo, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      labels: [
+        {
+          id: "label-1",
+          name: "VIP",
+          color: "#F59E0B",
+          description: "Very Important Person",
+          icon: "Crown",
+        },
+        {
+          id: "label-2",
+          name: "Front Row",
+          color: "#10B981",
+          description: "Front row seating preference",
+          icon: "Star",
+        },
+      ],
     },
     {
       id: "C002",
@@ -231,6 +300,15 @@ const CustomerManagement: React.FC = () => {
       location: "Alexandria, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+      labels: [
+        {
+          id: "label-3",
+          name: "Premium",
+          color: "#8B5CF6",
+          description: "Premium customer",
+          icon: "Award",
+        },
+      ],
     },
     {
       id: "C003",
@@ -247,6 +325,7 @@ const CustomerManagement: React.FC = () => {
       location: "Giza, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C004",
@@ -263,6 +342,7 @@ const CustomerManagement: React.FC = () => {
       location: "Cairo, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C005",
@@ -280,6 +360,7 @@ const CustomerManagement: React.FC = () => {
       location: "Cairo, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C006",
@@ -297,6 +378,7 @@ const CustomerManagement: React.FC = () => {
       location: "Alexandria, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C007",
@@ -313,6 +395,7 @@ const CustomerManagement: React.FC = () => {
       location: "Giza, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C008",
@@ -329,6 +412,7 @@ const CustomerManagement: React.FC = () => {
       location: "Cairo, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C009",
@@ -346,6 +430,7 @@ const CustomerManagement: React.FC = () => {
       location: "Cairo, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C010",
@@ -363,6 +448,7 @@ const CustomerManagement: React.FC = () => {
       location: "Alexandria, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C011",
@@ -379,6 +465,7 @@ const CustomerManagement: React.FC = () => {
       location: "Giza, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C012",
@@ -396,6 +483,7 @@ const CustomerManagement: React.FC = () => {
       location: "Cairo, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C013",
@@ -413,6 +501,7 @@ const CustomerManagement: React.FC = () => {
       location: "Alexandria, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C014",
@@ -429,6 +518,7 @@ const CustomerManagement: React.FC = () => {
       location: "Giza, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
     {
       id: "C015",
@@ -446,6 +536,7 @@ const CustomerManagement: React.FC = () => {
       location: "Cairo, Egypt",
       profileImage:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      labels: [],
     },
   ];
 
@@ -710,19 +801,104 @@ const CustomerManagement: React.FC = () => {
     });
   };
 
+  // Label management functions
+  const handleManageLabels = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setSelectedLabels(customer.labels);
+    setShowManageLabelsDialog(true);
+  };
+
+  const handleAddLabel = () => {
+    if (!newLabel.name.trim()) {
+      toast({
+        title: t("admin.customers.labels.error.nameRequired"),
+        description: t("admin.customers.labels.error.nameRequiredDesc"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const label: CustomerLabel = {
+      id: `label-${Date.now()}`,
+      name: newLabel.name,
+      color: newLabel.color,
+      description: newLabel.description,
+      icon: newLabel.icon,
+    };
+
+    if (selectedCustomer) {
+      const updatedCustomer = {
+        ...selectedCustomer,
+        labels: [...selectedCustomer.labels, label],
+      };
+      setSelectedCustomer(updatedCustomer);
+      setSelectedLabels(updatedCustomer.labels);
+    }
+
+    setNewLabel({
+      name: "",
+      color: "#3B82F6",
+      description: "",
+      icon: "Tag",
+    });
+
+    toast({
+      title: t("admin.customers.labels.toast.labelAdded"),
+      description: t("admin.customers.labels.toast.labelAddedDesc"),
+    });
+  };
+
+  const handleRemoveLabel = (labelId: string) => {
+    if (selectedCustomer) {
+      const updatedCustomer = {
+        ...selectedCustomer,
+        labels: selectedCustomer.labels.filter((label) => label.id !== labelId),
+      };
+      setSelectedCustomer(updatedCustomer);
+      setSelectedLabels(updatedCustomer.labels);
+    }
+
+    toast({
+      title: t("admin.customers.labels.toast.labelRemoved"),
+      description: t("admin.customers.labels.toast.labelRemovedDesc"),
+    });
+  };
+
+  const handleSaveLabels = () => {
+    if (selectedCustomer) {
+      // Update the customer with new labels
+      const updatedCustomers = customers.map((customer) =>
+        customer.id === selectedCustomer.id
+          ? { ...customer, labels: selectedLabels }
+          : customer
+      );
+
+      toast({
+        title: t("admin.customers.labels.toast.labelsSaved"),
+        description: t("admin.customers.labels.toast.labelsSavedDesc"),
+      });
+    }
+    setShowManageLabelsDialog(false);
+  };
+
+  const getLabelIcon = (iconName: string | undefined) => {
+    const iconObj = labelIcons.find((icon) => icon.name === iconName);
+    return iconObj ? iconObj.icon : Tag;
+  };
+
   return (
     <div className="space-y-6" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+          <h2 className="text-xl sm:text-2xl font-bold rtl:text-right ltr:text-left">
             {t("admin.customers.title")}
           </h2>
-          <p className="text-muted-foreground rtl:text-right ltr:text-left">
+          <p className="text-sm sm:text-base text-muted-foreground rtl:text-right ltr:text-left">
             {t("admin.customers.subtitle")}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <ExportDialog
             data={filteredCustomers}
             columns={commonColumns.customers}
@@ -741,14 +917,23 @@ const CustomerManagement: React.FC = () => {
               });
             }}
           >
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-              {t("admin.customers.actions.export")}
+            <Button variant="outline" className="text-xs sm:text-sm">
+              <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+              <span className="hidden sm:inline">
+                {t("admin.customers.actions.export")}
+              </span>
+              <span className="sm:hidden">Export</span>
             </Button>
           </ExportDialog>
-          <Button onClick={() => setIsAddDialogOpen(true)}>
-            <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.customers.actions.addCustomer")}
+          <Button
+            onClick={() => setIsAddDialogOpen(true)}
+            className="text-xs sm:text-sm"
+          >
+            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+            <span className="hidden sm:inline">
+              {t("admin.customers.actions.addCustomer")}
+            </span>
+            <span className="sm:hidden">Add</span>
           </Button>
         </div>
       </div>
@@ -872,6 +1057,9 @@ const CustomerManagement: React.FC = () => {
                     {t("admin.customers.table.spent")}
                   </TableHead>
                   <TableHead className="rtl:text-right ltr:text-left">
+                    {t("admin.customers.table.labels")}
+                  </TableHead>
+                  <TableHead className="rtl:text-right ltr:text-left">
                     {t("admin.customers.table.actions")}
                   </TableHead>
                 </TableRow>
@@ -956,6 +1144,31 @@ const CustomerManagement: React.FC = () => {
                       </div>
                     </TableCell>
                     <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {customer.labels.map((label) => {
+                          const IconComponent = getLabelIcon(label.icon);
+                          return (
+                            <Badge
+                              key={label.id}
+                              className="text-xs"
+                              style={{
+                                backgroundColor: label.color,
+                                color: "white",
+                              }}
+                            >
+                              <IconComponent className="h-3 w-3 mr-1 rtl:ml-1 rtl:mr-0" />
+                              {label.name}
+                            </Badge>
+                          );
+                        })}
+                        {customer.labels.length === 0 && (
+                          <span className="text-xs text-muted-foreground">
+                            {t("admin.customers.table.noLabels")}
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="sm">
@@ -999,6 +1212,12 @@ const CustomerManagement: React.FC = () => {
                           >
                             <Activity className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
                             {t("admin.customers.actions.viewActivity")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleManageLabels(customer)}
+                          >
+                            <Tags className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                            {t("admin.customers.actions.manageLabels")}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           {customer.status === "active" && (
@@ -1068,134 +1287,24 @@ const CustomerManagement: React.FC = () => {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-muted-foreground rtl:text-right">
-                {t("admin.customers.pagination.showing")} {startIndex + 1}-
-                {Math.min(endIndex, filteredCustomers.length)}{" "}
-                {t("admin.customers.pagination.of")} {filteredCustomers.length}{" "}
-                {t("admin.customers.pagination.results")}
-              </div>
-              <Pagination>
-                <PaginationContent>
-                  {/* First Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(1)}
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.customers.pagination.first")}
-                    </PaginationLink>
-                  </PaginationItem>
-
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        setCurrentPage(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* First page number */}
-                  {currentPage > 3 && (
-                    <PaginationItem>
-                      <PaginationLink onClick={() => setCurrentPage(1)}>
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage > 4 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Previous page */}
-                  {currentPage > 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                      >
-                        {currentPage - 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Current page */}
-                  <PaginationItem>
-                    <PaginationLink isActive>{currentPage}</PaginationLink>
-                  </PaginationItem>
-
-                  {/* Next page */}
-                  {currentPage < totalPages - 1 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                      >
-                        {currentPage + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage < totalPages - 3 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Last page number */}
-                  {currentPage < totalPages - 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(totalPages)}
-                      >
-                        {totalPages}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        setCurrentPage(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* Last Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(totalPages)}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.customers.pagination.last")}
-                    </PaginationLink>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+          <ResponsivePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            showInfo={true}
+            infoText={`${t("admin.customers.pagination.showing")} ${
+              startIndex + 1
+            }-${Math.min(endIndex, filteredCustomers.length)} ${t(
+              "admin.customers.pagination.of"
+            )} ${filteredCustomers.length} ${t(
+              "admin.customers.pagination.results"
+            )}`}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            totalItems={filteredCustomers.length}
+            itemsPerPage={itemsPerPage}
+            className="mt-4"
+          />
         </CardContent>
       </Card>
 
@@ -2194,6 +2303,189 @@ const CustomerManagement: React.FC = () => {
             </Button>
             <Button onClick={handleSaveBookingChanges}>
               {t("admin.customers.dialogs.saveChanges")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Manage Labels Dialog */}
+      <Dialog
+        open={showManageLabelsDialog}
+        onOpenChange={setShowManageLabelsDialog}
+      >
+        <DialogContent className="max-w-2xl rtl:text-right ltr:text-left max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="rtl:text-right ltr:text-left">
+              {t("admin.customers.labels.manageLabels")}
+            </DialogTitle>
+            <DialogDescription className="rtl:text-right ltr:text-left">
+              {selectedCustomer &&
+                `${t("admin.customers.labels.manageLabelsFor")} ${
+                  selectedCustomer.name
+                }`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedCustomer && (
+            <div className="space-y-6 flex-1 overflow-y-auto">
+              {/* Current Labels */}
+              <div>
+                <h4 className="text-sm font-medium mb-3 rtl:text-right ltr:text-left">
+                  {t("admin.customers.labels.currentLabels")}
+                </h4>
+                <div className="space-y-2">
+                  {selectedLabels.map((label) => {
+                    const IconComponent = getLabelIcon(label.icon);
+                    return (
+                      <div
+                        key={label.id}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
+                        <div className="flex items-center gap-3 rtl:gap-reverse">
+                          <Badge
+                            className="text-sm"
+                            style={{
+                              backgroundColor: label.color,
+                              color: "white",
+                            }}
+                          >
+                            <IconComponent className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                            {label.name}
+                          </Badge>
+                          {label.description && (
+                            <span className="text-sm text-muted-foreground">
+                              {label.description}
+                            </span>
+                          )}
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveLabel(label.id)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    );
+                  })}
+                  {selectedLabels.length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Tags className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>{t("admin.customers.labels.noLabels")}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Add New Label */}
+              <div className="border-t pt-6">
+                <h4 className="text-sm font-medium mb-4 rtl:text-right ltr:text-left">
+                  {t("admin.customers.labels.addNewLabel")}
+                </h4>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                        {t("admin.customers.labels.labelName")}
+                      </label>
+                      <Input
+                        value={newLabel.name}
+                        onChange={(e) =>
+                          setNewLabel({ ...newLabel, name: e.target.value })
+                        }
+                        placeholder={t(
+                          "admin.customers.labels.labelNamePlaceholder"
+                        )}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                        {t("admin.customers.labels.labelColor")}
+                      </label>
+                      <div className="flex gap-2 mt-1">
+                        {labelColors.map((color) => (
+                          <button
+                            key={color}
+                            type="button"
+                            className={`w-8 h-8 rounded-full border-2 ${
+                              newLabel.color === color
+                                ? "border-gray-900"
+                                : "border-gray-300"
+                            }`}
+                            style={{ backgroundColor: color }}
+                            onClick={() => setNewLabel({ ...newLabel, color })}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                      {t("admin.customers.labels.labelIcon")}
+                    </label>
+                    <div className="grid grid-cols-4 gap-2 mt-1">
+                      {labelIcons.map((iconObj) => {
+                        const IconComponent = iconObj.icon;
+                        return (
+                          <button
+                            key={iconObj.name}
+                            type="button"
+                            className={`p-2 rounded border-2 ${
+                              newLabel.icon === iconObj.name
+                                ? "border-blue-500 bg-blue-50"
+                                : "border-gray-300 hover:border-gray-400"
+                            }`}
+                            onClick={() =>
+                              setNewLabel({ ...newLabel, icon: iconObj.name })
+                            }
+                          >
+                            <IconComponent className="h-5 w-5" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium rtl:text-right ltr:text-left">
+                      {t("admin.customers.labels.labelDescription")}
+                    </label>
+                    <Input
+                      value={newLabel.description}
+                      onChange={(e) =>
+                        setNewLabel({
+                          ...newLabel,
+                          description: e.target.value,
+                        })
+                      }
+                      placeholder={t(
+                        "admin.customers.labels.labelDescriptionPlaceholder"
+                      )}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <Button onClick={handleAddLabel} className="w-full">
+                    <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                    {t("admin.customers.labels.addLabel")}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="flex-shrink-0">
+            <Button
+              variant="outline"
+              onClick={() => setShowManageLabelsDialog(false)}
+            >
+              {t("admin.customers.dialogs.cancel")}
+            </Button>
+            <Button onClick={handleSaveLabels}>
+              {t("admin.customers.labels.saveLabels")}
             </Button>
           </DialogFooter>
         </DialogContent>

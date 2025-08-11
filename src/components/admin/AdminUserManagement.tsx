@@ -49,6 +49,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  ResponsivePagination,
 } from "@/components/ui/pagination";
 import {
   Filter,
@@ -813,19 +814,26 @@ const AdminUserManagement: React.FC = () => {
   return (
     <div className="space-y-6" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+          <h2 className="text-xl sm:text-2xl font-bold rtl:text-right ltr:text-left">
             {t("admin.users.title")}
           </h2>
-          <p className="text-muted-foreground rtl:text-right ltr:text-left">
+          <p className="text-sm sm:text-base text-muted-foreground rtl:text-right ltr:text-left">
             {t("admin.users.subtitle")}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setIsRoleDialogOpen(true)}>
-            <Shield className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.users.actions.manageRoles")}
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          <Button
+            variant="outline"
+            onClick={() => setIsRoleDialogOpen(true)}
+            className="text-xs sm:text-sm"
+          >
+            <Shield className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+            <span className="hidden sm:inline">
+              {t("admin.users.actions.manageRoles")}
+            </span>
+            <span className="sm:hidden">Roles</span>
           </Button>
           <ExportDialog
             data={filteredUsers}
@@ -845,14 +853,23 @@ const AdminUserManagement: React.FC = () => {
               });
             }}
           >
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-              {t("admin.users.actions.export")}
+            <Button variant="outline" className="text-xs sm:text-sm">
+              <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+              <span className="hidden sm:inline">
+                {t("admin.users.actions.export")}
+              </span>
+              <span className="sm:hidden">Export</span>
             </Button>
           </ExportDialog>
-          <Button onClick={() => setIsAddDialogOpen(true)}>
-            <Plus className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0" />
-            {t("admin.users.actions.addUser")}
+          <Button
+            onClick={() => setIsAddDialogOpen(true)}
+            className="text-xs sm:text-sm"
+          >
+            <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 rtl:ml-1 sm:rtl:ml-2 rtl:mr-0" />
+            <span className="hidden sm:inline">
+              {t("admin.users.actions.addUser")}
+            </span>
+            <span className="sm:hidden">Add</span>
           </Button>
         </div>
       </div>
@@ -1117,134 +1134,22 @@ const AdminUserManagement: React.FC = () => {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-muted-foreground rtl:text-right">
-                {t("admin.users.pagination.showing")} {startIndex + 1}-
-                {Math.min(endIndex, filteredUsers.length)}{" "}
-                {t("admin.users.pagination.of")} {filteredUsers.length}{" "}
-                {t("admin.users.pagination.results")}
-              </div>
-              <Pagination>
-                <PaginationContent>
-                  {/* First Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(1)}
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.users.pagination.first")}
-                    </PaginationLink>
-                  </PaginationItem>
-
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        setCurrentPage(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* First page number */}
-                  {currentPage > 3 && (
-                    <PaginationItem>
-                      <PaginationLink onClick={() => setCurrentPage(1)}>
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage > 4 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Previous page */}
-                  {currentPage > 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                      >
-                        {currentPage - 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Current page */}
-                  <PaginationItem>
-                    <PaginationLink isActive>{currentPage}</PaginationLink>
-                  </PaginationItem>
-
-                  {/* Next page */}
-                  {currentPage < totalPages - 1 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                      >
-                        {currentPage + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  {/* Ellipsis */}
-                  {currentPage < totalPages - 3 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  {/* Last page number */}
-                  {currentPage < totalPages - 2 && (
-                    <PaginationItem>
-                      <PaginationLink
-                        onClick={() => setCurrentPage(totalPages)}
-                      >
-                        {totalPages}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        setCurrentPage(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* Last Page */}
-                  <PaginationItem>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(totalPages)}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
-                      }
-                    >
-                      {t("admin.users.pagination.last")}
-                    </PaginationLink>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+          <ResponsivePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            showInfo={true}
+            infoText={`${t("admin.users.pagination.showing")} ${
+              startIndex + 1
+            }-${Math.min(endIndex, filteredUsers.length)} ${t(
+              "admin.users.pagination.of"
+            )} ${filteredUsers.length} ${t("admin.users.pagination.results")}`}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            totalItems={filteredUsers.length}
+            itemsPerPage={itemsPerPage}
+            className="mt-4"
+          />
         </CardContent>
       </Card>
 

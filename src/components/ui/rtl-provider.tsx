@@ -45,12 +45,13 @@ export const useRTL = () => {
   return context;
 };
 
-// RTL-aware components
+// Enhanced RTL-aware components
 export const RTLText: React.FC<{
   children: ReactNode;
   className?: string;
   align?: "left" | "right" | "center" | "justify";
-}> = ({ children, className = "", align = "right" }) => {
+  as?: "div" | "span" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+}> = ({ children, className = "", align = "right", as: Component = "div" }) => {
   const { isRTL } = useRTL();
 
   const getAlignmentClass = () => {
@@ -60,7 +61,12 @@ export const RTLText: React.FC<{
   };
 
   return (
-    <div className={`${getAlignmentClass()} ${className}`}>{children}</div>
+    <Component
+      className={`${getAlignmentClass()} ${className}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      {children}
+    </Component>
   );
 };
 
@@ -68,7 +74,15 @@ export const RTLFlex: React.FC<{
   children: ReactNode;
   className?: string;
   reverse?: boolean;
-}> = ({ children, className = "", reverse = false }) => {
+  align?: "start" | "center" | "end" | "stretch";
+  justify?: "start" | "center" | "end" | "between" | "around";
+}> = ({
+  children,
+  className = "",
+  reverse = false,
+  align = "start",
+  justify = "start",
+}) => {
   const { isRTL } = useRTL();
 
   const getFlexDirection = () => {
@@ -78,7 +92,41 @@ export const RTLFlex: React.FC<{
     return isRTL ? "flex-row-reverse" : "flex-row";
   };
 
-  return <div className={`${getFlexDirection()} ${className}`}>{children}</div>;
+  const getAlignClass = () => {
+    switch (align) {
+      case "center":
+        return "items-center";
+      case "end":
+        return "items-end";
+      case "stretch":
+        return "items-stretch";
+      default:
+        return "items-start";
+    }
+  };
+
+  const getJustifyClass = () => {
+    switch (justify) {
+      case "center":
+        return "justify-center";
+      case "end":
+        return "justify-end";
+      case "between":
+        return "justify-between";
+      case "around":
+        return "justify-around";
+      default:
+        return "justify-start";
+    }
+  };
+
+  return (
+    <div
+      className={`flex ${getFlexDirection()} ${getAlignClass()} ${getJustifyClass()} ${className}`}
+    >
+      {children}
+    </div>
+  );
 };
 
 export const RTLIcon: React.FC<{
@@ -116,7 +164,7 @@ export const RTLNumber: React.FC<{
   };
 
   return (
-    <span className={`${isRTL ? "rtl-number" : ""} ${className}`}>
+    <span className={`${isRTL ? "rtl-number" : ""} ${className}`} dir="ltr">
       {formatNumber(value)}
     </span>
   );
@@ -143,7 +191,10 @@ export const RTLDate: React.FC<{
   };
 
   return (
-    <span className={`${isRTL ? "rtl-date" : ""} ${className}`}>
+    <span
+      className={`${isRTL ? "rtl-date" : ""} ${className}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       {formatDate(date)}
     </span>
   );
@@ -170,7 +221,10 @@ export const RTLTime: React.FC<{
   };
 
   return (
-    <span className={`${isRTL ? "rtl-time" : ""} ${className}`}>
+    <span
+      className={`${isRTL ? "rtl-time" : ""} ${className}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       {formatTime(date)}
     </span>
   );
@@ -185,6 +239,7 @@ export const RTLButton: React.FC<{
   size?: "sm" | "md" | "lg";
   onClick?: () => void;
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 }> = ({
   children,
   className = "",
@@ -194,6 +249,7 @@ export const RTLButton: React.FC<{
   size = "md",
   onClick,
   disabled = false,
+  type = "button",
 }) => {
   const { isRTL } = useRTL();
 
@@ -227,9 +283,11 @@ export const RTLButton: React.FC<{
 
   return (
     <button
+      type={type}
       className={getButtonClasses()}
       onClick={onClick}
       disabled={disabled}
+      dir={isRTL ? "rtl" : "ltr"}
     >
       {icon && <span className={getIconClass()}>{icon}</span>}
       {children}
@@ -244,6 +302,8 @@ export const RTLInput: React.FC<{
   onChange?: (value: string) => void;
   type?: "text" | "email" | "password" | "number";
   disabled?: boolean;
+  id?: string;
+  name?: string;
 }> = ({
   placeholder,
   className = "",
@@ -251,6 +311,8 @@ export const RTLInput: React.FC<{
   onChange,
   type = "text",
   disabled = false,
+  id,
+  name,
 }) => {
   const { isRTL } = useRTL();
 
@@ -262,6 +324,8 @@ export const RTLInput: React.FC<{
 
   return (
     <input
+      id={id}
+      name={name}
       type={type}
       className={getInputClasses()}
       placeholder={placeholder}
@@ -279,7 +343,17 @@ export const RTLSelect: React.FC<{
   value?: string;
   onValueChange?: (value: string) => void;
   placeholder?: string;
-}> = ({ children, className = "", value, onValueChange, placeholder }) => {
+  id?: string;
+  name?: string;
+}> = ({
+  children,
+  className = "",
+  value,
+  onValueChange,
+  placeholder,
+  id,
+  name,
+}) => {
   const { isRTL } = useRTL();
 
   const getSelectClasses = () => {
@@ -290,6 +364,8 @@ export const RTLSelect: React.FC<{
 
   return (
     <select
+      id={id}
+      name={name}
       className={getSelectClasses()}
       value={value}
       onChange={(e) => onValueChange?.(e.target.value)}
@@ -332,7 +408,10 @@ export const RTLTableCell: React.FC<{
   };
 
   return (
-    <td className={`p-4 align-middle ${getAlignmentClass()} ${className}`}>
+    <td
+      className={`p-4 align-middle ${getAlignmentClass()} ${className}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       {children}
     </td>
   );
@@ -352,9 +431,134 @@ export const RTLTableHeader: React.FC<{
 
   return (
     <th
-      className={`h-12 px-4 text-left align-middle font-medium text-muted-foreground ${getAlignmentClass()} ${className}`}
+      className={`h-12 px-4 align-middle font-medium text-muted-foreground ${getAlignmentClass()} ${className}`}
+      dir={isRTL ? "rtl" : "ltr"}
     >
       {children}
     </th>
+  );
+};
+
+// New RTL-aware components for better text handling
+export const RTLContainer: React.FC<{
+  children: ReactNode;
+  className?: string;
+  as?: "div" | "section" | "article" | "main";
+}> = ({ children, className = "", as: Component = "div" }) => {
+  const { isRTL } = useRTL();
+
+  return (
+    <Component
+      className={`${isRTL ? "rtl" : "ltr"} ${className}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      {children}
+    </Component>
+  );
+};
+
+export const RTLHeading: React.FC<{
+  children: ReactNode;
+  className?: string;
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
+  align?: "left" | "right" | "center";
+}> = ({ children, className = "", level = 1, align = "right" }) => {
+  const { isRTL } = useRTL();
+
+  const getAlignmentClass = () => {
+    if (align === "center") return "text-center";
+    return isRTL ? "text-right" : "text-left";
+  };
+
+  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+
+  return (
+    <Tag
+      className={`${getAlignmentClass()} ${className}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      {children}
+    </Tag>
+  );
+};
+
+export const RTLParagraph: React.FC<{
+  children: ReactNode;
+  className?: string;
+  align?: "left" | "right" | "center" | "justify";
+}> = ({ children, className = "", align = "right" }) => {
+  const { isRTL } = useRTL();
+
+  const getAlignmentClass = () => {
+    if (align === "center") return "text-center";
+    if (align === "justify") return "text-justify";
+    return isRTL ? "text-right" : "text-left";
+  };
+
+  return (
+    <p
+      className={`${getAlignmentClass()} ${className}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      {children}
+    </p>
+  );
+};
+
+export const RTLBadge: React.FC<{
+  children: ReactNode;
+  className?: string;
+  variant?: "default" | "secondary" | "destructive" | "outline";
+}> = ({ children, className = "", variant = "default" }) => {
+  const { isRTL } = useRTL();
+
+  const getVariantClasses = () => {
+    const baseClasses =
+      "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
+
+    const variantClasses = {
+      default: "bg-primary text-primary-foreground hover:bg-primary/80",
+      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      destructive:
+        "bg-destructive text-destructive-foreground hover:bg-destructive/80",
+      outline:
+        "text-foreground border border-input hover:bg-accent hover:text-accent-foreground",
+    };
+
+    return `${baseClasses} ${variantClasses[variant]} ${className}`;
+  };
+
+  return (
+    <span className={getVariantClasses()} dir={isRTL ? "rtl" : "ltr"}>
+      {children}
+    </span>
+  );
+};
+
+export const RTLFormField: React.FC<{
+  children: ReactNode;
+  className?: string;
+  label?: string;
+  htmlFor?: string;
+  required?: boolean;
+}> = ({ children, className = "", label, htmlFor, required = false }) => {
+  const { isRTL } = useRTL();
+
+  return (
+    <div className={`space-y-2 ${className}`}>
+      {label && (
+        <label
+          htmlFor={htmlFor}
+          className={`block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+            isRTL ? "text-right" : "text-left"
+          }`}
+          dir={isRTL ? "rtl" : "ltr"}
+        >
+          {label}
+          {required && <span className="text-destructive ml-1">*</span>}
+        </label>
+      )}
+      {children}
+    </div>
   );
 };

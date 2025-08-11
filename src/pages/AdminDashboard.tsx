@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -26,14 +26,7 @@ import {
   Ticket,
   TrendingUp,
   DollarSign,
-  Clock,
-  Filter,
-  Search,
   BarChart3,
-  PieChart,
-  Activity,
-  Eye,
-  EyeOff,
   Sun,
   Moon,
   LogOut,
@@ -41,44 +34,13 @@ import {
   FileText,
   Receipt,
   CreditCard,
-  UserCheck,
-  UserX,
-  Shield,
-  Settings,
-  Plus,
-  Edit,
-  Trash2,
-  Ban,
-  RefreshCw,
-  Key,
-  QrCode,
-  Database,
-  UserPlus,
-  UserMinus,
-  Lock,
-  Unlock,
-  AlertCircle,
-  CheckCircle,
-  XCircle,
   MoreHorizontal,
-  ArrowUpDown,
-  CalendarDays,
+  Banknote,
   Building2,
+  Share2,
+  Handshake,
+  PiggyBank,
   Wallet,
-  Target,
-  Zap,
-  Star,
-  StarOff,
-  Repeat,
-  Clock3,
-  CalendarX,
-  UserCog,
-  Crown,
-  Users2,
-  UserCheck2,
-  UserX2,
-  ActivitySquare,
-  TrendingDown,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, parseISO, subDays, startOfMonth, endOfMonth } from "date-fns";
@@ -91,8 +53,15 @@ import i18n from "@/lib/i18n";
 import { formatNumberForLocale, formatCurrencyForLocale } from "@/lib/utils";
 import { Footer } from "@/components/Footer";
 import SystemLogs from "@/components/admin/SystemLogs";
+import CheckinLogs from "@/components/admin/CheckinLogs";
 import { ExportDialog } from "@/components/ui/export-dialog";
 import { commonColumns, formatCurrency } from "@/lib/exportUtils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import {
   LineChart,
@@ -119,6 +88,18 @@ import NFCCardManagement from "@/components/admin/NFCCardManagement";
 import CustomerManagement from "@/components/admin/CustomerManagement";
 import AdminUserManagement from "@/components/admin/AdminUserManagement";
 import VenueManagement from "@/components/admin/VenueManagement";
+import OrganizersManagement from "@/components/admin/OrganizerManagement";
+import UsherManagement from "@/components/admin/UsherManagment";
+import AdminAccountSettings from "@/components/admin/AdminAccountSettings";
+import ExpensesManagement from "@/components/admin/expansesManagment";
+import PayoutsManagement from "@/components/admin/PayoutsManagement";
+
+// Import Owner's Finances components
+import CompanyFinances from "@/components/admin/CompanyFinances";
+import ProfitShareManagement from "@/components/admin/ProfitShareManagement";
+import Settlements from "@/components/admin/Settlements";
+import Deposits from "@/components/admin/Deposits";
+import ProfitWithdrawals from "@/components/admin/ProfitWithdrawals";
 
 // Types
 interface AdminUser {
@@ -221,13 +202,302 @@ type DashboardStats = {
   expiredCards: number;
 };
 
+// Enhanced Tabs List Component
+interface EnhancedTabsListProps {
+  activeTab: string;
+  onTabChange: (value: string) => void;
+  t: (key: string) => string;
+  i18nInstance: any;
+}
+
+const EnhancedTabsList: React.FC<EnhancedTabsListProps> = ({
+  activeTab,
+  onTabChange,
+  t,
+  i18nInstance,
+}) => {
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Define tab groups for better organization
+  const tabGroups = [
+    {
+      name: "main",
+      label: t("admin.dashboard.tabs.groups.main"),
+      icon: BarChart3,
+      tabs: [
+        {
+          value: "dashboard",
+          label: t("admin.dashboard.tabs.dashboard"),
+          icon: BarChart3,
+        },
+        {
+          value: "analytics",
+          label: t("admin.dashboard.tabs.analytics"),
+          icon: TrendingUp,
+        },
+      ],
+    },
+    {
+      name: "management",
+      label: t("admin.dashboard.tabs.groups.management"),
+      icon: Calendar,
+      tabs: [
+        {
+          value: "events",
+          label: t("admin.dashboard.tabs.events"),
+          icon: Calendar,
+        },
+        {
+          value: "venues",
+          label: t("admin.dashboard.tabs.venues"),
+          icon: MapPin,
+        },
+        {
+          value: "tickets",
+          label: t("admin.dashboard.tabs.tickets"),
+          icon: Ticket,
+        },
+        {
+          value: "customers",
+          label: t("admin.dashboard.tabs.customers"),
+          icon: Users,
+        },
+      ],
+    },
+    {
+      name: "users",
+      label: t("admin.dashboard.tabs.groups.users"),
+      icon: Users,
+      tabs: [
+        {
+          value: "organizers",
+          label: t("admin.dashboard.tabs.organizers"),
+          icon: Users,
+        },
+        {
+          value: "ushers",
+          label: t("admin.dashboard.tabs.ushers"),
+          icon: Users,
+        },
+        {
+          value: "admins",
+          label: t("admin.dashboard.tabs.admins"),
+          icon: Users,
+        },
+      ],
+    },
+    {
+      name: "finances",
+      label: t("admin.dashboard.tabs.groups.finances"),
+      icon: DollarSign,
+      tabs: [
+        { value: "expenses", label: t("expenses.title"), icon: Receipt },
+        {
+          value: "payouts",
+          label: t("admin.dashboard.tabs.payouts"),
+          icon: Banknote,
+        },
+      ],
+    },
+    {
+      name: "owners-finances",
+      label: t("admin.dashboard.tabs.groups.ownersFinances"),
+      icon: Building2,
+      tabs: [
+        {
+          value: "company-finances",
+          label: t("admin.dashboard.tabs.companyFinances"),
+          icon: Building2,
+        },
+        {
+          value: "profit-share",
+          label: t("admin.dashboard.tabs.profitShare"),
+          icon: Share2,
+        },
+        {
+          value: "settlements",
+          label: t("admin.dashboard.tabs.settlements"),
+          icon: Handshake,
+        },
+        {
+          value: "deposits",
+          label: t("admin.dashboard.tabs.deposits"),
+          icon: PiggyBank,
+        },
+        {
+          value: "profit-withdrawals",
+          label: t("admin.dashboard.tabs.profitWithdrawals"),
+          icon: Wallet,
+        },
+      ],
+    },
+    {
+      name: "system",
+      label: t("admin.dashboard.tabs.groups.system"),
+      icon: CreditCard,
+      tabs: [
+        {
+          value: "nfc",
+          label: t("admin.dashboard.tabs.nfc"),
+          icon: CreditCard,
+        },
+        {
+          value: "logs",
+          label: t("admin.dashboard.logs.title"),
+          icon: FileText,
+        },
+        {
+          value: "checkin-logs",
+          label: t("admin.tickets.checkInLogs.title"),
+          icon: FileText,
+        },
+        {
+          value: "account-settings",
+          label: t("admin.accountSettings.title"),
+          icon: Users,
+        },
+      ],
+    },
+  ];
+
+  // Get the current active group
+  const getActiveGroup = () => {
+    return (
+      tabGroups.find((group) =>
+        group.tabs.some((tab) => tab.value === activeTab)
+      ) || tabGroups[0]
+    );
+  };
+
+  // Get the current active tab info
+  const getActiveTabInfo = () => {
+    const activeGroup = getActiveGroup();
+    return (
+      activeGroup.tabs.find((tab) => tab.value === activeTab) ||
+      activeGroup.tabs[0]
+    );
+  };
+
+  const activeGroup = getActiveGroup();
+  const activeTabInfo = getActiveTabInfo();
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div className="relative">
+      {/* Grouped Tabs List */}
+      <div className="relative">
+        <TabsList
+          ref={tabsRef}
+          className="flex w-full rtl:flex-row-reverse overflow-x-auto scrollbar-hide gap-4 px-4 enhanced-tabs"
+        >
+          {tabGroups.map((group, groupIndex) => {
+            const GroupIcon = group.icon;
+            const isActiveGroup = group.tabs.some(
+              (tab) => tab.value === activeTab
+            );
+            const groupActiveTab = group.tabs.find(
+              (tab) => tab.value === activeTab
+            );
+
+            return (
+              <div
+                key={group.name}
+                className="flex items-center gap-1 tab-group"
+              >
+                {/* Group Separator - removed */}
+
+                {/* Group Dropdown */}
+                <DropdownMenu open={openDropdown === group.name}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant={isActiveGroup ? "default" : "outline"}
+                      className="flex items-center gap-3 h-12 px-4 py-2 transition-all duration-200 hover:bg-accent/50 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md tabs-trigger group-tab"
+                      onMouseEnter={() => {
+                        if (hoverTimeoutRef.current) {
+                          clearTimeout(hoverTimeoutRef.current);
+                        }
+                        setOpenDropdown(group.name);
+                      }}
+                      onMouseLeave={() => {
+                        hoverTimeoutRef.current = setTimeout(() => {
+                          setOpenDropdown(null);
+                        }, 300);
+                      }}
+                    >
+                      <GroupIcon className="h-4 w-4 tabs-trigger-icon" />
+                      <span className="hidden sm:inline tabs-trigger-text">
+                        {group.label}
+                      </span>
+                      <span className="sm:hidden tabs-trigger-text">
+                        {group.label.split(" ")[0]}
+                      </span>
+                      {isActiveGroup && groupActiveTab && (
+                        <span className="hidden md:inline text-xs opacity-70">
+                          • {groupActiveTab.label}
+                        </span>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align={i18nInstance.language === "ar" ? "start" : "end"}
+                    className="w-56 max-h-96 overflow-y-auto"
+                    onMouseEnter={() => {
+                      if (hoverTimeoutRef.current) {
+                        clearTimeout(hoverTimeoutRef.current);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      hoverTimeoutRef.current = setTimeout(() => {
+                        setOpenDropdown(null);
+                      }, 300);
+                    }}
+                  >
+                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      {group.label}
+                    </div>
+                    {group.tabs.map((tab) => {
+                      const IconComponent = tab.icon;
+                      return (
+                        <DropdownMenuItem
+                          key={tab.value}
+                          onClick={() => onTabChange(tab.value)}
+                          className={`flex items-center gap-2 cursor-pointer ${
+                            activeTab === tab.value ? "bg-accent" : ""
+                          }`}
+                        >
+                          <IconComponent className="h-4 w-4" />
+                          <span>{tab.label}</span>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            );
+          })}
+        </TabsList>
+      </div>
+    </div>
+  );
+};
+
 const AdminDashboard: React.FC = () => {
   const { t, i18n: i18nInstance } = useTranslation();
   const { isDark, toggleTheme } = useTheme();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
-  const language = i18nInstance.language === "ar" ? "العربية" : "English";
+  const language = i18nInstance.language === "ar" ? "AR" : "EN";
 
   // Get date locale based on current language
   const getDateLocale = () => {
@@ -567,6 +837,129 @@ const AdminDashboard: React.FC = () => {
             direction: ltr;
             text-align: right;
           }
+          /* Hide scrollbar for tabs */
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          /* Smooth scrolling for tabs */
+          .overflow-x-auto {
+            scroll-behavior: smooth;
+          }
+          /* Enhanced tabs styling */
+          .enhanced-tabs {
+            position: relative;
+            overflow: hidden;
+          }
+          .enhanced-tabs .tabs-trigger {
+            transition: all 0.2s ease-in-out;
+            border-radius: 0.5rem;
+            font-weight: 500;
+          }
+          .enhanced-tabs .tabs-trigger[data-state="active"] {
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+            transform: translateY(-1px);
+          }
+          /* Navigation arrows */
+          .tabs-nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: hsl(var(--background) / 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid hsl(var(--border));
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+          }
+          .tabs-nav-arrow:hover {
+            background: hsl(var(--accent));
+            transform: translateY(-50%) scale(1.05);
+          }
+          /* Overflow menu */
+          .tabs-overflow-menu {
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 20;
+          }
+          /* Responsive tab text */
+          @media (max-width: 640px) {
+            .tabs-trigger-text {
+              display: none;
+            }
+            .tabs-trigger-icon {
+              margin: 0;
+            }
+          }
+          /* Tab group separators - removed */
+          /* Enhanced group styling */
+          .tab-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 4px;
+          }
+          /* Group tab styling */
+          .group-tab {
+            min-width: fit-content;
+            white-space: nowrap;
+            border-radius: 0.5rem;
+            font-weight: 500;
+          }
+          .group-tab[data-state="active"] {
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+            transform: translateY(-1px);
+          }
+          /* RTL support for group tabs */
+          [dir="rtl"] .group-tab {
+            flex-direction: row-reverse;
+          }
+          [dir="rtl"] .tab-group {
+            flex-direction: row-reverse;
+          }
+          /* Dropdown menu hover functionality - using React state */
+          /* RTL tab group separators - removed */
+          
+          /* Tab transition effects */
+          .tabs-content-transition {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease-in-out;
+          }
+          
+          .tabs-content-transition[data-state="active"] {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          
+          /* Enhanced tab content animations */
+          [data-state="active"] {
+            animation: fadeInUp 0.3s ease-out;
+          }
+          
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
         `}
       </style>
 
@@ -649,155 +1042,140 @@ const AdminDashboard: React.FC = () => {
           defaultValue="dashboard"
           className="space-y-6"
         >
-          <TabsList className="flex w-full rtl:flex-row-reverse">
-            <TabsTrigger value="dashboard" className="flex-1 rtl:text-right">
-              {t("admin.dashboard.tabs.dashboard")}
-            </TabsTrigger>
-            <TabsTrigger value="events" className="flex-1 rtl:text-right">
-              {t("admin.dashboard.tabs.events")}
-            </TabsTrigger>
-            <TabsTrigger value="venues" className="flex-1 rtl:text-right">
-              {t("admin.dashboard.tabs.venues")}
-            </TabsTrigger>
-            <TabsTrigger value="tickets" className="flex-1 rtl:text-right">
-              {t("admin.dashboard.tabs.tickets")}
-            </TabsTrigger>
-            <TabsTrigger value="nfc" className="flex-1 rtl:text-right">
-              {t("admin.dashboard.tabs.nfc")}
-            </TabsTrigger>
-            <TabsTrigger value="customers" className="flex-1 rtl:text-right">
-              {t("admin.dashboard.tabs.customers")}
-            </TabsTrigger>
-            <TabsTrigger value="admins" className="flex-1 rtl:text-right">
-              {t("admin.dashboard.tabs.admins")}
-            </TabsTrigger>
-            <TabsTrigger value="logs" className="flex-1 rtl:text-right">
-              {t("admin.dashboard.logs.title")}
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex-1 rtl:text-right">
-              {t("admin.dashboard.tabs.analytics")}
-            </TabsTrigger>
-          </TabsList>
+          <EnhancedTabsList
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            t={t}
+            i18nInstance={i18nInstance}
+          />
 
           {/* Dashboard Tab */}
-          <TabsContent value="dashboard" className="space-y-6">
+          <TabsContent
+            value="dashboard"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
             {/* Dashboard Header with Export */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rtl:flex-row-reverse">
               <div>
-                <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+                <h2 className="text-xl sm:text-2xl font-bold rtl:text-right ltr:text-left">
                   {t("admin.dashboard.tabs.dashboard")}
                 </h2>
-                <p className="text-muted-foreground rtl:text-right ltr:text-left">
+                <p className="text-sm sm:text-base text-muted-foreground rtl:text-right ltr:text-left">
                   {t("admin.dashboard.subtitle")}
                 </p>
               </div>
-              <ExportDialog
-                data={[
-                  // Event Analytics
-                  {
-                    metric: t("admin.dashboard.stats.totalEvents"),
-                    value: dashboardStats.totalEvents,
-                    category: "Event Analytics",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.ticketsSold"),
-                    value: dashboardStats.totalTicketsSold,
-                    category: "Event Analytics",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.totalAttendees"),
-                    value: dashboardStats.totalAttendees,
-                    category: "Event Analytics",
-                  },
-                  // Financial Summary
-                  {
-                    metric: t("admin.dashboard.stats.totalRevenue"),
-                    value: dashboardStats.totalRevenues,
-                    category: "Financial Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.commission"),
-                    value: dashboardStats.cutCommissions,
-                    category: "Financial Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.pendingPayouts"),
-                    value: dashboardStats.pendingPayouts,
-                    category: "Financial Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.completedPayouts"),
-                    value: dashboardStats.completedPayouts,
-                    category: "Financial Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.cardSales"),
-                    value: dashboardStats.cardSales,
-                    category: "Financial Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.grossProfit"),
-                    value: dashboardStats.grossProfit,
-                    category: "Financial Summary",
-                  },
-                  // User Summary
-                  {
-                    metric: t("admin.dashboard.stats.totalVisitors"),
-                    value: dashboardStats.totalVisitors,
-                    category: "User Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.registeredUsers"),
-                    value: dashboardStats.registeredUsers,
-                    category: "User Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.activeUsers"),
-                    value: dashboardStats.activeUsers,
-                    category: "User Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.inactiveUsers"),
-                    value: dashboardStats.inactiveUsers,
-                    category: "User Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.recurrentUsers"),
-                    value: dashboardStats.recurrentUsers,
-                    category: "User Summary",
-                  },
-                  // Card Summary
-                  {
-                    metric: t("admin.dashboard.stats.totalCards"),
-                    value: dashboardStats.totalCards,
-                    category: "Card Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.activeCards"),
-                    value: dashboardStats.activeCards,
-                    category: "Card Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.inactiveCards"),
-                    value: dashboardStats.inactiveCards,
-                    category: "Card Summary",
-                  },
-                  {
-                    metric: t("admin.dashboard.stats.expiredCards"),
-                    value: dashboardStats.expiredCards,
-                    category: "Card Summary",
-                  },
-                ]}
-                columns={commonColumns.dashboardStats}
-                title={t("admin.dashboard.tabs.dashboard")}
-                subtitle={t("admin.dashboard.subtitle")}
-                filename="dashboard-stats"
-              >
-                <Button className="flex items-center gap-2 rtl:flex-row-reverse">
-                  <Download className="h-4 w-4" />
-                  {t("admin.export.title")}
-                </Button>
-              </ExportDialog>
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                <ExportDialog
+                  data={[
+                    // Event Analytics
+                    {
+                      metric: t("admin.dashboard.stats.totalEvents"),
+                      value: dashboardStats.totalEvents,
+                      category: "Event Analytics",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.ticketsSold"),
+                      value: dashboardStats.totalTicketsSold,
+                      category: "Event Analytics",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.totalAttendees"),
+                      value: dashboardStats.totalAttendees,
+                      category: "Event Analytics",
+                    },
+                    // Financial Summary
+                    {
+                      metric: t("admin.dashboard.stats.totalRevenue"),
+                      value: dashboardStats.totalRevenues,
+                      category: "Financial Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.commission"),
+                      value: dashboardStats.cutCommissions,
+                      category: "Financial Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.pendingPayouts"),
+                      value: dashboardStats.pendingPayouts,
+                      category: "Financial Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.completedPayouts"),
+                      value: dashboardStats.completedPayouts,
+                      category: "Financial Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.cardSales"),
+                      value: dashboardStats.cardSales,
+                      category: "Financial Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.grossProfit"),
+                      value: dashboardStats.grossProfit,
+                      category: "Financial Summary",
+                    },
+                    // User Summary
+                    {
+                      metric: t("admin.dashboard.stats.totalVisitors"),
+                      value: dashboardStats.totalVisitors,
+                      category: "User Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.registeredUsers"),
+                      value: dashboardStats.registeredUsers,
+                      category: "User Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.activeUsers"),
+                      value: dashboardStats.activeUsers,
+                      category: "User Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.inactiveUsers"),
+                      value: dashboardStats.inactiveUsers,
+                      category: "User Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.recurrentUsers"),
+                      value: dashboardStats.recurrentUsers,
+                      category: "User Summary",
+                    },
+                    // Card Summary
+                    {
+                      metric: t("admin.dashboard.stats.totalCards"),
+                      value: dashboardStats.totalCards,
+                      category: "Card Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.activeCards"),
+                      value: dashboardStats.activeCards,
+                      category: "Card Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.inactiveCards"),
+                      value: dashboardStats.inactiveCards,
+                      category: "Card Summary",
+                    },
+                    {
+                      metric: t("admin.dashboard.stats.expiredCards"),
+                      value: dashboardStats.expiredCards,
+                      category: "Card Summary",
+                    },
+                  ]}
+                  columns={commonColumns.dashboardStats}
+                  title={t("admin.dashboard.tabs.dashboard")}
+                  subtitle={t("admin.dashboard.subtitle")}
+                  filename="dashboard-stats"
+                >
+                  <Button className="flex items-center gap-2 rtl:flex-row-reverse text-xs sm:text-sm">
+                    <Download className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">
+                      {t("admin.export.title")}
+                    </span>
+                    <span className="sm:hidden">Export</span>
+                  </Button>
+                </ExportDialog>
+              </div>
             </div>
 
             {/* Summary Cards */}
@@ -1013,53 +1391,117 @@ const AdminDashboard: React.FC = () => {
           </TabsContent>
 
           {/* Events Management Tab */}
-          <TabsContent value="events" className="space-y-6">
+          <TabsContent
+            value="events"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
             <EventsManagement />
           </TabsContent>
 
           {/* Venues Management Tab */}
-          <TabsContent value="venues" className="space-y-6">
+          <TabsContent
+            value="venues"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
             <VenueManagement />
           </TabsContent>
 
           {/* Tickets Management Tab */}
-          <TabsContent value="tickets" className="space-y-6">
+          <TabsContent
+            value="tickets"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
             <TicketsManagement />
           </TabsContent>
 
           {/* NFC Card Management Tab */}
-          <TabsContent value="nfc" className="space-y-6">
+          <TabsContent
+            value="nfc"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
             <NFCCardManagement />
           </TabsContent>
 
           {/* Customer Management Tab */}
-          <TabsContent value="customers" className="space-y-6">
+          <TabsContent
+            value="customers"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
             <CustomerManagement />
           </TabsContent>
 
+          {/* Organizers Management Tab */}
+          <TabsContent
+            value="organizers"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <OrganizersManagement />
+          </TabsContent>
+
+          {/* Usher Management Tab */}
+          <TabsContent
+            value="ushers"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <UsherManagement />
+          </TabsContent>
+
           {/* Admin User Management Tab */}
-          <TabsContent value="admins" className="space-y-6">
+          <TabsContent
+            value="admins"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
             <AdminUserManagement />
           </TabsContent>
 
           {/* System Logs Tab */}
-          <TabsContent value="logs" className="space-y-6">
+          <TabsContent
+            value="logs"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
             <SystemLogs />
           </TabsContent>
 
+          {/* Check-In Logs Tab */}
+          <TabsContent
+            value="checkin-logs"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <CheckinLogs />
+          </TabsContent>
+
+          {/* Expenses Tab */}
+          <TabsContent
+            value="expenses"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <ExpensesManagement />
+          </TabsContent>
+
+          {/* Payouts Tab */}
+          <TabsContent
+            value="payouts"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <PayoutsManagement />
+          </TabsContent>
+
           {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
+          <TabsContent
+            value="analytics"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
             {/* Analytics Header with Export */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rtl:flex-row-reverse">
               <div>
-                <h2 className="text-2xl font-bold rtl:text-right ltr:text-left">
+                <h2 className="text-xl sm:text-2xl font-bold rtl:text-right ltr:text-left">
                   {t("admin.dashboard.tabs.analytics")}
                 </h2>
-                <p className="text-muted-foreground rtl:text-right ltr:text-left">
+                <p className="text-sm sm:text-base text-muted-foreground rtl:text-right ltr:text-left">
                   {t("admin.dashboard.analytics.subtitle")}
                 </p>
               </div>
-              <div className="flex gap-2 rtl:flex-row-reverse">
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                 {/* Revenue Data Export */}
                 <ExportDialog
                   data={chartData.revenueData}
@@ -1071,10 +1513,13 @@ const AdminDashboard: React.FC = () => {
                 >
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 rtl:flex-row-reverse"
+                    className="flex items-center gap-2 rtl:flex-row-reverse text-xs sm:text-sm"
                   >
-                    <TrendingUp className="h-4 w-4" />
-                    {t("admin.dashboard.stats.revenueOverview")}
+                    <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">
+                      {t("admin.dashboard.stats.revenueOverview")}
+                    </span>
+                    <span className="sm:hidden">Revenue</span>
                   </Button>
                 </ExportDialog>
 
@@ -1089,10 +1534,13 @@ const AdminDashboard: React.FC = () => {
                 >
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 rtl:flex-row-reverse"
+                    className="flex items-center gap-2 rtl:flex-row-reverse text-xs sm:text-sm"
                   >
-                    <Users className="h-4 w-4" />
-                    {t("admin.dashboard.stats.userGrowth")}
+                    <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">
+                      {t("admin.dashboard.stats.userGrowth")}
+                    </span>
+                    <span className="sm:hidden">Users</span>
                   </Button>
                 </ExportDialog>
 
@@ -1117,10 +1565,13 @@ const AdminDashboard: React.FC = () => {
                 >
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 rtl:flex-row-reverse"
+                    className="flex items-center gap-2 rtl:flex-row-reverse text-xs sm:text-sm"
                   >
-                    <CreditCard className="h-4 w-4" />
-                    {t("admin.dashboard.stats.nfcCardStatus")}
+                    <CreditCard className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">
+                      {t("admin.dashboard.stats.nfcCardStatus")}
+                    </span>
+                    <span className="sm:hidden">Cards</span>
                   </Button>
                 </ExportDialog>
 
@@ -1145,10 +1596,13 @@ const AdminDashboard: React.FC = () => {
                 >
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 rtl:flex-row-reverse"
+                    className="flex items-center gap-2 rtl:flex-row-reverse text-xs sm:text-sm"
                   >
-                    <BarChart3 className="h-4 w-4" />
-                    {t("admin.dashboard.stats.eventCategories")}
+                    <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">
+                      {t("admin.dashboard.stats.eventCategories")}
+                    </span>
+                    <span className="sm:hidden">Events</span>
                   </Button>
                 </ExportDialog>
 
@@ -1217,9 +1671,12 @@ const AdminDashboard: React.FC = () => {
                   subtitle={t("admin.dashboard.analytics.subtitle")}
                   filename="complete-analytics"
                 >
-                  <Button className="flex items-center gap-2 rtl:flex-row-reverse">
-                    <Download className="h-4 w-4" />
-                    {t("admin.export.title")}
+                  <Button className="flex items-center gap-2 rtl:flex-row-reverse text-xs sm:text-sm">
+                    <Download className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">
+                      {t("admin.export.title")}
+                    </span>
+                    <span className="sm:hidden">Export</span>
                   </Button>
                 </ExportDialog>
               </div>
@@ -1410,6 +1867,54 @@ const AdminDashboard: React.FC = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Account Settings Tab */}
+          <TabsContent
+            value="account-settings"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <AdminAccountSettings />
+          </TabsContent>
+
+          {/* Company Finances Tab */}
+          <TabsContent
+            value="company-finances"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <CompanyFinances />
+          </TabsContent>
+
+          {/* Profit Share Management Tab */}
+          <TabsContent
+            value="profit-share"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <ProfitShareManagement />
+          </TabsContent>
+
+          {/* Settlements Tab */}
+          <TabsContent
+            value="settlements"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <Settlements />
+          </TabsContent>
+
+          {/* Deposits Tab */}
+          <TabsContent
+            value="deposits"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <Deposits />
+          </TabsContent>
+
+          {/* Profit Withdrawals Tab */}
+          <TabsContent
+            value="profit-withdrawals"
+            className="space-y-6 transition-all duration-300 ease-in-out"
+          >
+            <ProfitWithdrawals />
           </TabsContent>
         </Tabs>
       </main>
